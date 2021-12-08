@@ -82,12 +82,12 @@ public class Util extends P4PParameters {
      * @return	an element in Z_q which is a hash of the given messages.
      *
      */
-    public static BigInteger secureHash(BigInteger[] msg, BigInteger q) 
+    public static BigInteger secureHash(BigInteger[] msg, BigInteger size_set_secureHash)
         throws GeneralSecurityException {
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         final int HASH_LENGTH = md.getDigestLength();  
         // The length of the hash in bytes
-        int k = q.bitLength()+1;                       
+        int k = size_set_secureHash.bitLength()+1;
         // The required length of output in bits
         
         int nRounds = k/(HASH_LENGTH*8+close_t_uniform_q_minus_1)+1;
@@ -103,7 +103,7 @@ public class Util extends P4PParameters {
         }
         
         // Now we got all the bits. Make a BigInteger out of it:
-        return new BigInteger(hash).mod(q);
+        return new BigInteger(hash).mod(size_set_secureHash);
     }
     
 
