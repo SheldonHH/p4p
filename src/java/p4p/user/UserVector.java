@@ -424,9 +424,9 @@ public class UserVector extends P4PParameters {
         //	int l = 32;    // We restrict L to be 32 bits
 
         // Lets make l = log_2 (m)
-        int l = Math.max(10, (int) Math.ceil(Math.log(m) / Math.log(2.)));    // We restrict L to be 32 bits
-        long L = ((long) 2) << l - 1;
-        long F = BigInteger.probablePrime(l + 10, rand).longValue();
+        int log_2_m = Math.max(10, (int) Math.ceil(Math.log(m) / Math.log(2.)));    // We restrict L to be 32 bits
+        long L = ((long) 2) << log_2_m - 1;
+        long F = BigInteger.probablePrime(log_2_m + 10, rand).longValue();
         // Make the field size to be 10 bits larger than l
 
         // Definie the number of iterations that the bound ZKP must have:
@@ -439,7 +439,7 @@ public class UserVector extends P4PParameters {
         // TODO: Check what this number is
 
 
-        System.out.println("l = " + l + ", L = " + L);
+        System.out.println("log_2_m = " + log_2_m + ", L = " + L);
         System.out.println("F = " + F);
         System.out.println("zkpIterations = " + zkpIterations + ", zkpThreshold = " + zkpThreshold);
 
@@ -484,7 +484,7 @@ public class UserVector extends P4PParameters {
                     }
                 }
 
-                UserVector uv = new UserVector(data, F, l);
+                UserVector uv = new UserVector(data, F, log_2_m);
                 data = uv.getUserData();
 
                 double l2 = 0.;
@@ -538,7 +538,7 @@ public class UserVector extends P4PParameters {
                     }
                 }
 
-                UserVector uv = new UserVector(data, F, l);
+                UserVector uv = new UserVector(data, F, log_2_m);
                 data = uv.getUserData();
 
                 double l2 = 0.;
