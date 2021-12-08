@@ -834,7 +834,7 @@ public class Util extends P4PParameters {
         }
         double myL2_data_square = 0.;
         int L_10000 = 10000;
-        for(int rand_id = 0; rand_id < dimension; rand_id++) {
+        for(int dimension_id = 0; dimension_id < dimension; dimension_id++) {
             if(l2_norm > 0) {
                 /**
                  * NOTE: F is to big. A random vector generated this way is so
@@ -844,16 +844,16 @@ public class Util extends P4PParameters {
                  * instead of F^m. This function is only for testing. Should be
                  * OK.
                  */
-                data[rand_id] = rand.nextInt(2*L_10000+1)-L_10000;
-                myL2_data_square += (double)((double)data[rand_id]*(double)data[rand_id]);
+                data[dimension_id] = rand.nextInt(2*L_10000+1)-L_10000;
+                myL2_data_square += (double)((double)data[dimension_id]*(double)data[dimension_id]);
                 /**
 
                  */
             }
             else {
-                data[rand_id] = randomBigInteger(bigF).longValue();
+                data[dimension_id] = randomBigInteger(bigF).longValue();
                 // A random long in [0, F-1]
-                data[rand_id] -= Math.floor((double)F/2.);
+                data[dimension_id] -= Math.floor((double)F/2.);
                 // Shift to Z_F
             }
         }
