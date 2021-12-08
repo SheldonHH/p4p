@@ -467,6 +467,9 @@ public class Util extends P4PParameters {
         if(mod_result_long < 0){
             mod_result_long += modulus;
         }
+
+
+        int upperBound = Math.floor((double)modulus/2.));
         if(mod_result_long >= Math.floor((double)modulus/2.))
             mod_result_long -= modulus;
         return mod_result_long;

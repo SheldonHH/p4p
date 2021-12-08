@@ -218,7 +218,7 @@ public class P4PParameters {
         
         if(p.bitLength() < security_parameters)
             throw new RuntimeException("p is too small!");
-        
+        int p_bitlength = p.bitLength();
         initialized = true;
     }
     
