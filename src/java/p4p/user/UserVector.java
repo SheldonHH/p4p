@@ -470,19 +470,19 @@ public class UserVector extends P4PParameters {
                 UserVector uv = new UserVector(data, F, log_2_m);
                 data = uv.getUserData();
 
-                double l2 = 0.;
+                double l2_data_square = 0.;
                 for (int j = 0; j < m; j++) {
                     //DEBUG("d["+j+"] = " + data[j]);
-                    l2 += (double) data[j] * data[j];
+                    l2_data_square += (double) data[j] * data[j];
                 }
 
-                l2 = Math.sqrt(l2);
-                System.out.println("L2 norm of user data = " + l2);
+                double l2_data_square_sqrt = Math.sqrt(l2_data_square);
+                System.out.println("L2 norm of user data = " + l2_data_square_sqrt);
 
                 uv.setChecksumCoefficientVectors(c);
                 L2NormBoundProof proof = (L2NormBoundProof) uv.getL2NormBoundProof();
 
-                boolean shouldPass = l2 < L_to_32_bits;
+                boolean shouldPass = l2_data_square_sqrt < L_to_32_bits;
                 boolean didPass = uv.verify(proof, zkpThreshold);
 
                 System.out.println("shouldPass = " + shouldPass + ", result = " + didPass);
