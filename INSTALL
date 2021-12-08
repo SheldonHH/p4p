@@ -1,0 +1,10 @@
+P4P installation notes
+======================
+
+P4P uses the native big integer lib from I2P (http://www.i2p.net/). To create the
+lib for your platform, untar the file i2p-0.6.0.2.tar in this directory, or grap 
+the latest src from http://www.i2p.net/, and follow the instructions from
+http://www.i2p.net/jbigi. After sucessfully building the lib, copy jbigi.jar,
+libjbigi.so, libjcpuid-x86-linux.so to ./lib.
+
+Last updated: 12/01/2005
