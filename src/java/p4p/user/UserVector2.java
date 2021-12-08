@@ -884,10 +884,10 @@ public class UserVector2 extends UserVector {
         // Generate the data and the checksum coefficient vector:
         long[] data = new long[m];
         int[][] c = new int[zkpIterations][];
-        NativeBigInteger[] bi = P4PParameters.getGenerators(2);
+        NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
 
 
-        // chanllenger vector matrix size = m
+        // chanllenger vector the dimensionality of the vector = m
         for(int zkp_jter = 0; zkp_jter < zkpIterations; zkp_jter++){
             c[zkp_jter] = new int[m];
         }
@@ -953,7 +953,7 @@ public class UserVector2 extends UserVector {
             Util.innerProduct(c[0], data);
             innerProductTime += (System.currentTimeMillis()-t0);
 
-            UserVector2 uv = new UserVector2(data, F, l, bi[0], bi[1]);
+            UserVector2 uv = new UserVector2(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
             data = uv.getUserData();
             uv.generateShares();
             uv.setChecksumCoefficientVectors(c);

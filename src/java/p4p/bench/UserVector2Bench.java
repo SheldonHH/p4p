@@ -455,7 +455,7 @@ public class UserVector2Bench extends UserVector {
         // Generate the data and the checksum coefficient vector:
         long[] data = new long[m];
         int[][] c = new int[zkpIterations][];
-        NativeBigInteger[] bi = P4PParameters.getGenerators(2);
+        NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
 
         for (int j = 0; j < zkpIterations; j++)
             c[j] = new int[m];
@@ -524,7 +524,7 @@ public class UserVector2Bench extends UserVector {
 
                 randChallengeTime += (System.currentTimeMillis() - t0);
 
-                UserVector2Bench uv = new UserVector2Bench(data, F, l, bi[0], bi[1]);
+                UserVector2Bench uv = new UserVector2Bench(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
                 data = uv.getUserData();
 
                 l2 = 0.;
@@ -591,7 +591,7 @@ public class UserVector2Bench extends UserVector {
                     }
                 }
 
-                UserVector2Bench uv = new UserVector2Bench(data, F, l, bi[0], bi[1]);
+                UserVector2Bench uv = new UserVector2Bench(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
                 data = uv.getUserData();
 
                 double l2 = 0.;

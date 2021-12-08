@@ -282,14 +282,14 @@ public class NativeBigInteger extends BigInteger {
 
         int runsProcessed = 0;
         for (runsProcessed = 0; runsProcessed < numRuns; runsProcessed++) {
-            BigInteger bi = new BigInteger(2048, rand);
+            BigInteger two_generators_for_g_h = new BigInteger(2048, rand);
             NativeBigInteger g = new NativeBigInteger(_sampleGenerator);
             NativeBigInteger p = new NativeBigInteger(_samplePrime);
-            NativeBigInteger k = new NativeBigInteger(1, bi.toByteArray());
+            NativeBigInteger k = new NativeBigInteger(1, two_generators_for_g_h.toByteArray());
             long beforeModPow = System.currentTimeMillis();
             BigInteger myValue = g.modPow(k, p);
             long afterModPow = System.currentTimeMillis();
-            BigInteger jval = jg.modPow(bi, jp);
+            BigInteger jval = jg.modPow(two_generators_for_g_h, jp);
             long afterJavaModPow = System.currentTimeMillis();
 
             totalTime += (afterModPow - beforeModPow);

@@ -80,7 +80,7 @@ public class P4PServer extends P4PParameters {
     protected int l;   // The max number of bits of the 2 norm of user vector  
     protected int N = 50;     // The number of chechsums to compute. Default 50
     private int c[][] = null; // The challenge vectors  
-    private long[] s = null;         // The accumulated vector sum
+    private long[] acc_vector_sum = null;         // The accumulated vector sum
     private long[] peerSum = null;   // The peer's share of the vector sum
     
     /**
@@ -173,11 +173,11 @@ public class P4PServer extends P4PParameters {
     /**
      */
     public void init() {
-        if(s == null)
-            s = new long[m];
+        if(acc_vector_sum == null)
+            acc_vector_sum = new long[m];
         
         for(int i = 0; i < m; i++)
-            s[i] = 0;
+            acc_vector_sum[i] = 0;
         usersMap.clear();
     }
     
@@ -272,7 +272,7 @@ public class P4PServer extends P4PParameters {
                         1 : -1;
             }
         }
-        System.out.println("c Challenge Vectpr: "+ Arrays.deepToString(c));
+        System.out.println("c Challenge Vecter: "+ Arrays.deepToString(c));
     }
     
     /**
@@ -329,16 +329,16 @@ public class P4PServer extends P4PParameters {
                 disqualified++;
                 continue;
             }
-            Util.vectorAdd(s, u, s, F);
+            Util.vectorAdd(acc_vector_sum, u, acc_vector_sum, F);
         }
-        Util.vectorAdd(s, peerSum, s, F);
+        Util.vectorAdd(acc_vector_sum, peerSum, acc_vector_sum, F);
         System.out.println("Server:: done computing. " + disqualified + " users disqualified.");
     }
     
     /**
      */
     public long[] getVectorSum() {
-        return s;
+        return acc_vector_sum;
     }
 }
 

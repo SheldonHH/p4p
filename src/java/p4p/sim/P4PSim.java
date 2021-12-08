@@ -61,10 +61,10 @@ public class P4PSim extends P4PParameters {
     private static NativeBigInteger h = null;
     
     private static int k = 512;     // Security parameter
-    private static int m = 10;      // User vector dimension
+    private static int dimension = 10;      // User vector dimension
 //    private static int n = 10;      // Number of users
     private static int n = 1;      // Number of users
-    private static int l = 40;      // Bit length of L 
+    private static int bitLength = 40;      // Bit length of L
     
     /**
      * Start a simulation.
@@ -95,10 +95,10 @@ public class P4PSim extends P4PParameters {
                 }
                 else if(arg.equals("-m")) {
                     try {
-                        m = Integer.parseInt(args[i++]);
+                        dimension = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        m = 10;
+                        dimension = 10;
                     }
                 }
                 else if(arg.equals("-n")) {
@@ -129,10 +129,10 @@ public class P4PSim extends P4PParameters {
 
                 else if(arg.equals("-l")) {
                     try {
-                        l = Integer.parseInt(args[i++]);
+                        bitLength = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        l = 40;
+                        bitLength = 40;
                     }
                 }
 
@@ -148,8 +148,8 @@ public class P4PSim extends P4PParameters {
             }
         }
 
-        System.out.println("k = " + k);
-        System.out.println("m = " + m);
+        System.out.println("securityParameter = " + k);
+        System.out.println("dimension = " + dimension);
         System.out.println("n = " + n);
         System.out.println("nLoops = " + nLoops);
 
@@ -167,42 +167,43 @@ public class P4PSim extends P4PParameters {
 
         rand.nextBoolean();
 
-        long L = ((long)2)<<l - 1; //1099511627776
-        long F = BigInteger.probablePrime(Math.min(l+30,62), rand).longValue();
+        long L_1099511627776 = ((long)2)<<bitLength - 1; //1099511627776
+        long Field_size = BigInteger.probablePrime(Math.min(bitLength+30,62), rand).longValue();
         // Make the field size to be 10 bits larger than l
 
-        // Or just make F 62 bits? Note that we can't use 64 bit since there is no
+        // Or just make Field_size 62 bits? Note that we can't use 64 bit since there is no
         // unsigned long in java.
-        //F = BigInteger.probablePrime(62, rand).longValue();
+        //Field_size = BigInteger.probablePrime(62, rand).longValue();
 
         int N = zkpIterations;
-        System.out.println("l = " + l + ", L = " + L);
-        System.out.println("F = " + F);
+        System.out.println("bitLength = " + bitLength + ", L_1099511627776 = " + L_1099511627776);
+        System.out.println("Field_size = " + Field_size);
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
-        long[] data = new long[m];
-        int[][] c = new int[zkpIterations][];
-        NativeBigInteger[] bi = P4PParameters.getGenerators(2);
-        g = bi[0];
-        h = bi[1];
+        long[] data = new long[dimension];
+        int[][] coefficient vector = new int[zkpIterations][];
+        NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
+        g = two_generators_for_g_h[0];
+        h = two_generators_for_g_h[1];
 
-        P4PServer server = new P4PServer(m, F, l, zkpIterations, g, h);
 
-        long[] s = new long[m];
-        long[] v = new long[m];
+////////////////////////////////////////////////////////////////////////////////////////////////
+        P4PServer server = new P4PServer(dimension, Field_size, bitLength, zkpIterations, g, h);
+        ////////////////////////////////////////////////////////////////////////
+        long[] s = new long[dimension];
+        long[] v = new long[dimension];
 
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
         double delta = 1.5;
         int nfails = 0;
-
         for(int kk = 0; kk < nLoops; kk++) {
             int nQulaifiedUsers = 0;
             boolean passed = true;
             server.init(); // Must clear old states and data
             server.generateChallengeVectors();
-            for(int i = 0; i < m; i++) {
+            for(int i = 0; i < dimension; i++) {
                 s[i] = 0;   v[i] = 0;
             }
             for(int user_id = 0; user_id < n; user_id++) {
@@ -219,10 +220,10 @@ public class P4PSim extends P4PParameters {
                 }else{
                     delta = 2.0;
                 }
-                double l2 = (double)L*delta;
-                data = Util.randVector(m, F, l2);
+                double l2_norm = (double)L_1099511627776*delta;
+                data = Util.randVector(dimension, Field_size, l2_norm);
 
-                UserVector2 uv = new UserVector2(data, F, l, g, h);
+                UserVector2 uv = new UserVector2(data, Field_size, bitLength, g, h);
                 // Simulating the user:
                 uv.generateShares();
                 uv.setChecksumCoefficientVectors(server.getChallengeVectors());
@@ -243,7 +244,7 @@ public class P4PSim extends P4PParameters {
 
                 // The peer:
                 long[] vv = uv.getV();
-                UserVector2 pv = new UserVector2(m, F, l, g, h);
+                UserVector2 pv = new UserVector2(dimension, Field_size, bitLength, g, h);
                 pv.setV(vv);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
@@ -266,11 +267,11 @@ public class P4PSim extends P4PParameters {
                  * true.
                  */
 
-                shouldPass = l2 < L;   // Correct shouldPass using actual data.                
+                shouldPass = l2_norm < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQulaifiedUsers++;
-                    Util.vectorAdd(s, data, s, F);
-                    Util.vectorAdd(v, vv, v, F);
+                    Util.vectorAdd(s, data, s, Field_size);
+                    Util.vectorAdd(v, vv, v, Field_size);
                 }
             }
 
@@ -284,12 +285,12 @@ public class P4PSim extends P4PParameters {
             System.out.println("result: "+ Arrays.toString(result));
 
 
-            for(int ii = 0; ii < m; ii++) {
-                if(result[ii] != Util.mod(s[ii], F)) {
+            for(int ii = 0; ii < dimension; ii++) {
+                if(result[ii] != Util.mod(s[ii], Field_size)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
                             + result[ii] + ", should be "
-                            + Util.mod(s[ii], F));
+                            + Util.mod(s[ii], Field_size));
                     passed = false;
                     nfails++;
                     break;

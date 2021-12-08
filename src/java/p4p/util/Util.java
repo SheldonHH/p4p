@@ -818,22 +818,22 @@ public class Util extends P4PParameters {
      *         Should be OK. 
      * @param m    the dimensionality of the vector
      * @param F    the order of the group Z_F
-     * @param l2   the desired l2-norm of the vector. If it is 0, then a random
+     * @param l2_norm   the desired l2-norm of the vector. If it is 0, then a random
      *             vector in (Z_F)^m is generated.
      * @return	   a random vector over Z_F L2-norm equal <code>l2</code>
      */
 // order of Z_F
-    public static long[] randVector(int m, long F, double l2) {
+    public static long[] randVector(int m, long F, double l2_norm) {
         long[] data = new long[m];
 
         BigInteger bigF = null;
-        if(l2 <=0){
+        if(l2_norm <=0){
             bigF = new BigInteger(Long.toString(F));
         }
-        double myL2 = 0.;
-        int L = 10000;
+        double myL2_data_square = 0.;
+        int L_10000 = 10000;
         for(int rand_id = 0; rand_id < m; rand_id++) {
-            if(l2 > 0) {
+            if(l2_norm > 0) {
                 /**
                  * NOTE: F is to big. A random vector generated this way is so 
                  * big that the scaling factor is essentially 0, resulting in a 
@@ -842,8 +842,8 @@ public class Util extends P4PParameters {
                  * instead of F^m. This function is only for testing. Should be 
                  * OK.
                  */
-                 data[rand_id] = rand.nextInt(2*L+1)-L;
-                myL2 += (double)((double)data[rand_id]*(double)data[rand_id]);
+                 data[rand_id] = rand.nextInt(2*L_10000+1)-L_10000;
+                myL2_data_square += (double)((double)data[rand_id]*(double)data[rand_id]);
                 /**
                  * Let dmax = Double.MAX_VALUE = 1.7976931348623157E308 and 
                  * lmax = Long.MAX_VALUE = 9223372036854775807L. The maximum 
@@ -864,9 +864,9 @@ public class Util extends P4PParameters {
 
 
 
-        if(l2 > 0) {
-            myL2 = Math.sqrt(myL2);
-            double scale = l2/myL2;
+        if(l2_norm > 0) {
+            myL2_data_square = Math.sqrt(myL2_data_square);
+            double scale = l2_norm/myL2_data_square;
             for(int i = 0; i < m; i++) {
                 if(data[i] > 0) {
                     data[i] = (long)(((double)data[i]+0.5)*scale);
@@ -885,23 +885,23 @@ public class Util extends P4PParameters {
      * Adds two vectors in the field Z_F.
      * @param v1   one vector
      * @param v2   the other vector
-     * @param s    the vector where the resulting <code>v1+v2</code> should 
+     * @param vector_sum    the vector where the resulting <code>v1+v2</code> should
      *             be stored.
      * @param F    the order of the group Z_F
      * @throws     IllegalArgumentException if the dimesionalities of the 
      *             vectors do not match.
      */
-    public static void vectorAdd(long[] v1, long[] v2, long[] s, long F) {
-        int m = s.length;
-        if(v1.length != m || v2.length != m) 
+    public static void vectorAdd(long[] v1, long[] v2, long[] vector_sum, long F) {
+        int vector_dimension = vector_sum.length; // dimensionality of vector
+        if(v1.length != vector_dimension || v2.length != vector_dimension)
             throw new IllegalArgumentException("dimesionalities do not match!");
 
-        for(int j = 0; j < m; j++) {
+        for(int dimension_id = 0; dimension_id < vector_dimension; dimension_id++) {
             // Assuming F is at least a few bits less than a long, a single 
             // addition won't cause overflow. So we can do mod afterwards.
             // But we do need to do mod once for a few additions since the 
             // shares can be any number in Z_F. 
-            s[j] = mod(v1[j] + v2[j], F);
+            vector_sum[dimension_id] = mod(v1[dimension_id] + v2[dimension_id], F);
         }
     }
 }
