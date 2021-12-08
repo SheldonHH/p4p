@@ -839,19 +839,19 @@ public class Util extends P4PParameters {
         }
         double myL2_data_square = 0.;
         int L_10000 = 10000;
-        int[] l2_data_counter_for_10_dimension = new int[2];
+        int[] l2_positive_counter_for_10_dimension = new int[2];
         for(int dimension_id = 0; dimension_id < dimension; dimension_id++) {
             if(l2_norm > 0) {
                 data[dimension_id] = rand.nextInt(2*L_10000+1)-L_10000;
                 myL2_data_square += (double)((double)data[dimension_id]*(double)data[dimension_id]);
-                l2_data_counter_for_10_dimension[0]++;
+                l2_positive_counter_for_10_dimension[0]++;
             }
             else {
                 data[dimension_id] = randomBigInteger(bigF).longValue();
                 // A random long in [0, F-1]
                 data[dimension_id] -= Math.floor((double)order_of_Group_Util/2.);
                 // Shift to Z_F
-                l2_data_counter_for_10_dimension[1]++;
+                l2_positive_counter_for_10_dimension[1]++;
             }
         }
 

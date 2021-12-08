@@ -317,7 +317,7 @@ public class P4PServer extends P4PParameters {
             uv.setU(u_U2);
             uv.setChecksumCoefficientVectors(challenge_vectors_Ser);
 
-            BigInteger[] Y_U2 = user.getY());
+            BigInteger[] Y_U2 = user.getY();
             uv.setY(Y_U2);
             UserVector2.L2NormBoundProof2 proof = user.getProof();
 

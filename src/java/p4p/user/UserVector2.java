@@ -118,22 +118,22 @@ public class UserVector2 extends UserVector {
             m = data.length;
     }
 
-    private long [] u = null;       // Server's share of user vector
+    private long [] serverUserVector = null;       // Server's share of user vector
     private long [] v = null;       // Privacy peer's share of user vector
 
     /**
      * Generates the shares of the user vector.
      */
     public void generateShares() {
-        if(u == null) {
-            u = new long[m];
+        if(serverUserVector == null) {
+            serverUserVector = new long[m];
             v = new long[m];
         }
 
-        u = Util.randVector(m, F, 0);
+        serverUserVector = Util.randVector(m, F, 0);
         for(int i = 0; i < m; i++) {
-            v[i] = Util.mod(data[i] - u[i], F);
-            assert (data[i] == Util.mod(u[i] + v[i], F));
+            v[i] = Util.mod(data[i] - serverUserVector[i], F);
+            assert (data[i] == Util.mod(serverUserVector[i] + v[i], F));
         }
     }
 
@@ -142,7 +142,7 @@ public class UserVector2 extends UserVector {
      * Returns the server share.
      */
     public long[] getU() {
-        return u;
+        return serverUserVector;
     }
 
     /**
@@ -157,11 +157,11 @@ public class UserVector2 extends UserVector {
      * Sets the server share. This is useful for server-side manipulation,
      * e.g. verifying the server-side proof.
      *
-     * @param	u       the vector
+     * @param	serverUserVector       the vector
      *
      */
     public void setU(long[] u_U2) {
-        this.u = u_U2;
+        this.serverUserVector = u_U2;
     }
 
 
@@ -300,7 +300,7 @@ public class UserVector2 extends UserVector {
          * the other for the privacy peer.
          */
         public void construct() {
-            if(c == null || u == null)
+            if(c == null || serverUserVector == null)
                 throw new RuntimeException("Checksum vector not set or shares"
                                            + " not generated yet.");
 
@@ -329,7 +329,7 @@ public class UserVector2 extends UserVector {
             Commitment cm = new Commitment(g, h);
             SquareCommitment sc = new SquareCommitment(g, h);
             for(int i = 0; i < c.length; i++) {
-                serverProof.checksums[i] = Util.mod(Util.innerProduct(c[i], u), F);
+                serverProof.checksums[i] = Util.mod(Util.innerProduct(c[i], serverUserVector), F);
                 peerProof.checksums[i] = Util.mod(Util.innerProduct(c[i], v), F);
 
                 /**
@@ -668,7 +668,7 @@ public class UserVector2 extends UserVector {
         for(int i = 0; i < x.length; i++) {
             // First make sure the checksums are computed correctly:
             //if(s[i] != Math.abs(Util.innerProduct(c[i], data))) {
-            if(x[i] != Util.mod(Util.innerProduct(c[i], u), F)) {
+            if(x[i] != Util.mod(Util.innerProduct(c[i], serverUserVector), F)) {
                 // We are doing server
                 System.out.println("Checksum " + i
                                    + " not computed correctly!");
