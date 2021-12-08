@@ -200,7 +200,7 @@ public class P4PSim extends P4PParameters {
 
 
         long[] sum_in_Sim = new long[dimension];
-        long[] v = new long[dimension];
+        long[] v_for_add_Sim = new long[dimension];
 
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
@@ -212,7 +212,7 @@ public class P4PSim extends P4PParameters {
             server.init(); // Must clear old states and data
             server.generateChallengeVectors();
             for(int i = 0; i < dimension; i++) {
-                sum_in_Sim[i] = 0;   v[i] = 0;
+                sum_in_Sim[i] = 0;   v_for_add_Sim[i] = 0;
             }
             for(int user_id = 0; user_id < user_num; user_id++) {
                 long start = System.currentTimeMillis();
@@ -283,12 +283,12 @@ public class P4PSim extends P4PParameters {
                 if(shouldPass) {
                     nQulaifiedUsers++;
                     Util.vectorAdd(sum_in_Sim, data, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
-                    Util.vectorAdd(v, vv, v, FieldSize_larger_than_bitLength_Sim);
+                    Util.vectorAdd(v_for_add_Sim, vv, v_for_add_Sim, FieldSize_larger_than_bitLength_Sim);
                 }
             }
 
             // Now the server is ready to verify
-            server.setPeerSum(v);
+            server.setPeerSum(v_for_add_Sim);
             verifierWatch.start();
             server.compute();
             verifierWatch.pause();
