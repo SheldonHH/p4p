@@ -40,10 +40,10 @@ import java.util.Arrays;
 import p4p.util.Util;
 import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
-import p4p.crypto.SquareCommitment;
-import p4p.crypto.Proof;
-import p4p.crypto.BitCommitment;
-import p4p.crypto.Commitment;
+//import p4p.crypto.SquareCommitment;
+//import p4p.crypto.Proof;
+//import p4p.crypto.BitCommitment;
+//import p4p.crypto.Commitment;
 import p4p.user.UserVector2;
 import p4p.server.P4PServer;
 
@@ -63,7 +63,7 @@ public class P4PSim extends P4PParameters {
     private static int k = 512;     // Security parameter
     private static int dimension = 10;      // User vector dimension
 //    private static int n = 10;      // Number of users
-    private static int n = 1;      // Number of users
+    private static int user_num = 1;      // Number of users
     private static int bitLength = 40;      // Bit length of L
     
     /**
@@ -103,10 +103,10 @@ public class P4PSim extends P4PParameters {
                 }
                 else if(arg.equals("-n")) {
                     try {
-                        n = Integer.parseInt(args[i++]);
+                        user_num = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        n = 10;
+                        user_num = 10;
                     }
                 }
                 else if(arg.equals("-N")) {
@@ -150,7 +150,7 @@ public class P4PSim extends P4PParameters {
 
         System.out.println("securityParameter = " + k);
         System.out.println("dimension = " + dimension);
-        System.out.println("n = " + n);
+        System.out.println("n = " + user_num);
         System.out.println("nLoops = " + nLoops);
 
         // Setup the parameters:
@@ -182,7 +182,7 @@ public class P4PSim extends P4PParameters {
 
         // Generate the data and the checksum coefficient vector:
         long[] data = new long[dimension];
-        int[][] coefficient vector = new int[zkpIterations][];
+        int[][] coefficient_vector = new int[zkpIterations][];
         NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
         g = two_generators_for_g_h[0];
         h = two_generators_for_g_h[1];
@@ -191,7 +191,7 @@ public class P4PSim extends P4PParameters {
 ////////////////////////////////////////////////////////////////////////////////////////////////
         P4PServer server = new P4PServer(dimension, Field_size, bitLength, zkpIterations, g, h);
         ////////////////////////////////////////////////////////////////////////
-        long[] s = new long[dimension];
+        long[] sum_in_Sim = new long[dimension];
         long[] v = new long[dimension];
 
         StopWatch proverWatch = new StopWatch();
@@ -204,9 +204,9 @@ public class P4PSim extends P4PParameters {
             server.init(); // Must clear old states and data
             server.generateChallengeVectors();
             for(int i = 0; i < dimension; i++) {
-                s[i] = 0;   v[i] = 0;
+                sum_in_Sim[i] = 0;   v[i] = 0;
             }
-            for(int user_id = 0; user_id < n; user_id++) {
+            for(int user_id = 0; user_id < user_num; user_id++) {
                 long start = System.currentTimeMillis();
                 long innerProductTime = 0;
                 long randChallengeTime = 0;
@@ -270,7 +270,7 @@ public class P4PSim extends P4PParameters {
                 shouldPass = l2_norm < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQulaifiedUsers++;
-                    Util.vectorAdd(s, data, s, Field_size);
+                    Util.vectorAdd(sum_in_Sim, data, sum_in_Sim, Field_size);
                     Util.vectorAdd(v, vv, v, Field_size);
                 }
             }
@@ -286,11 +286,11 @@ public class P4PSim extends P4PParameters {
 
 
             for(int ii = 0; ii < dimension; ii++) {
-                if(result[ii] != Util.mod(s[ii], Field_size)) {
+                if(result[ii] != Util.mod(sum_in_Sim[ii], Field_size)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
                             + result[ii] + ", should be "
-                            + Util.mod(s[ii], Field_size));
+                            + Util.mod(sum_in_Sim[ii], Field_size));
                     passed = false;
                     nfails++;
                     break;
@@ -320,7 +320,7 @@ public class P4PSim extends P4PParameters {
                 + "              "
                 + ((double)(proverWatch.getElapsedTime()
                 +verifierWatch.getElapsedTime()))/nLoops);
-        System.out.println("Note that the time is for all "+n+" users in ms.");
+        System.out.println("Note that the time is for all "+user_num+" users in ms.");
         System.out.println("Also note that the prover needs to compute proofs"
                 + " for both the server and the privacy peer.");
 
