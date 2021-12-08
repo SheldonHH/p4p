@@ -311,11 +311,14 @@ public class P4PServer extends P4PParameters {
 
             UserInfo user = userEntry.getValue();
             long[] u = user.getVector();
+            long[] u_U2 = u;
             
-            // Verify its proof:
-            uv.setU(u);	    
+            // Verify its proof in UserVector2:
+            uv.setU(u_U2);
             uv.setChecksumCoefficientVectors(challenge_vectors_Ser);
-            uv.setY(user.getY());
+
+            BigInteger[] Y_U2 = user.getY());
+            uv.setY(Y_U2);
             UserVector2.L2NormBoundProof2 proof = user.getProof();
 
             if(uv.verify2(proof)){

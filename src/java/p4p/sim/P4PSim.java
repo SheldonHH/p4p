@@ -207,7 +207,7 @@ public class P4PSim extends P4PParameters {
         double delta = 1.5;
         int nfails = 0;
         for(int kk = 0; kk < nLoops; kk++) {
-            int nQulaifiedUsers = 0;
+            int nQualifiedUsers = 0;
             boolean passed = true;
             server.init(); // Must clear old states and data
             server.generateChallengeVectors();
@@ -281,7 +281,7 @@ public class P4PSim extends P4PParameters {
 
                 shouldPass = l2_norm < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
-                    nQulaifiedUsers++;
+                    nQualifiedUsers++;
                     Util.vectorAdd(sum_in_Sim, data, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
                     Util.vectorAdd(v_for_add_Sim, vv, v_for_add_Sim, FieldSize_larger_than_bitLength_Sim);
                 }
@@ -310,11 +310,11 @@ public class P4PSim extends P4PParameters {
             }
             if(passed)
                 System.out.println("Test " + kk + " passed. Number of qualified users "
-                        + " should be " + nQulaifiedUsers + ". Server reported "
+                        + " should be " + nQualifiedUsers + ". Server reported "
                         + server.getNQulaifiedUsers());
             else
                 System.out.println("Test " + kk + " failed. Number of qualified users should be "
-                        + nQulaifiedUsers + ". Server reported "
+                        + nQualifiedUsers + ". Server reported "
                         + server.getNQulaifiedUsers());
 
         }

@@ -160,8 +160,8 @@ public class UserVector2 extends UserVector {
      * @param	u       the vector
      *
      */
-    public void setU(long[] u) {
-        this.u = u;
+    public void setU(long[] u_U2) {
+        this.u = u_U2;
     }
 
 
@@ -610,8 +610,8 @@ public class UserVector2 extends UserVector {
      * Call this method to set the commitments to the y's, which should be
      * verified by the peer and passed to the server.
      */
-    public void setY(BigInteger[] Y) {
-        this.Y = Y;
+    public void setY(BigInteger[] Y_U2) {
+        this.Y = Y_U2;
     }
 
 
