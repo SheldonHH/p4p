@@ -819,18 +819,18 @@ public class Util extends P4PParameters {
      *         where L is chosen to be 1000. This function is only for test. 
      *         Should be OK. 
      * @param dimension    the dimensionality of the vector
-     * @param F    the order of the group Z_F
+     * @param order_of_Group_Util    the order of the group Z_F
      * @param l2_norm   the desired l2-norm of the vector. If it is 0, then a random
      *             vector in (Z_F)^m is generated.
      * @return	   a random vector over Z_F L2-norm equal <code>l2</code>
      */
 // order of Z_F
-    public static long[] randVector(int dimension, long F, double l2_norm) {
+    public static long[] randVector(int dimension, long order_of_Group_Util, double l2_norm) {
         long[] data = new long[dimension];
 
         BigInteger bigF = null;
         if(l2_norm <=0){
-            bigF = new BigInteger(Long.toString(F));
+            bigF = new BigInteger(Long.toString(order_of_Group_Util));
         }
         double myL2_data_square = 0.;
         int L_10000 = 10000;
@@ -844,7 +844,7 @@ public class Util extends P4PParameters {
             else {
                 data[dimension_id] = randomBigInteger(bigF).longValue();
                 // A random long in [0, F-1]
-                data[dimension_id] -= Math.floor((double)F/2.);
+                data[dimension_id] -= Math.floor((double)order_of_Group_Util/2.);
                 // Shift to Z_F
                 l2_data_counter_for_10_dimension[1]++;
             }

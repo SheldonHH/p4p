@@ -173,16 +173,16 @@ public class P4PSim extends P4PParameters {
         rand.nextBoolean();
 
         long L_1099511627776 = ((long)2)<<bitLength - 1; //1099511627776
-        long Field_size_Sim = BigInteger.probablePrime(Math.min(bitLength+30,62), rand).longValue();
+        long FieldSize_larger_than_bitLength_Sim = BigInteger.probablePrime(Math.min(bitLength+30,62), rand).longValue();
         // Make the field size to be 10 bits larger than l
 
-        // Or just make Field_size_Sim 62 bits? Note that we can't use 64 bit since there is no
+        // Or just make FieldSize_larger_than_bitLength_Sim 62 bits? Note that we can't use 64 bit since there is no
         // unsigned long in java.
-        //Field_size_Sim = BigInteger.probablePrime(62, rand).longValue();
+        //FieldSize_larger_than_bitLength_Sim = BigInteger.probablePrime(62, rand).longValue();
 
         int iteration_N = zkpIterations;
         System.out.println("bitLength = " + bitLength + ", L_1099511627776 = " + L_1099511627776);
-        System.out.println("Field_size_Sim = " + Field_size_Sim);
+        System.out.println("FieldSize_larger_than_bitLength_Sim = " + FieldSize_larger_than_bitLength_Sim);
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
@@ -194,7 +194,7 @@ public class P4PSim extends P4PParameters {
 
 
 /////////////////////////////////           P4PServer            /////////////////////////////////////////////////////
-        P4PServer server = new P4PServer(dimension, Field_size_Sim, bitLength, zkpIterations, g, h);
+        P4PServer server = new P4PServer(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, zkpIterations, g, h);
         ////////////////////////////////////////////////////////////////////////
 
 
@@ -231,9 +231,9 @@ public class P4PSim extends P4PParameters {
                     shouldPass_Counter[1]++;
                 }
                 double l2_norm = (double)L_1099511627776*delta;
-                data = Util.randVector(dimension, Field_size_Sim, l2_norm);
+                data = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
 
-                UserVector2 uv = new UserVector2(data, Field_size_Sim, bitLength, g, h);
+                UserVector2 uv = new UserVector2(data, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
                 // Simulating the user:
                 uv.generateShares();
                 uv.setChecksumCoefficientVectors(server.getChallengeVectors());
@@ -254,7 +254,7 @@ public class P4PSim extends P4PParameters {
 
                 // The peer:
                 long[] vv = uv.getV();
-                UserVector2 pv = new UserVector2(dimension, Field_size_Sim, bitLength, g, h);
+                UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
                 pv.setV(vv);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
@@ -282,8 +282,8 @@ public class P4PSim extends P4PParameters {
                 shouldPass = l2_norm < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQulaifiedUsers++;
-                    Util.vectorAdd(sum_in_Sim, data, sum_in_Sim, Field_size_Sim);
-                    Util.vectorAdd(v, vv, v, Field_size_Sim);
+                    Util.vectorAdd(sum_in_Sim, data, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
+                    Util.vectorAdd(v, vv, v, FieldSize_larger_than_bitLength_Sim);
                 }
             }
 
@@ -298,11 +298,11 @@ public class P4PSim extends P4PParameters {
 
 
             for(int ii = 0; ii < dimension; ii++) {
-                if(result[ii] != Util.mod(sum_in_Sim[ii], Field_size_Sim)) {
+                if(result[ii] != Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
                             + result[ii] + ", should be "
-                            + Util.mod(sum_in_Sim[ii], Field_size_Sim));
+                            + Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim));
                     passed = false;
                     nfails++;
                     break;
