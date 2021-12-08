@@ -886,8 +886,11 @@ public class UserVector2 extends UserVector {
         int[][] c = new int[zkpIterations][];
         NativeBigInteger[] bi = P4PParameters.getGenerators(2);
 
-        for(int iter_j = 0; iter_j < zkpIterations; iter_j++)
-            c[iter_j] = new int[m];
+
+        // chanllenger vector matrix size = m
+        for(int zkp_jter = 0; zkp_jter < zkpIterations; zkp_jter++){
+            c[zkp_jter] = new int[m];
+        }
 
         int nfails = 0;
 
@@ -905,16 +908,19 @@ public class UserVector2 extends UserVector {
             if(worstcase) shouldPass = true;     // Test the worst case
             else shouldPass = rand.nextBoolean();
 
-            if(shouldPass) delta = 0.5;
-            else delta = 2.0;
+            if(shouldPass) {
+                delta = 0.5;
+            }else {
+                delta = 2.0;
+            }
             double l2 = (double)L*delta;
-            double ll2 = 0.;
+            double sqrt_l2 = 0.;
 
             data = Util.randVector(m, F, l2);
             for(int j = 0; j < m; j++) {
-                ll2 += (double)data[j]*(double)data[j];
+                sqrt_l2 += (double)data[j]*(double)data[j];
             }
-            ll2 = Math.sqrt(ll2);
+            sqrt_l2 = Math.sqrt(sqrt_l2);
 
 
             //                 for(int j = 0; j < zkpIterations; j++) {
@@ -969,14 +975,14 @@ public class UserVector2 extends UserVector {
                 System.out.println("Test No. " + i + " failed. shouldPass = "
                                    + shouldPass + ", result = " + didPass
                                    + ". l2 = " + l2
-                                   + ". ll2 = " + ll2);
+                                   + ". sqrt_l2 = " + sqrt_l2);
             }
             else
                 System.out.println("Test No. " + i
                                    + " passed. shouldPass = didPass = "
                                    + shouldPass
                                    + ". l2 = " + l2
-                                   + ". ll2 = " + ll2);
+                                   + ". sqrt_l2 = " + sqrt_l2);
         }
         verifierWatch.stop();
         proverWatch.stop();
