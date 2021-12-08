@@ -70,7 +70,7 @@ import p4p.crypto.BitVectorCommitment;
 
 public class UserVector extends P4PParameters {
     protected long[] data = null;   // The user data 
-    protected int m = -1;          // The dimension of user vector
+    protected int dimension = -1;          // The dimension of user vector
 
     protected long F = -1;
     // The order of the (small) finite field over which all the 
@@ -89,7 +89,7 @@ public class UserVector extends P4PParameters {
             throw new RuntimeException("Field order must be positive prime.");
 
         this.data = data;
-        this.m = data.length
+        this.dimension = data.length
         ;
         this.F = F;
         this.l = l;
@@ -97,7 +97,7 @@ public class UserVector extends P4PParameters {
 
         // Convert the numbers into the finite field:
         if (data != null) {
-            for (int i = 0; i < m; i++) {
+            for (int i = 0; i < dimension; i++) {
                 this.data[i] = Util.mod(data[i], F);
             }
             // The range should be [-F/2, F/2)
@@ -109,7 +109,7 @@ public class UserVector extends P4PParameters {
         if (F < 0 || !new BigInteger(new Long(F).toString()).isProbablePrime(200))
             throw new RuntimeException("Field order must be positive prime.");
 
-        this.m = m;
+        this.dimension = m;
         this.F = F;
         this.l = l;
         this.L = ((long) 1) << l - 1;
@@ -123,8 +123,9 @@ public class UserVector extends P4PParameters {
      */
     public void setChecksumCoefficientVectors(int[][] c) {
         for (int i = 0; i < c.length; i++) {
-            if (c[i].length != m)
+            if (c[i].length != dimension) {
                 throw new RuntimeException("Incorrect dimension for c[" + i + "]!");
+            }
 // 	    for(int j = 0; j < m; j++) {
 // 		if(c[i][j] != 1 && c[i][j] != -1)
 // 		    throw new RuntimeException("Incorrect checksum coefficient: c["
@@ -170,7 +171,7 @@ public class UserVector extends P4PParameters {
             // Compute the checksums:
             for (int i = 0; i < checkCoVector.length; i++) {
                 long s = 0;
-                for (int j = 0; j < m; j++) {
+                for (int j = 0; j < dimension; j++) {
                     //s += c[i][j]*data[j];
                     if (checkCoVector[i][j] == 1)
                         s += data[j];

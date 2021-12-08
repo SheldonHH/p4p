@@ -234,6 +234,9 @@ public class P4PSim extends P4PParameters {
                 data = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
 
                 UserVector2 uv = new UserVector2(data, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+
+
+
                 // Simulating the user:
                 uv.generateShares();
                 uv.setChecksumCoefficientVectors(server.getChallengeVectors());
@@ -248,9 +251,16 @@ public class P4PSim extends P4PParameters {
 
 
 
+
+
+
+
                 // The server:
                 server.setUserVector(user_id, uv.getU());
                 server.setProof(user_id, serverProof);
+
+
+
 
                 // The peer:
                 long[] vv = uv.getV();

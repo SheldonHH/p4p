@@ -297,6 +297,8 @@ public class P4PServer extends P4PParameters {
      * The server have received data and their proofs from enough users.
      * This fucntion is then called to compute the sum of the valid vectors.
      */
+
+    // 使用Challeng Vector
     public void compute() {
         Object[] users = usersMap.entrySet().toArray();
         

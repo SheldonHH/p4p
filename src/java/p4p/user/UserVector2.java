@@ -63,10 +63,15 @@ import p4p.crypto.Commitment;
  * Note that both the prover (the user) and the verifiers (the server and the
  * privacy peer) use this class to hold data, construct and verify the proof.
  * Different parties use different methods and access different members. The
- * user will construct a full <code>UserVector2</code>. The privacy peer only
+ * user will construct a full <code>UserVector2</code>.
+ *
+ *
+ * The privacy peer only
  * sets and accesses the <code>v</code> part of the data (by calling
  * {@link #setV(long[])}, {@link #getV()} and {@link #getL2NormBoundProof2(boolean)})
  * with argument <code>false</code>.
+ *
+ *
  * The server manipulates the <code>u</code> part via {@link #setV(long[])},
  * {@link #getV()} and {@link #getL2NormBoundProof2(boolean)} with argument <code>true</code>. In addition, the
  * server should receive <code>Y's</code> from the peer and call {@link #setY}
@@ -114,26 +119,26 @@ public class UserVector2 extends UserVector {
      */
     public void setData(long[] data) {
         this.data = data;
-        if(m == -1)
-            m = data.length;
+        if(dimension == -1)
+            dimension = data.length;
     }
 
     private long [] serverUserVector = null;       // Server's share of user vector
-    private long [] v = null;       // Privacy peer's share of user vector
+    private long [] peerVector = null;       // Privacy peer's share of user vector
 
     /**
      * Generates the shares of the user vector.
      */
     public void generateShares() {
         if(serverUserVector == null) {
-            serverUserVector = new long[m];
-            v = new long[m];
+            serverUserVector = new long[dimension];
+            peerVector = new long[dimension];
         }
 
-        serverUserVector = Util.randVector(m, F, 0);
-        for(int i = 0; i < m; i++) {
-            v[i] = Util.mod(data[i] - serverUserVector[i], F);
-            assert (data[i] == Util.mod(serverUserVector[i] + v[i], F));
+        serverUserVector = Util.randVector(dimension, F, 0);
+        for(int i = 0; i < dimension; i++) {
+            peerVector[i] = Util.mod(data[i] - serverUserVector[i], F);
+            assert (data[i] == Util.mod(serverUserVector[i] + peerVector[i], F));
         }
     }
 
@@ -149,7 +154,7 @@ public class UserVector2 extends UserVector {
      * Returns the peer share.
      */
     public long[] getV() {
-        return v;
+        return peerVector;
     }
 
 
@@ -173,7 +178,7 @@ public class UserVector2 extends UserVector {
      *
      */
     public void setV(long[] v) {
-        this.v = v;
+        this.peerVector = v;
     }
 
 
@@ -330,7 +335,7 @@ public class UserVector2 extends UserVector {
             SquareCommitment sc = new SquareCommitment(g, h);
             for(int i = 0; i < checkCoVector.length; i++) {
                 serverProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector), F);
-                peerProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], v), F);
+                peerProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector), F);
 
                 /**
                  * Note that although all the normal compuations are done in
@@ -629,7 +634,7 @@ public class UserVector2 extends UserVector {
         // Peer just computes the commitments to the checksums
         Commitment cm = new Commitment(g, h);
         for(int i = 0; i < y.length; i++) {
-            y[i] = Util.mod(Util.innerProduct(checkCoVector[i], v), F);
+            y[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector), F);
             Y[i] =
                 cm.commit(new BigInteger(new Long(y[i]).toString()),
                           // The checksum
