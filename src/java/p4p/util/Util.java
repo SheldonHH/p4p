@@ -862,8 +862,8 @@ public class Util extends P4PParameters {
 
 
         if(l2_norm > 0) {
-            myL2_data_square = Math.sqrt(myL2_data_square);
-            double scale = l2_norm/myL2_data_square;
+            double Sqrt_myL2_data = Math.sqrt(myL2_data_square);
+            double scale = l2_norm/Sqrt_myL2_data;
             for(int i = 0; i < dimension; i++) {
                 if(data[i] > 0) {
                     data[i] = (long)(((double)data[i]+0.5)*scale);
