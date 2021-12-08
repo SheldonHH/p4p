@@ -300,7 +300,7 @@ public class UserVector2 extends UserVector {
          * the other for the privacy peer.
          */
         public void construct() {
-            if(c == null || serverUserVector == null)
+            if(checkCoVector == null || serverUserVector == null)
                 throw new RuntimeException("Checksum vector not set or shares"
                                            + " not generated yet.");
 
@@ -308,14 +308,14 @@ public class UserVector2 extends UserVector {
             peerProof = new L2NormBoundProof2(false);
 
             /** For the server: */
-            serverProof.checksums = new long[c.length];
-            serverProof.checksumRandomness = new BigInteger[c.length];
+            serverProof.checksums = new long[checkCoVector.length];
+            serverProof.checksumRandomness = new BigInteger[checkCoVector.length];
             serverProof.scProofs =
-                new SquareCommitment.SquareCommitmentProof[c.length];
+                new SquareCommitment.SquareCommitmentProof[checkCoVector.length];
             serverProof.tcProofs =
-                new ThreeWayCommitment.ThreeWayCommitmentProof[c.length];
+                new ThreeWayCommitment.ThreeWayCommitmentProof[checkCoVector.length];
 
-            serverProof.mdCorrector = new BigInteger[c.length];
+            serverProof.mdCorrector = new BigInteger[checkCoVector.length];
             BigInteger squareSum = BigInteger.ZERO;
             // Sum of the squares
             BigInteger squareSumCommitment = BigInteger.ONE;
@@ -323,14 +323,14 @@ public class UserVector2 extends UserVector {
             BigInteger sRandomness = BigInteger.ZERO;
 
             /** For the peer: */
-            peerProof.checksums = new long[c.length];
-            peerProof.checksumRandomness = new BigInteger[c.length];
+            peerProof.checksums = new long[checkCoVector.length];
+            peerProof.checksumRandomness = new BigInteger[checkCoVector.length];
 
             Commitment cm = new Commitment(g, h);
             SquareCommitment sc = new SquareCommitment(g, h);
-            for(int i = 0; i < c.length; i++) {
-                serverProof.checksums[i] = Util.mod(Util.innerProduct(c[i], serverUserVector), F);
-                peerProof.checksums[i] = Util.mod(Util.innerProduct(c[i], v), F);
+            for(int i = 0; i < checkCoVector.length; i++) {
+                serverProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector), F);
+                peerProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], v), F);
 
                 /**
                  * Note that although all the normal compuations are done in
@@ -460,11 +460,11 @@ public class UserVector2 extends UserVector {
 
             int numBits =
                 Math.max(squareSum.bitLength(),
-                         Integer.toBinaryString(c.length).length()+2*l);
+                         Integer.toBinaryString(checkCoVector.length).length()+2*l);
             // Even for small squares we must do all the commitments
             // otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits. The limit is "
-                  + (Integer.toBinaryString(c.length).length()+2*l));
+                  + (Integer.toBinaryString(checkCoVector.length).length()+2*l));
 
             serverProof.bcProofs =
                 new BitCommitment.BitCommitmentProof[numBits];
@@ -629,7 +629,7 @@ public class UserVector2 extends UserVector {
         // Peer just computes the commitments to the checksums
         Commitment cm = new Commitment(g, h);
         for(int i = 0; i < y.length; i++) {
-            y[i] = Util.mod(Util.innerProduct(c[i], v), F);
+            y[i] = Util.mod(Util.innerProduct(checkCoVector[i], v), F);
             Y[i] =
                 cm.commit(new BigInteger(new Long(y[i]).toString()),
                           // The checksum
@@ -668,7 +668,7 @@ public class UserVector2 extends UserVector {
         for(int i = 0; i < x.length; i++) {
             // First make sure the checksums are computed correctly:
             //if(s[i] != Math.abs(Util.innerProduct(c[i], data))) {
-            if(x[i] != Util.mod(Util.innerProduct(c[i], serverUserVector), F)) {
+            if(x[i] != Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector), F)) {
                 // We are doing server
                 System.out.println("Checksum " + i
                                    + " not computed correctly!");
@@ -697,11 +697,11 @@ public class UserVector2 extends UserVector {
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l) {
+        if(bcProofs.length > Integer.toBinaryString(checkCoVector.length).length()+2*l) {
             System.out.println("Sum of squares has too many bits: "
                                + bcProofs.length
                                + ", the limit is "
-                               + (Integer.toBinaryString(c.length).length()+2*l));
+                               + (Integer.toBinaryString(checkCoVector.length).length()+2*l));
             return false;
         }
 

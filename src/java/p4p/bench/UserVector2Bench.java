@@ -108,11 +108,11 @@ public class UserVector2Bench extends UserVector {
 
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
-            if (c == null)
+            if (checkCoVector == null)
                 throw new RuntimeException("Checksum vector not set yet.");
 
-            checksums = new long[c.length];
-            scProofs = new SquareCommitment.SquareCommitmentProof[c.length];
+            checksums = new long[checkCoVector.length];
+            scProofs = new SquareCommitment.SquareCommitmentProof[checkCoVector.length];
             SquareCommitment sc = new SquareCommitment(g, h);
 
             // Compute the checksums:
@@ -120,7 +120,7 @@ public class UserVector2Bench extends UserVector {
             BigInteger squareSumCommitment = BigInteger.ONE;   // Commitment to the sum of the squares
             BigInteger sRandomness = BigInteger.ZERO;
 
-            for (int i = 0; i < c.length; i++) {
+            for (int i = 0; i < checkCoVector.length; i++) {
 // 		checksums[i] = 0;
 // 		for(int j = 0; j < m; j++) {
 // 		    //s += c[i][j]*data[j];
@@ -129,7 +129,7 @@ public class UserVector2Bench extends UserVector {
 // 		    else if(c[i][j] == -1)
 // 			checksums[i] -= data[j];
 //	    }
-                checksums[i] = Math.abs(Util.innerProduct(c[i], data));
+                checksums[i] = Math.abs(Util.innerProduct(checkCoVector[i], data));
                 /**
                  * Note that although all the normal compuations are done in
                  * a small finite field, we don't restrict the size of the
@@ -191,7 +191,7 @@ public class UserVector2Bench extends UserVector {
             commitment[0] = squareSumCommitment;
 
 
-            int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(c.length).length() + 2 * l);
+            int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(checkCoVector.length).length() + 2 * l);
             // Even for small squares we must do all the commitments otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits");
 
@@ -292,16 +292,16 @@ public class UserVector2Bench extends UserVector {
         // will only be half of them
         for (int i = 0; i < s.length; i++) {
             // First make sure the checksums are computed correctly:
-            if (s[i] != Math.abs(Util.innerProduct(c[i], data))) {
+            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[i], data))) {
                 System.out.println("Checksum " + i + " not computed correctly!");
                 return false;
             }
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        if (bcProofs.length > Integer.toBinaryString(c.length).length() + 2 * l) {
+        if (bcProofs.length > Integer.toBinaryString(checkCoVector.length).length() + 2 * l) {
             System.out.println("Sum of squares has too many bits: " + bcProofs.length
-                    + ", the limit is " + (Integer.toBinaryString(c.length).length() + 2 * l));
+                    + ", the limit is " + (Integer.toBinaryString(checkCoVector.length).length() + 2 * l));
             return false;
         }
 

@@ -77,7 +77,7 @@ public class UserVector extends P4PParameters {
     // computations are carried out. It should be a prime of 
     // appropriate length (e.g. the length of a long).
 
-    protected int[][] c = null;    // The checksum coefficient vectors.
+    protected int[][] checkCoVector = null;    // The checksum coefficient vectors.
 
     protected long L = -1;
     protected int l;
@@ -132,7 +132,7 @@ public class UserVector extends P4PParameters {
 // 	    }
         }
 
-        this.c = c;
+        this.checkCoVector = c;
     }
 
 
@@ -160,7 +160,7 @@ public class UserVector extends P4PParameters {
 
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
-            if (c == null)
+            if (checkCoVector == null)
                 throw new RuntimeException("Checksum vector not set yet.");
 
             Vector<Integer> oked = new Vector<Integer>();
@@ -168,11 +168,11 @@ public class UserVector extends P4PParameters {
 
 
             // Compute the checksums:
-            for (int i = 0; i < c.length; i++) {
+            for (int i = 0; i < checkCoVector.length; i++) {
                 long s = 0;
                 for (int j = 0; j < m; j++) {
                     //s += c[i][j]*data[j];
-                    if (c[i][j] == 1)
+                    if (checkCoVector[i][j] == 1)
                         s += data[j];
                     else
                         s -= data[j];
@@ -295,7 +295,7 @@ public class UserVector extends P4PParameters {
         // will only be half of them
         for (int i = 0; i < s.length; i++) {
             // First make sure the checksums are computed correctly:
-            if (s[i] != Math.abs(Util.innerProduct(c[passed[i]], data))) {
+            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[passed[i]], data))) {
                 DEBUG("Checksum " + i + " not computed correctly!");
                 return false;
             }
