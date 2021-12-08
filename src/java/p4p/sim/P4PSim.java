@@ -82,6 +82,11 @@ public class P4PSim extends P4PParameters {
         int zkpIterations = 1;
 
         System.out.println("args.length: " + args.length);
+
+
+        int[] shouldPass_Counter = new int[1];
+        shouldPass_Counter[0] = 0;
+        shouldPass_Counter[1] = 1;
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
@@ -188,9 +193,12 @@ public class P4PSim extends P4PParameters {
         h = two_generators_for_g_h[1];
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////           P4PServer            /////////////////////////////////////////////////////
         P4PServer server = new P4PServer(dimension, Field_size, bitLength, zkpIterations, g, h);
         ////////////////////////////////////////////////////////////////////////
+
+
+
         long[] sum_in_Sim = new long[dimension];
         long[] v = new long[dimension];
 
@@ -217,8 +225,10 @@ public class P4PSim extends P4PParameters {
                 System.out.println("Loop " + kk + ", user " + user_id + ". shouldPass = " + shouldPass);
                 if (shouldPass){
                     delta = 0.5;
+                    shouldPass_Counter[0]++;
                 }else{
                     delta = 2.0;
+                    shouldPass_Counter[1]++;
                 }
                 double l2_norm = (double)L_1099511627776*delta;
                 data = Util.randVector(dimension, Field_size, l2_norm);
@@ -233,7 +243,7 @@ public class P4PSim extends P4PParameters {
                 UserVector2.L2NormBoundProof2 serverProof =
                         (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(true);
                 proverWatch.pause();
-//user
+                //user
 
 
 
@@ -255,8 +265,10 @@ public class P4PSim extends P4PParameters {
                     System.out.println("!peerPassed");
                     server.disqualifyUser(user_id);
                 }
-                else
+                else{
                     server.setY(user_id, pv.getY());
+                }
+
                 /**
                  * Note that peer's verification simply computes some 
                  * commitments the peer's shares of the checksums (i.e. the 

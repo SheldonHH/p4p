@@ -68,7 +68,7 @@ public class P4PServer extends P4PParameters {
     private NativeBigInteger g = null;
     private NativeBigInteger h = null;
     
-    protected int dimension_Server = -1;            // The dimension of user vector
+    protected int dimension_Ser = -1;            // The dimension of user vector
     protected long group_order_F_Server = -1;
     /**
      * The order of the (small) finite field over which all the computations 
@@ -79,7 +79,7 @@ public class P4PServer extends P4PParameters {
     protected long L = -1;
     protected int max_bits_2_norm_user_vector_l;   // The max number of bits of the 2 norm of user vector
     protected int Num_Checksum_Server = 50;     // The number of chechsums to compute. Default 50
-    private int c[][] = null; // The challenge vectors  
+    private int challenge_vectors_Ser[][] = null; // The challenge vectors  
     private long[] acc_vector_sum_Server = null;         // The accumulated vector sum
     private long[] peerSum = null;   // The peer's share of the vector sum
     
@@ -92,7 +92,7 @@ public class P4PServer extends P4PParameters {
         private long[] v = null;
         private UserVector2.L2NormBoundProof2 proof = null;  
         // The L2 norm bound proof. Should be passed to us by the user.
-        private BigInteger[] Y = null;
+        private BigInteger[] Y_commitments_to_peer_share_of_checksum_Ser = null;
         // The commitments to the peer's share of the checksums.
 
         public UserInfo(int user, long[] v) {
@@ -138,14 +138,14 @@ public class P4PServer extends P4PParameters {
         
         /**
          */
-        public void setY(BigInteger[] Y) {
-            this.Y = Y;
+        public void setY(BigInteger[] Y_commitments_to_peer_share_of_checksum) {
+            this.Y_commitments_to_peer_share_of_checksum_Ser = Y_commitments_to_peer_share_of_checksum;
         }
         
         /**
          */
         public BigInteger[] getY() {
-            return Y;
+            return Y_commitments_to_peer_share_of_checksum_Ser;
         }
     }
     
@@ -159,7 +159,7 @@ public class P4PServer extends P4PParameters {
         if(F < 0)
             throw new RuntimeException("Field order must be positive.");
         
-        this.dimension_Server = m;
+        this.dimension_Ser = m;
         this.group_order_F_Server = F;
         this.max_bits_2_norm_user_vector_l = l;
         this.L = ((long)1)<<l - 1;
@@ -174,9 +174,9 @@ public class P4PServer extends P4PParameters {
      */
     public void init() {
         if(acc_vector_sum_Server == null)
-            acc_vector_sum_Server = new long[dimension_Server];
+            acc_vector_sum_Server = new long[dimension_Ser];
         
-        for(int i = 0; i < dimension_Server; i++)
+        for(int i = 0; i < dimension_Ser; i++)
             acc_vector_sum_Server[i] = 0;
         usersMap.clear();
     }
@@ -189,7 +189,7 @@ public class P4PServer extends P4PParameters {
      *
      */
     public void setUserVector(int user, long[] v) {
-        if(v.length != dimension_Server)
+        if(v.length != dimension_Ser)
             throw new IllegalArgumentException("User vector dimension must agree.");
 
         UserInfo userInfo = usersMap.get(user);
@@ -236,16 +236,16 @@ public class P4PServer extends P4PParameters {
     /**
      * Sets Y for the given user.
      * @param user     The user index.
-     * @param Y       The commitments to the peer's share of the checksums
+     * @param Y_commitments_to_peer_share_of_checksum       The commitments to the peer's share of the checksums
      * @return <code>true</code> if the user is sucessfuly updated. 
      *         <code>false</code> if the user is not found in the record.
      */
-    public boolean setY(int user, BigInteger[] Y) { 
+    public boolean setY(int user, BigInteger[] Y_commitments_to_peer_share_of_checksum) {
         UserInfo userInfo = usersMap.get(user);
         if(userInfo == null)
             return false;
         
-        userInfo.setY(Y);
+        userInfo.setY(Y_commitments_to_peer_share_of_checksum);
         return true;
     }
     
@@ -254,33 +254,33 @@ public class P4PServer extends P4PParameters {
      */
     public void generateChallengeVectors() {
         //  byte[] randBytes = new byte[(int)Math.ceil(2*N*m/8)];
-        byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_Server*dimension_Server/8)+1)];
-        // We need twice the random bits in c. We need half of them to flip the 1's
+        byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_Server*dimension_Ser/8)+1)];
+        // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
         Util.rand.nextBytes(randBytes);
         int mid = randBytes.length/2;
         //// //// //// //// //// //// ///// challenger //// //// //// //// //// //// //// //// //// ////
-        c = new int[Num_Checksum_Server][];
+        challenge_vectors_Ser = new int[Num_Checksum_Server][];
         //// //// //// //// ////
         for(int i = 0; i < Num_Checksum_Server; i++) {
-            c[i] = new int[dimension_Server];
-            for(int j = 0; j < dimension_Server; j++) {
+            challenge_vectors_Ser[i] = new int[dimension_Ser];
+            for(int j = 0; j < dimension_Ser; j++) {
                 //int byteIndex = (int)2*(i*m + j)/8;
                 //int offset = 2*(i*m + j)%8;
-                int byteIndex = (i*dimension_Server + j)>>3;
-                int offset = (i*dimension_Server + j)%8;
-                c[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
-                if(c[i][j] == 1) // flip half of the 1's
-                    c[i][j] = (randBytes[mid+byteIndex] & (1<<(offset+1))) > 0 ? 
+                int byteIndex = (i*dimension_Ser + j)>>3;
+                int offset = (i*dimension_Ser + j)%8;
+                challenge_vectors_Ser[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
+                if(challenge_vectors_Ser[i][j] == 1) // flip half of the 1's
+                    challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex] & (1<<(offset+1))) > 0 ? 
                         1 : -1;
             }
         }
-        System.out.println("c Challenge Vecter: "+ Arrays.deepToString(c));
+        System.out.println("c Challenge Vecter: "+ Arrays.deepToString(challenge_vectors_Ser));
     }
     
     /**
      */
     public int[][] getChallengeVectors() {
-        return c;
+        return challenge_vectors_Ser;
     }
 
     /**
@@ -300,7 +300,7 @@ public class P4PServer extends P4PParameters {
     public void compute() {
         Object[] users = usersMap.entrySet().toArray();
         
-        UserVector2 uv = new UserVector2(dimension_Server, group_order_F_Server, max_bits_2_norm_user_vector_l, g, h);
+        UserVector2 uv = new UserVector2(dimension_Ser, group_order_F_Server, max_bits_2_norm_user_vector_l, g, h);
         System.out.println("Server:: computing. There are potentially " + usersMap.size() 
                            + " users.");
         int disqualified = 0;
@@ -314,7 +314,7 @@ public class P4PServer extends P4PParameters {
             
             // Verify its proof:
             uv.setU(u);	    
-            uv.setChecksumCoefficientVectors(c);
+            uv.setChecksumCoefficientVectors(challenge_vectors_Ser);
             uv.setY(user.getY());
             UserVector2.L2NormBoundProof2 proof = user.getProof();
 
