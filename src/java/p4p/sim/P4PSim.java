@@ -60,7 +60,7 @@ public class P4PSim extends P4PParameters {
     private static NativeBigInteger g = null;
     private static NativeBigInteger h = null;
     
-    private static int k = 512;     // Security parameter
+    private static int security_parameter_Sim = 512;     // Security parameter
     private static int dimension = 10;      // User vector dimension
 //    private static int n = 10;      // Number of users
     private static int user_num = 1;      // Number of users
@@ -85,12 +85,12 @@ public class P4PSim extends P4PParameters {
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
-                if (arg.equals("-k")) {
+                if (arg.equals("-security_parameter_Sim")) {
                     try {
-                        k = Integer.parseInt(args[i++]);
+                        security_parameter_Sim = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        k = 512;
+                        security_parameter_Sim = 512;
                     }
                 }
                 else if(arg.equals("-m")) {
@@ -148,13 +148,13 @@ public class P4PSim extends P4PParameters {
             }
         }
 
-        System.out.println("securityParameter = " + k);
+        System.out.println("securityParameter = " + security_parameter_Sim);
         System.out.println("dimension = " + dimension);
         System.out.println("n = " + user_num);
         System.out.println("nLoops = " + nLoops);
 
         // Setup the parameters:
-        P4PParameters.initialize(k, false);
+        P4PParameters.initialize(security_parameter_Sim, false);
         SecureRandom rand = null;
         try {
             rand = SecureRandom.getInstance("SHA1PRNG");

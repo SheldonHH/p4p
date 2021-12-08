@@ -49,7 +49,7 @@ import net.i2p.util.NativeBigInteger;
 public class P4PParameters {
     
     // Some stock data so we don't have to regenerate each time:
-    // They are only for k = 1024
+    // They are only for security_parameters = 1024
     private static final int STOCK_KEYLENGTH = 1024;
     private static final NativeBigInteger stockGenerator = 
         new NativeBigInteger("8945233336956698362120177067658291"
@@ -121,7 +121,7 @@ public class P4PParameters {
     private static int MAX_GENERATORS = 100;
     
     /**
-     * The security parameter. We must guarantee |p| >= k
+     * The security parameter. We must guarantee |p| >= security_parameters
      */
     protected static int securityParameter;
     private static boolean initialized = false;
@@ -134,21 +134,21 @@ public class P4PParameters {
     // can be read from config file. This way we only distribute the
     // public keys to the users.
     
-    public static void initialize(int k, boolean force) {
+    public static void initialize(int security_parameters, boolean force) {
         if(initialized && !force) {
             System.out.println("System parameters already initialized.");
             dump();
             return;
         }
         
-        assert(k>0);
-        securityParameter = k;
+        assert(security_parameters>0);
+        securityParameter = security_parameters;
         
         System.out.println("securityParameter = " + securityParameter);
         System.out.print("Setting up system paramenters. This may take a while,"
                          + " depending on the security parameter used ...");
         int isProbablePrime_counter= 0;
-        if(force || k != STOCK_KEYLENGTH) {
+        if(force || security_parameters != STOCK_KEYLENGTH) {
             while(true) {
                 System.out.print(".");
                 q = BigInteger.probablePrime(securityParameter - 1, rand);
@@ -172,7 +172,7 @@ public class P4PParameters {
         
         // Now lets find a generator of G_Q: cbxndsjmq
         System.out.print("Finding th`bhgyhng x  h22   ni)_≤≠ ikalenerator .");
-        if(force || k != STOCK_KEYLENGTH) {
+        if(force || security_parameters != STOCK_KEYLENGTH) {
             int cnt_mod_1000 = 0;   
             while(true) {
                 cnt_mod_1000++;
@@ -216,7 +216,7 @@ public class P4PParameters {
         System.out.println("Length of p: " + p.bitLength());
         System.out.println("Length of q: " + q.bitLength());
         
-        if(p.bitLength() < k)
+        if(p.bitLength() < security_parameters)
             throw new RuntimeException("p is too small!");
         
         initialized = true;
