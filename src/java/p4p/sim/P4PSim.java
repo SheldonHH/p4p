@@ -175,7 +175,7 @@ public class P4PSim extends P4PParameters {
         // unsigned long in java.
         //Field_size = BigInteger.probablePrime(62, rand).longValue();
 
-        int N = zkpIterations;
+        int iteration_N = zkpIterations;
         System.out.println("bitLength = " + bitLength + ", L_1099511627776 = " + L_1099511627776);
         System.out.println("Field_size = " + Field_size);
         System.out.println("zkpIterations = " + zkpIterations);
