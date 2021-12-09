@@ -191,7 +191,7 @@ public class UserVector2Bench extends UserVector {
             commitment[0] = squareSumCommitment;
 
 
-            int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(checkCoVector.length).length() + 2 * l);
+            int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(checkCoVector.length).length() + 2 * l_UV);
             // Even for small squares we must do all the commitments otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits");
 
@@ -299,9 +299,9 @@ public class UserVector2Bench extends UserVector {
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        if (bcProofs.length > Integer.toBinaryString(checkCoVector.length).length() + 2 * l) {
+        if (bcProofs.length > Integer.toBinaryString(checkCoVector.length).length() + 2 * l_UV) {
             System.out.println("Sum of squares has too many bits: " + bcProofs.length
-                    + ", the limit is " + (Integer.toBinaryString(checkCoVector.length).length() + 2 * l));
+                    + ", the limit is " + (Integer.toBinaryString(checkCoVector.length).length() + 2 * l_UV));
             return false;
         }
 

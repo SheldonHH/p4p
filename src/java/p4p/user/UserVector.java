@@ -80,7 +80,7 @@ public class UserVector extends P4PParameters {
     protected int[][] checkCoVector = null;    // The checksum coefficient vectors.
 
     protected long L_UV = -1;
-    protected int l;
+    protected int l_UV;
 
     /**
      */
@@ -92,13 +92,13 @@ public class UserVector extends P4PParameters {
         this.dimension = data_UV_P.length
         ;
         this.F = F;
-        this.l = log_2_m_UV_P;
-        this.L_UV = ((long) 1) << l - 1;
+        this.l_UV = log_2_m_UV_P;
+        this.L_UV = ((long) 1) << l_UV - 1;
 
         // Convert the numbers into the finite field:
         if (data_UV_P != null) {
-            for (int i = 0; i < dimension; i++) {
-                this.data_UV[i] = Util.mod(data_UV_P[i], F);
+            for (int i_UV = 0; i_UV < dimension; i_UV++) {
+                this.data_UV[i_UV] = Util.mod(data_UV_P[i_UV], F);
             }
             // The range should be [-F/2, F/2)
         }
@@ -111,7 +111,7 @@ public class UserVector extends P4PParameters {
 
         this.dimension = m;
         this.F = FieldSize_larger_than_bitLength_UV1_P;
-        this.l = log_2_m_UV_P;
+        this.l_UV = log_2_m_UV_P;
         this.L_UV = ((long) 1) << log_2_m_UV_P - 1;
     }
 
@@ -226,12 +226,12 @@ public class UserVector extends P4PParameters {
 // 		Util.bytesFromLong(bits[i], 0, checksums[i]);
 // 	    }
 
-            bitVecProofs = new BitVectorCommitment.BitVectorCommitmentProof[l];
-            commitment = new BigInteger[l + 2];
-            commitment[l] = BigInteger.ONE;
+            bitVecProofs = new BitVectorCommitment.BitVectorCommitmentProof[l_UV];
+            commitment = new BigInteger[l_UV + 2];
+            commitment[l_UV] = BigInteger.ONE;
             // The commitment to the vector. To be calculated by multiplying all the bit vector commitments
 
-            for (int i = 0; i < l; i++) {
+            for (int i = 0; i < l_UV; i++) {
                 commitment[i] = bvc.commit(checksums, i);
 
 
@@ -239,7 +239,7 @@ public class UserVector extends P4PParameters {
                 // Turn it into a NativeBigInteger because we need to do pow.
                 BigInteger e = new BigInteger(new Long(((long) 1) << i).toString());
                 // 2^j
-                commitment[l] = commitment[l].multiply(c.modPow(e, p)).mod(p);
+                commitment[l_UV] = commitment[l_UV].multiply(c.modPow(e, p)).mod(p);
 
                 BigInteger r = bvc.getRandomness();
                 sRandomness = sRandomness.add(r.multiply(new BigInteger(new Long(((long) 1) << i).toString())));
@@ -259,7 +259,7 @@ public class UserVector extends P4PParameters {
 
 
             // And store the randomness here:
-            commitment[l + 1] = sRandomness;
+            commitment[l_UV + 1] = sRandomness;
         }
 
         public BitVectorCommitment.BitVectorCommitmentProof[] getBitVectorProofs() {
@@ -309,7 +309,7 @@ public class UserVector extends P4PParameters {
 
         // Next check that the commitments agree:
         BigInteger z = BigInteger.ONE;
-        for (int i = 0; i < l; i++) {
+        for (int i = 0; i < l_UV; i++) {
             NativeBigInteger c = new NativeBigInteger(commitment[i]);
             // Turn it into a NativeBigInteger because we need to do pow.
             BigInteger e = new BigInteger(new Long(((long) 1) << i).toString());
@@ -333,10 +333,10 @@ public class UserVector extends P4PParameters {
          * computation, in an active adversary setting.
          */
 
-        if (!z.equals(commitment[l])) {
+        if (!z.equals(commitment[l_UV])) {
             DEBUG("Checksum vector commitments don't agree!");
             DEBUG("z = " + z);
-            DEBUG("commitment[l] = " + commitment[l]);
+            DEBUG("commitment[l] = " + commitment[l_UV]);
             return false;
         }
 
@@ -344,7 +344,7 @@ public class UserVector extends P4PParameters {
         BitVectorCommitment bvc = new BitVectorCommitment(P4PParameters.getGenerators(s.length),
                 P4PParameters.getGenerator());
 
-        for (int i = 0; i < l; i++) {
+        for (int i = 0; i < l_UV; i++) {
             if (!bvc.verify(bvcProofs[i])) {
                 DEBUG("Bit vector commitment No." + i + " failed");
                 return false;

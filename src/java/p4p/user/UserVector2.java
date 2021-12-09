@@ -82,8 +82,8 @@ import p4p.crypto.Commitment;
  */
 
 public class UserVector2 extends UserVector {
-    private NativeBigInteger g = null;
-    private NativeBigInteger h = null;
+    private NativeBigInteger g_UV2 = null;
+    private NativeBigInteger h_UV2 = null;
     //private SquareCommitment sc = null;
 
     /**
@@ -101,17 +101,17 @@ public class UserVector2 extends UserVector {
     public UserVector2(long[] data, long F, int l, NativeBigInteger g,
                        NativeBigInteger h) {
         super(data, F, l);
-        this. g = g;
-        this.h = h;
+        this.g_UV2 = g;
+        this.h_UV2 = h;
         //sc = new SquareCommitment(g, h);
     }
 
 
-    public UserVector2(int m, long FieldSize_larger_than_bitLength_UV2, int log_2_m_UV2_P, NativeBigInteger g_UV_2_P,
-                       NativeBigInteger h_UV_2_P) {
+    public UserVector2(int m, long FieldSize_larger_than_bitLength_UV2, int log_2_m_UV2_P, NativeBigInteger g_UV2_P,
+                       NativeBigInteger h_UV2_P) {
         super(m, FieldSize_larger_than_bitLength_UV2, log_2_m_UV2_P);
-        this. g = g_UV2_P;
-        this.h = h_UV2_P;
+        this.g_UV2 = g_UV2_P;
+        this.h_UV2 = h_UV2_P;
         //sc = new SquareCommitment(g, h);
     }
 
@@ -297,7 +297,7 @@ public class UserVector2 extends UserVector {
         private L2NormBoundProof2 serverProof = null;
         private L2NormBoundProof2 peerProof = null;
 
-        ThreeWayCommitment tc = new ThreeWayCommitment(g, h, F);
+        ThreeWayCommitment tc = new ThreeWayCommitment(g_UV2, h_UV2, F);
         // Used to prepare the ZKP. Can be computed offline.
 
         /**
@@ -345,8 +345,8 @@ public class UserVector2 extends UserVector {
             peerProof.checksums = new long[checkCoVector.length];
             peerProof.checksumRandomness = new BigInteger[checkCoVector.length];
 
-            Commitment cm = new Commitment(g, h);
-            SquareCommitment sc = new SquareCommitment(g, h);
+            Commitment cm = new Commitment(g_UV2, h_UV2);
+            SquareCommitment sc = new SquareCommitment(g_UV2, h_UV2);
             for(int i = 0; i < checkCoVector.length; i++) {
                 serverProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector_UV2), F);
                 peerProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F);
@@ -479,15 +479,15 @@ public class UserVector2 extends UserVector {
 
             int numBits =
                 Math.max(squareSum.bitLength(),
-                         Integer.toBinaryString(checkCoVector.length).length()+2*l);
+                         Integer.toBinaryString(checkCoVector.length).length()+2*l_UV);
             // Even for small squares we must do all the commitments
             // otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits. The limit is "
-                  + (Integer.toBinaryString(checkCoVector.length).length()+2*l));
+                  + (Integer.toBinaryString(checkCoVector.length).length()+2*l_UV));
 
             serverProof.bcProofs =
                 new BitCommitment.BitCommitmentProof[numBits];
-            BitCommitment bc = new BitCommitment(g, h);
+            BitCommitment bc = new BitCommitment(g_UV2, h_UV2);
             for(int i = 0; i < numBits - 1; i++) {
                 BigInteger cc = bc.commit(squareSum.testBit(i));
                 serverProof.bcProofs[i] =
@@ -651,7 +651,7 @@ public class UserVector2 extends UserVector {
         Y  = new BigInteger[y.length];   // The commitments to the checksums
 
         // Peer just computes the commitments to the checksums
-        Commitment cm = new Commitment(g, h);
+        Commitment cm = new Commitment(g_UV2, h_UV2);
         for(int i = 0; i < y.length; i++) {
             y[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F);
             Y[i] =
@@ -687,8 +687,8 @@ public class UserVector2 extends UserVector {
         // The Bs
 
         // Check the checksums and their commitments:
-        Commitment cm = new Commitment(g, h);
-        ThreeWayCommitment tc = new ThreeWayCommitment(g, h, F);
+        Commitment cm = new Commitment(g_UV2, h_UV2);
+        ThreeWayCommitment tc = new ThreeWayCommitment(g_UV2, h_UV2, F);
         for(int i = 0; i < x.length; i++) {
             // First make sure the checksums are computed correctly:
             //if(s[i] != Math.abs(Util.innerProduct(c[i], data))) {
@@ -721,16 +721,16 @@ public class UserVector2 extends UserVector {
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        if(bcProofs.length > Integer.toBinaryString(checkCoVector.length).length()+2*l) {
+        if(bcProofs.length > Integer.toBinaryString(checkCoVector.length).length()+2*l_UV) {
             System.out.println("Sum of squares has too many bits: "
                                + bcProofs.length
                                + ", the limit is "
-                               + (Integer.toBinaryString(checkCoVector.length).length()+2*l));
+                               + (Integer.toBinaryString(checkCoVector.length).length()+2*l_UV));
             return false;
         }
 
         // Check the square proofs:
-        SquareCommitment sc = new SquareCommitment(g, h);
+        SquareCommitment sc = new SquareCommitment(g_UV2, h_UV2);
         for(int i = 0; i < scProofs.length; i++) {
             // First check that the square commitment encodes the correct
             // number i.e. the A in scProofs is the commitment to s.
@@ -760,7 +760,7 @@ public class UserVector2 extends UserVector {
         }
 
         // Then check each bits
-        BitCommitment bc = new BitCommitment(g, h);
+        BitCommitment bc = new BitCommitment(g_UV2, h_UV2);
         BigInteger zz = BigInteger.ONE;
 
         DEBUG("Checking  " + bcProofs.length + " bit commitments");
