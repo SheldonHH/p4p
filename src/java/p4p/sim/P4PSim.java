@@ -63,7 +63,7 @@ public class P4PSim extends P4PParameters {
     private static int security_parameter_Sim = 512;     // Security parameter
     private static int dimension = 10;      // User vector dimension
 //    private static int n = 10;      // Number of users
-    private static int user_num = 1;      // Number of users
+    private static int user_num = 10;      // Number of users
     private static int bitLength = 40;      // Bit length of L
     
     /**
@@ -274,6 +274,9 @@ public class P4PSim extends P4PParameters {
                 pv.setV(vv);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
+
+
+                // peer Proof //
                 boolean peerPassed = pv.verify2(peerProof);
                 verifierWatch.pause();
                 System.out.println("here");

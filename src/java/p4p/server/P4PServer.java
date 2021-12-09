@@ -291,6 +291,7 @@ public class P4PServer extends P4PParameters {
         int [] initial_challenge_vector = new int[dimension_Ser];
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
+        int prev;
         boolean prev_Greater_zero;
         boolean []prev_Greater_zero_arr = new boolean[dimension_Ser];
 
@@ -330,6 +331,7 @@ public class P4PServer extends P4PParameters {
                 byte this_randByte = randBytes[byteIndex_idj_SRShift3];
                 duplicate_randBytes[byteIndex_idj_SRShift3] = this_randByte;
 
+                prev = (this_randByte & (1<<offset_idj_mod8));
                 prev_Greater_zero = (this_randByte & (1<<offset_idj_mod8)) > 0;
                 prev_Greater_zero_arr[j] = prev_Greater_zero;
                 
