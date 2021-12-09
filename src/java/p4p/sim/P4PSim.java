@@ -186,7 +186,7 @@ public class P4PSim extends P4PParameters {
 
         // Generate the data and the checksum coefficient vector:
         long[] data_long_1array_Sim = new long[dimension];
-        int[][] coefficient_vector = new int[zkpIterations][];
+        int[][] idle_coefficient_vector = new int[zkpIterations][];
         NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
         g = two_generators_for_g_h[0];
         h = two_generators_for_g_h[1];
