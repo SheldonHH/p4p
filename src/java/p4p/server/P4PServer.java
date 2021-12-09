@@ -284,7 +284,7 @@ public class P4PServer extends P4PParameters {
 
         // 1<<offset_idj_mod8
         int s_1Lshift_Offset_Mod8 = 0;
-        int [] s_1left_shift_Offset_arr = new int[dimension_Ser];
+        int [] s1LShift_OMod8_Array = new int[dimension_Ser];
 
         // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
         int initial_challenge_AND_operator = 0;
