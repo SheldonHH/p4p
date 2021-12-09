@@ -232,18 +232,18 @@ public class P4PSim extends P4PParameters {
                 double l2_norm = (double)L_1099511627776*delta;
                 data = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
 
-                UserVector2 uv = new UserVector2(data, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+                UserVector2 uv2 = new UserVector2(data, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
 
 
 
                 // Simulating the user:
-                uv.generateShares();
-                uv.setChecksumCoefficientVectors(server.getChallengeVectors());
+                uv2.generateShares();
+                uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
                 proverWatch.start();
                 UserVector2.L2NormBoundProof2 peerProof =
-                        (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(false);
+                        (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(false);
                 UserVector2.L2NormBoundProof2 serverProof =
-                        (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(true);
+                        (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(true);
                 proverWatch.pause();
                 //user
 
@@ -255,14 +255,14 @@ public class P4PSim extends P4PParameters {
 
 
                 // The server:
-                server.setUserVector(user_id, uv.getU());
+                server.setUserVector(user_id, uv2.getU());
                 server.setProof(user_id, serverProof);
 
 
 
 
                 // The peer:
-                long[] vv = uv.getV();
+                long[] vv = uv2.getV();
                 UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
                 pv.setV(vv);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
