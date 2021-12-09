@@ -850,12 +850,13 @@ public class Util extends P4PParameters {
             else {
                 data_Util_randVector[dimension_id] = randomBigInteger(bigF).longValue();
                 // A random long in [0, F-1]
-                data_Util_randVector[dimension_id] -= Math.floor((double)order_of_Group_Util/2.);
+                data_Util_randVector[dimension_id] -= Math.floor((double) order_of_Group_Util / 2.);
                 // Shift to Z_F
                 l2_positive_counter_for_10_dimension[1]++;
             }
-            System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
         }
+
+        System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
 
 
 
@@ -864,16 +865,16 @@ public class Util extends P4PParameters {
             double Sqrt_myL2_data = Math.sqrt(myL2_data_square);
             double scale = l2_norm/Sqrt_myL2_data;
             for(int i = 0; i < dimension; i++) {
-                if(data[i] > 0) {
-                    data[i] = (long)(((double)data[i]+0.5)*scale);
+                if(data_Util_randVector[i] > 0) {
+                    data_Util_randVector[i] = (long)(((double)data_Util_randVector[i]+0.5)*scale);
                 }
                 else{
-                    data[i] = (long)(((double)data[i]-0.5)*scale);
+                    data_Util_randVector[i] = (long)(((double)data_Util_randVector[i]-0.5)*scale);
                 }
                 // Round to the closest long
             }
         }
-        return data;
+        return data_Util_randVector;
     }
 
 
