@@ -84,47 +84,47 @@ public class UserVector extends P4PParameters {
 
     /**
      */
-    public UserVector(long[] data, long F, int l) {
+    public UserVector(long[] data_UV_P, long F, int log_2_m_UV_P) {
         if (F < 0 || !new BigInteger(new Long(F).toString()).isProbablePrime(200))
             throw new RuntimeException("Field order must be positive prime.");
 
-        this.data_UV = data;
-        this.dimension = data.length
+        this.data_UV = data_UV_P;
+        this.dimension = data_UV_P.length
         ;
         this.F = F;
-        this.l = l;
+        this.l = log_2_m_UV_P;
         this.L_UV = ((long) 1) << l - 1;
 
         // Convert the numbers into the finite field:
-        if (data != null) {
+        if (data_UV_P != null) {
             for (int i = 0; i < dimension; i++) {
-                this.data_UV[i] = Util.mod(data[i], F);
+                this.data_UV[i] = Util.mod(data_UV_P[i], F);
             }
             // The range should be [-F/2, F/2)
         }
     }
 
 
-    public UserVector(int m, long FieldSize_larger_than_bitLength_UV1, int l) {
-        if (FieldSize_larger_than_bitLength_UV1 < 0 || !new BigInteger(new Long(FieldSize_larger_than_bitLength_UV1).toString()).isProbablePrime(200))
+    public UserVector(int m, long FieldSize_larger_than_bitLength_UV1_P, int log_2_m_UV_P) {
+        if (FieldSize_larger_than_bitLength_UV1_P < 0 || !new BigInteger(new Long(FieldSize_larger_than_bitLength_UV1_P).toString()).isProbablePrime(200))
             throw new RuntimeException("Field order must be positive prime.");
 
         this.dimension = m;
-        this.F = FieldSize_larger_than_bitLength_UV1;
-        this.l = l;
-        this.L_UV = ((long) 1) << l - 1;
+        this.F = FieldSize_larger_than_bitLength_UV1_P;
+        this.l = log_2_m_UV_P;
+        this.L_UV = ((long) 1) << log_2_m_UV_P - 1;
     }
 
     /**
      * Set the checksum coefficient vectors (the ck's). This is to prepare for the
      * L2 norm bound ZKP.
      *
-     * @param    c    the checksum coefficient vectors
+     * @param    server_getChallengeVectors_from_Sim    the checksum coefficient vectors
      */
-    public void setChecksumCoefficientVectors(int[][] c) {
-        for (int i = 0; i < c.length; i++) {
+    public void setChecksumCoefficientVectors(int[][] server_getChallengeVectors_from_Sim) {
+        for (int i = 0; i < server_getChallengeVectors_from_Sim.length; i++) {
             // every challenge subarray must equal to dimension
-            if (c[i].length != dimension) {
+            if (server_getChallengeVectors_from_Sim[i].length != dimension) {
                 throw new RuntimeException("Incorrect dimension for c[" + i + "]!");
             }
 // 	    for(int j = 0; j < m; j++) {
@@ -134,7 +134,7 @@ public class UserVector extends P4PParameters {
 // 	    }
         }
 
-        this.checkCoVector = c;
+        this.checkCoVector = server_getChallengeVectors_from_Sim;
     }
 
 

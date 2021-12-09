@@ -107,20 +107,20 @@ public class UserVector2 extends UserVector {
     }
 
 
-    public UserVector2(int m, long FieldSize_larger_than_bitLength_UV2, int l, NativeBigInteger g,
-                       NativeBigInteger h) {
-        super(m, FieldSize_larger_than_bitLength_UV2, l);
-        this. g = g;
-        this.h = h;
+    public UserVector2(int m, long FieldSize_larger_than_bitLength_UV2, int log_2_m_UV2_P, NativeBigInteger g_UV_2_P,
+                       NativeBigInteger h_UV_2_P) {
+        super(m, FieldSize_larger_than_bitLength_UV2, log_2_m_UV2_P);
+        this. g = g_UV2_P;
+        this.h = h_UV2_P;
         //sc = new SquareCommitment(g, h);
     }
 
     /**
      */
-    public void setData(long[] data) {
-        this.data_UV = data;
+    public void setData(long[] data_UV2_P) {
+        this.data_UV = data_UV2_P;
         if(dimension == -1)
-            dimension = data.length;
+            dimension = data_UV2_P.length;
     }
 
     private long [] serverUserVector_UV2 = null;       // Server's share of user vector
