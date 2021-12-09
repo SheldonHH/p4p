@@ -35,6 +35,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.MessageDigest;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
 import net.i2p.util.NativeBigInteger;
 
@@ -831,7 +832,7 @@ public class Util extends P4PParameters {
      */
 // order of Z_F
     public static long[] randVector(int dimension, long order_of_Group_Util, double l2_norm) {
-        long[] data = new long[dimension];
+        long[] data_Util_randVector = new long[dimension];
 
         BigInteger bigF = null;
         if(l2_norm <=0){
@@ -842,17 +843,18 @@ public class Util extends P4PParameters {
         int[] l2_positive_counter_for_10_dimension = new int[2];
         for(int dimension_id = 0; dimension_id < dimension; dimension_id++) {
             if(l2_norm > 0) {
-                data[dimension_id] = rand.nextInt(2*L_10000+1)-L_10000;
-                myL2_data_square += (double)((double)data[dimension_id]*(double)data[dimension_id]);
+                data_Util_randVector[dimension_id] = rand.nextInt(2*L_10000+1)-L_10000;
+                myL2_data_square += (double)((double)data_Util_randVector[dimension_id]*(double)data_Util_randVector[dimension_id]);
                 l2_positive_counter_for_10_dimension[0]++;
             }
             else {
-                data[dimension_id] = randomBigInteger(bigF).longValue();
+                data_Util_randVector[dimension_id] = randomBigInteger(bigF).longValue();
                 // A random long in [0, F-1]
-                data[dimension_id] -= Math.floor((double)order_of_Group_Util/2.);
+                data_Util_randVector[dimension_id] -= Math.floor((double)order_of_Group_Util/2.);
                 // Shift to Z_F
                 l2_positive_counter_for_10_dimension[1]++;
             }
+            System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
         }
 
 
