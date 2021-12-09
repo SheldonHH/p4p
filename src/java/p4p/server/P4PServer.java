@@ -347,7 +347,7 @@ public class P4PServer extends P4PParameters {
                     reinforce_c_vector_First_c_vector_Equal_1 = true;
                     reinforce_c_vector_First_c_vector_Equal_1_arr[dim_jd] = reinforce_c_vector_First_c_vector_Equal_1;
                 }
-                System.out.println("End loop of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
+                System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
             }
         }
