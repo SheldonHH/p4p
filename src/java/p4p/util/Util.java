@@ -826,23 +826,23 @@ public class Util extends P4PParameters {
      *         Should be OK. 
      * @param dimension    the dimensionality of the vector
      * @param order_of_Group_Util    the order of the group Z_F
-     * @param l2_norm   the desired l2-norm of the vector. If it is 0, then a random
+     * @param l2_norm_5dot49755813888E11   the desired l2-norm of the vector. If it is 0, then a random
      *             vector in (Z_F)^m is generated.
      * @return	   a random vector over Z_F L2-norm equal <code>l2</code>
      */
 // order of Z_F
-    public static long[] randVector(int dimension, long order_of_Group_Util, double l2_norm) {
+    public static long[] randVector(int dimension, long order_of_Group_Util, double l2_norm_5dot49_Util_randVector) {
         long[] data_Util_randVector = new long[dimension];
 
         BigInteger bigF = null;
-        if(l2_norm <=0){
+        if(l2_norm_5dot49_Util_randVector <=0){
             bigF = new BigInteger(Long.toString(order_of_Group_Util));
         }
         double myL2_data_square = 0.;
         int L_10000 = 10000;
         int[] l2_positive_counter_for_10_dimension = new int[2];
         for(int dimension_id = 0; dimension_id < dimension; dimension_id++) {
-            if(l2_norm > 0) {
+            if(l2_norm_5dot49_Util_randVector > 0) {
                 data_Util_randVector[dimension_id] = rand.nextInt(2*L_10000+1)-L_10000;
                 myL2_data_square += (double)((double)data_Util_randVector[dimension_id]*(double)data_Util_randVector[dimension_id]);
                 l2_positive_counter_for_10_dimension[0]++;
@@ -861,9 +861,9 @@ public class Util extends P4PParameters {
 
 
 
-        if(l2_norm > 0) {
+        if(l2_norm_5dot49_Util_randVector > 0) {
             double Sqrt_myL2_data = Math.sqrt(myL2_data_square);
-            double scale = l2_norm/Sqrt_myL2_data;
+            double scale = l2_norm_5dot49_Util_randVector/Sqrt_myL2_data;
             for(int i = 0; i < dimension; i++) {
                 if(data_Util_randVector[i] > 0) {
                     data_Util_randVector[i] = (long)(((double)data_Util_randVector[i]+0.5)*scale);
