@@ -95,7 +95,7 @@ public class UserVector extends P4PParameters {
         this.l_UV = log_2_m_UV_P;
         this.L_UV = ((long) 1) << l_UV - 1;
 
-        int singaporeModF;
+        long singaporeModF;
         // Convert the numbers into the finite field:
         if (data_UV_P != null) {
             for (int i_UV = 0; i_UV < dimension; i_UV++) {
