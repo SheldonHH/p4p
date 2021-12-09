@@ -1,71 +1,10 @@
-# p4p
+### p4p Credit to Yitao Duan and John Canny from UC Berkleley
+https://bid.berkeley.edu/projects/p4p/
 
-if (doBench) {
-System.out.println("Benchmarking UserVector L2 bound ZKP for " + nLoops + " loops .");
-long start = System.currentTimeMillis();
-for (int i = 0; i < nLoops; i++) {
-boolean shouldPass;   // We should create a vector that passes the zkp
-if (worstcase)
-shouldPass = true;     // Test the worst case
-else {
-if (i < nLoops / 2)
-shouldPass = true;
-else
-shouldPass = false;
-}
-//shouldPass = rand.nextBoolean();
+### Code originate from
+http://bid.berkeley.edu/projects/p4p/p4p/code/p4p.tar.gz
 
-                for (int j = 0; j < m; j++) {
-                    if (shouldPass)
-                        data[j] = Math.abs(rand.nextLong()) % mean;
-                    else
-                        data[j] = (long) Math.abs(rand.nextInt());  // Make it small deliberately
-                    //DEBUG("d["+j+"] = " + data[j]);
-                }
-
-                for (int j = 0; j < zkpIterations; j++) {
-                    c[j] = new int[m];
-                    for (int kk = 0; kk < m; kk++) {
-                        c[j][kk] = rand.nextBoolean() ? 1 : -1;
-                        //DEBUG("c["+j+"]["+kk+"] = " + c[j][kk]);
-                    }
-                }
-
-                UserVector uv = new UserVector(data, F, log_2_m);
-                data = uv.getUserData();
-
-                double l2 = 0.;
-                for (int m_l2_id = 0; m_l2_id < m; m_l2_id++) {
-                    //DEBUG("d["+j+"] = " + data[j]);
-                    l2 += (double) data[m_l2_id] * data[m_l2_id];
-                }
-
-                l2 = Math.sqrt(l2);
-
-                uv.setChecksumCoefficientVectors(c);
-                proverWatch.start();
-                L2NormBoundProof proof = (L2NormBoundProof) uv.getL2NormBoundProof();
-                proverWatch.pause();
-
-                shouldPass = l2 < L_to_32_bits;     // Correct shouldPass using actual data.
-                verifierWatch.start();
-                boolean didPass = uv.verify(proof, zkpThreshold);
-                verifierWatch.pause();
-
-                if (shouldPass != didPass)
-                    System.out.println("Test No. " + i + " failed. shouldPass = " + shouldPass + ", result = " + didPass);
-                else
-                    System.out.println("Test No. " + i + " passed. shouldPass = didPass = " + shouldPass);
-            }
-
-            verifierWatch.stop();
-            proverWatch.stop();
-            long end = System.currentTimeMillis();
-
-            System.out.println("UserVector L2 norm ZKP: " + nLoops + " loops. ms per loop:");
-            System.out.println("\n  Prover time         Verifier time        Total");
-            System.out.println("===================================================");
-            System.out.println("    " + (double) proverWatch.getElapsedTime() / (double) nLoops + "                 "
-                    + (double) verifierWatch.getElapsedTime() / (double) nLoops + "              "
-                    + (double) (end - start) / (double) nLoops);
-        } 
+### Objects for Further Understanding
+1. Challenge vector generation process
+2. Data Generation Pattern
+3. PeerPassed situation

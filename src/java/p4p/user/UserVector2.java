@@ -145,6 +145,8 @@ public class UserVector2 extends UserVector {
         for(generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
 
     // 2. peerUVector = mod(dataUV[]-serverVector, F
+    //
+   //  if(data_UV[i] == Util.mod(serverV[i] + peerV[i], F))
             peerVector_UV2[generate_shares_ui] = Util.mod(data_UV[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F);
 
             if(data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F)){
