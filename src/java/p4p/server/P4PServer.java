@@ -65,7 +65,7 @@ import p4p.user.UserVector2;
  */
 
 public class P4PServer extends P4PParameters {
-    private NativeBigInteger g = null;
+    private NativeBigInteger g_server = null;
     private NativeBigInteger h = null;
     
     protected int dimension_Ser = -1;            // The dimension of user vector
