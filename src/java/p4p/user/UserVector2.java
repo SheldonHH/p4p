@@ -150,7 +150,7 @@ public class UserVector2 extends UserVector {
                 data_equal_mod_array_uv2[generate_shares_ui] = data_equal_mod_uv2;
             }
             assert (data[generate_shares_ui] == Util.mod(serverUserVector[generate_shares_ui] + peerVector[generate_shares_ui], F));
-
+            System.out.println("after assert in GenerateShares UV2");
         }
     }
 
