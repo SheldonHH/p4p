@@ -184,21 +184,21 @@ public class P4PServer extends P4PParameters {
     /**
      * Sets a (share of) user vector.
      *
-     * @param user   user ID
+     * @param userID   user ID
      * @param v      an m-dimensional vector
      *
      */
-    public void setUserVector(int user, long[] v) {
+    public void setUserVector(int userID, long[] v) {
         if(v.length != dimension_Ser)
             throw new IllegalArgumentException("User vector dimension must agree.");
 
-        UserInfo userInfo = usersMap.get(user);
+        UserInfo userInfo = usersMap.get(userID);
         if(userInfo == null)
-            userInfo = new UserInfo(user, v);
+            userInfo = new UserInfo(userID, v);
         else
             userInfo.setVector(v);
         
-        usersMap.put(user, userInfo);
+        usersMap.put(userID, userInfo);
     }
 
     /**

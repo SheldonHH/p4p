@@ -234,41 +234,41 @@ public class P4PSim extends P4PParameters {
                 double l2_norm = (double)L_1099511627776*delta;
 
 
-                ////// Data && userVector2 & //////
+                ////// 1. Data && userVector2 & //////
                 data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
                 UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
-                ////// Data && userVector2 & //////
 
 
-                // generate serverVector & peerVector
+
+                // 2. generate serverVector & peerVector
                 // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
                 uv2.generateShares();
 
-                // set CheckCoVector through server Challenge_Vector for Each User
+                // 3. set CheckCoVector through server Challenge_Vector for Each User
                 uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
                 proverWatch.start();
+
+
+
+                // 4. peerProof & serverProof
                 UserVector2.L2NormBoundProof2 peerProof =
                         (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(false);
                 UserVector2.L2NormBoundProof2 serverProof =
                         (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(true);
                 proverWatch.pause();
-                //user
 
 
 
 
 
-
-
-
-                // The server:
+                // 5. setUserVector(uid, U) & setProof(uid, sProof)
                 server.setUserVector(user_id, uv2.getU());
                 server.setProof(user_id, serverProof);
 
 
 
 
-                // The peer & UV2 pv:
+                // 6. peer & UV2 pv:
                 long[] vv = uv2.getV();
                 UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
                 pv.setV(vv);
