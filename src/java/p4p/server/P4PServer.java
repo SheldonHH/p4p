@@ -78,7 +78,7 @@ public class P4PServer extends P4PParameters {
     
     protected long L = -1;
     protected int max_bits_2_norm_user_vector_l;   // The max number of bits of the 2 norm of user vector
-    protected int Num_Checksum_Server = 50;     // The number of chechsums to compute. Default 50
+    protected int Num_Checksum_to_Compute_Server = 50;     // The number of chechsums to compute. Default 50
     private int challenge_vectors_Ser[][] = null; // The challenge vectors  
     private long[] acc_vector_sum_Server = null;         // The accumulated vector sum
     private long[] peerSum = null;   // The peer's share of the vector sum
@@ -163,7 +163,7 @@ public class P4PServer extends P4PParameters {
         this.group_order_F_Server = F;
         this.max_bits_2_norm_user_vector_l = l;
         this.L = ((long)1)<<l - 1;
-        this.Num_Checksum_Server = N;
+        this.Num_Checksum_to_Compute_Server = N;
         this.g = g;
         this.h = h;
         
@@ -254,14 +254,23 @@ public class P4PServer extends P4PParameters {
      */
     public void generateChallengeVectors() {
         //  byte[] randBytes = new byte[(int)Math.ceil(2*N*m/8)];
-        byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_Server*dimension_Ser/8)+1)];
+        byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server*dimension_Ser/8)+1)];
+        int randByteslength = randBytes.length;
+
         // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
         Util.rand.nextBytes(randBytes);
-        int mid = randBytes.length/2;
+        int mid = randByteslength/2;
+
+
         //// //// //// //// //// //// ///// challenger //// //// //// //// //// //// //// //// //// ////
-        challenge_vectors_Ser = new int[Num_Checksum_Server][];
-        //// //// //// //// ////
-        for(int i = 0; i < Num_Checksum_Server; i++) {
+        challenge_vectors_Ser = new int[Num_Checksum_to_Compute_Server][];
+        //// //// //// //// ////\\\
+
+
+
+
+
+        for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
                 //int byteIndex = (int)2*(i*m + j)/8;

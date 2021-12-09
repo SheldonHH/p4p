@@ -169,7 +169,6 @@ public class P4PSim extends P4PParameters {
             e.printStackTrace();
             rand = new SecureRandom();
         }
-
         rand.nextBoolean();
 
         long L_1099511627776 = ((long)2)<<bitLength - 1; //1099511627776

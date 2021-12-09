@@ -129,6 +129,7 @@ public class UserVector2 extends UserVector {
     /**
      * Generates the shares of the user vector.
      */
+    // iterate through dimensions
     public void generateShares() {
         if(serverUserVector == null) {
             serverUserVector = new long[dimension];
@@ -136,9 +137,9 @@ public class UserVector2 extends UserVector {
         }
 
         serverUserVector = Util.randVector(dimension, F, 0);
-        for(int i = 0; i < dimension; i++) {
-            peerVector[i] = Util.mod(data[i] - serverUserVector[i], F);
-            assert (data[i] == Util.mod(serverUserVector[i] + peerVector[i], F));
+        for(int generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
+            peerVector[generate_shares_ui] = Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
+            assert (data[generate_shares_ui] == Util.mod(serverUserVector[generate_shares_ui] + peerVector[generate_shares_ui], F));
         }
     }
 
@@ -586,6 +587,11 @@ public class UserVector2 extends UserVector {
             proof.construct();
         }
 //        System.out.println("server： "+server);
+        if(server){
+            proof.getServerProof();
+        }else{
+            proof.getPeerProof();
+        }
         return server ? proof.getServerProof() : proof.getPeerProof();
     }
 
