@@ -305,49 +305,49 @@ public class P4PServer extends P4PParameters {
         byte[] duplicate_randBytes = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
-            for(int j = 0; j < dimension_Ser; j++) {
-                //int byteIndex = (int)2*(i*m + j)/8;
-                //int offset = 2*(i*m + j)%8;
-                idj = i*dimension_Ser + j;
-                idj_array[j] = idj;
+            for(int dim_jd = 0; dim_jd < dimension_Ser; dim_jd++) {
+                //int byteIndex = (int)2*(i*m + dim_jd)/8;
+                //int offset = 2*(i*m + dim_jd)%8;
+                idj = i*dimension_Ser + dim_jd;
+                idj_array[dim_jd] = idj;
 
-                byteIndex_idj_SRShift3 = (i*dimension_Ser + j)>>3;
-                byteIndex_idj_SRShift3_array[j] = byteIndex_idj_SRShift3;
+                byteIndex_idj_SRShift3 = (i*dimension_Ser + dim_jd)>>3;
+                byteIndex_idj_SRShift3_array[dim_jd] = byteIndex_idj_SRShift3;
 
 
 
                 ///// offset //////
-                offset_idj_mod8 = (i*dimension_Ser + j)%8;
-                offset_idj_mod8_arr[j] = offset_idj_mod8;
+                offset_idj_mod8 = (i*dimension_Ser + dim_jd)%8;
+                offset_idj_mod8_arr[dim_jd] = offset_idj_mod8;
 
                 s_1Lshift_Offset = 1<<offset_idj_mod8;
-                s_1left_shift_Offset_arr[j]=s_1Lshift_Offset;
+                s_1left_shift_Offset_arr[dim_jd]=s_1Lshift_Offset;
                 ///// offset //////
 
 
                 initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                initial_challenge_vector[j] = initial_challenge_AND_operator;
+                initial_challenge_vector[dim_jd] = initial_challenge_AND_operator;
 
                 byte this_randByte = randBytes[byteIndex_idj_SRShift3];
-                duplicate_randBytes[j] = this_randByte;
+                duplicate_randBytes[dim_jd] = this_randByte;
 
                 prev = (this_randByte & (1<<offset_idj_mod8));
                 prev_Greater_zero = (this_randByte & (1<<offset_idj_mod8)) > 0;
-                prev_Greater_zero_arr[j] = prev_Greater_zero;
+                prev_Greater_zero_arr[dim_jd] = prev_Greater_zero;
                 
                 
-                challenge_vectors_Ser[i][j] = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0 ? 1 : 0;
-                first_c_vector = challenge_vectors_Ser[i][j];
-                first_c_vector_arr[j] = first_c_vector;
+                challenge_vectors_Ser[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0 ? 1 : 0;
+                first_c_vector = challenge_vectors_Ser[i][dim_jd];
+                first_c_vector_arr[dim_jd] = first_c_vector;
 
                 
-                if(challenge_vectors_Ser[i][j] == 1){
+                if(challenge_vectors_Ser[i][dim_jd] == 1){
                     // flip half of the 1's
-                    challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(offset_idj_mod8+1))) > 0 ? 1 : -1;
+                    challenge_vectors_Ser[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(offset_idj_mod8+1))) > 0 ? 1 : -1;
                     reinforce_c_vector_First_c_vector_Equal_1 = true;
-                    reinforce_c_vector_First_c_vector_Equal_1_arr[j] = reinforce_c_vector_First_c_vector_Equal_1;
+                    reinforce_c_vector_First_c_vector_Equal_1_arr[dim_jd] = reinforce_c_vector_First_c_vector_Equal_1;
                 }
-                System.out.println("End loop of Num_Checksum_to_Compute_Server: " + j);
+                System.out.println("End loop of Num_Checksum_to_Compute_Server: " + dim_jd);
 
             }
         }
