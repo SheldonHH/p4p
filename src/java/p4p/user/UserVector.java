@@ -79,7 +79,7 @@ public class UserVector extends P4PParameters {
 
     protected int[][] checkCoVector = null;    // The checksum coefficient vectors.
 
-    protected long L = -1;
+    protected long L_UV = -1;
     protected int l;
 
     /**
@@ -93,7 +93,7 @@ public class UserVector extends P4PParameters {
         ;
         this.F = F;
         this.l = l;
-        this.L = ((long) 1) << l - 1;
+        this.L_UV = ((long) 1) << l - 1;
 
         // Convert the numbers into the finite field:
         if (data != null) {
@@ -112,7 +112,7 @@ public class UserVector extends P4PParameters {
         this.dimension = m;
         this.F = FieldSize_larger_than_bitLength_UV1;
         this.l = l;
-        this.L = ((long) 1) << l - 1;
+        this.L_UV = ((long) 1) << l - 1;
     }
 
     /**
@@ -160,6 +160,10 @@ public class UserVector extends P4PParameters {
         private int[] passed = null;   // The indexes of the checksums that are bounded
         private long[] checksums = null;
 
+
+        // 1. Checksum
+        // 2. BitVectorCommitmentProof
+
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
             if (checkCoVector == null)
@@ -171,27 +175,27 @@ public class UserVector extends P4PParameters {
 
             // Compute the checksums:
             for (int i = 0; i < checkCoVector.length; i++) {
-                long s = 0;
+                long s_checksums_long_UV = 0;
                 for (int j = 0; j < dimension; j++) {
                     //s += c[i][j]*data[j];
                     if (checkCoVector[i][j] == 1)
-                        s += data_UV[j];
+                        s_checksums_long_UV += data_UV[j];
                     else
-                        s -= data_UV[j];
+                        s_checksums_long_UV -= data_UV[j];
                     // Maybe it is faster this way?
                     /**
                      * Note that although all the normal compuations are done in
                      * a small finite field, we don't restrict the size of the
-                     * checksum here (i.e. no mod operation). We allow s to grow
+                     * checksum here (i.e. no mod operation). We allow s_checksums_long_UV to grow
                      * to check the L2 norm of the user vector.
                      */
                 }
 
-                if (s < 0) s = Math.abs(s);
+                if (s_checksums_long_UV < 0) s_checksums_long_UV = Math.abs(s_checksums_long_UV);
                 //DEBUG("checksums[" + i + "] = " + s);
-                if (s < L) {
+                if (s_checksums_long_UV < L_UV) {
                     oked.add(new Integer(i));
-                    cs.add(new Long(s));
+                    cs.add(new Long(s_checksums_long_UV));
                 }
             }
 

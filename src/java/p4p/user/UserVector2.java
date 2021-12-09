@@ -136,13 +136,15 @@ public class UserVector2 extends UserVector {
             serverUserVector_UV2 = new long[dimension];
             peerVector_UV2 = new long[dimension];
         }
-
+    // 1. serverUVector
         serverUserVector_UV2 = Util.randVector(dimension, F, 0);
 
         boolean data_equal_mod_uv2;
         boolean [] data_equal_mod_array_uv2 = new boolean[dimension];
         int generate_shares_ui = 0;
         for(generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
+
+    // 2. peerUVector = mod(dataUV[]-serverVector, F
             peerVector_UV2[generate_shares_ui] = Util.mod(data_UV[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F);
 
             if(data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F)){
@@ -937,8 +939,11 @@ public class UserVector2 extends UserVector {
             }
             double l2 = (double)L*delta;
             double sqrt_l2 = 0.;
-
+            // Generate data in randVector //
             data = Util.randVector(m, F, l2);
+            // Generate Data in randVector //
+
+
             for(int j = 0; j < m; j++) {
                 sqrt_l2 += (double)data[j]*(double)data[j];
             }
