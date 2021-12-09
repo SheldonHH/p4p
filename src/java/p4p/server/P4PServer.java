@@ -255,10 +255,12 @@ public class P4PServer extends P4PParameters {
     public void generateChallengeVectors() {
         //  byte[] randBytes = new byte[(int)Math.ceil(2*N*m/8)];
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server*dimension_Ser/8)+1)];
+        int randByteslength = randBytes.length;  //== 4
+
         int byteIndex_idj_SRShift3 = 0;
         int[] byteIndex_idj_SRShift3_array = new int[dimension_Ser];
 
-        int randByteslength = randBytes.length;
+
         // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
         Util.rand.nextBytes(randBytes);
         int mid = randByteslength/2;
@@ -272,21 +274,26 @@ public class P4PServer extends P4PParameters {
 
 
         // challenge vector in P4PServer.java
+        //  idj=i*dimension_Ser + j
         int idj = 0;
         int [] idj_array = new int[dimension_Ser];
 
         //  (i*dimension_Ser + j)%8
         int offset_idj_mod8 = 0;
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
-        
+
+        // 1<<offset_idj_mod8
         int s_1Lshift_Offset = 0;
         int [] s_1left_shift_Offset_arr = new int[dimension_Ser];
 
+        // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
         int initial_challenge_AND_operator = 0;
         int [] initial_challenge_vector = new int[dimension_Ser];
 
-        boolean prev_Greater_zero = false;
+        // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
+        boolean prev_Greater_zero;
         boolean []prev_Greater_zero_arr = new boolean[dimension_Ser];
+
 
         int first_c_vector;
         int []first_c_vector_arr = new int[dimension_Ser];

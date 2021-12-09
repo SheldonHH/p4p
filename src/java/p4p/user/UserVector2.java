@@ -107,9 +107,9 @@ public class UserVector2 extends UserVector {
     }
 
 
-    public UserVector2(int m, long F, int l, NativeBigInteger g,
+    public UserVector2(int m, long FieldSize_larger_than_bitLength_UV2, int l, NativeBigInteger g,
                        NativeBigInteger h) {
-        super(m, F, l);
+        super(m, FieldSize_larger_than_bitLength_UV2, l);
         this. g = g;
         this.h = h;
         //sc = new SquareCommitment(g, h);
@@ -130,6 +130,7 @@ public class UserVector2 extends UserVector {
      * Generates the shares of the user vector.
      */
     // iterate through dimensions
+    // generate peer vectors
     public void generateShares() {
         if(serverUserVector == null) {
             serverUserVector = new long[dimension];

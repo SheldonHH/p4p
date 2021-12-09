@@ -232,13 +232,16 @@ public class P4PSim extends P4PParameters {
                 }
 
                 double l2_norm = (double)L_1099511627776*delta;
+
+
+                ////// Data && userVector2 & //////
                 data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
-
                 UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+                ////// Data && userVector2 & //////
 
 
-
-                // Simulating the user:
+                // serverVector from randVector
+                // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
                 uv2.generateShares();
 
                 // set CheckCoVector through server Challenge_Vector
@@ -265,7 +268,7 @@ public class P4PSim extends P4PParameters {
 
 
 
-                // The peer:
+                // The peer & UV2 pv:
                 long[] vv = uv2.getV();
                 UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
                 pv.setV(vv);

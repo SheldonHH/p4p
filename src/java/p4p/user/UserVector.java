@@ -105,12 +105,12 @@ public class UserVector extends P4PParameters {
     }
 
 
-    public UserVector(int m, long F, int l) {
-        if (F < 0 || !new BigInteger(new Long(F).toString()).isProbablePrime(200))
+    public UserVector(int m, long FieldSize_larger_than_bitLength_UV1, int l) {
+        if (FieldSize_larger_than_bitLength_UV1 < 0 || !new BigInteger(new Long(FieldSize_larger_than_bitLength_UV1).toString()).isProbablePrime(200))
             throw new RuntimeException("Field order must be positive prime.");
 
         this.dimension = m;
-        this.F = F;
+        this.F = FieldSize_larger_than_bitLength_UV1;
         this.l = l;
         this.L = ((long) 1) << l - 1;
     }
