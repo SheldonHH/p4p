@@ -292,7 +292,7 @@ public class P4PServer extends P4PParameters {
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
         int prev;
-        boolean prev_Greater_zero;
+        boolean Is_prev_Greater_zero;
         boolean []prev_Greater_zero_arr = new boolean[dimension_Ser];
 
 
@@ -340,8 +340,8 @@ public class P4PServer extends P4PParameters {
                 System.out.println("Learn Pattern of initial_challenge_AND_operator: "+ initial_challenge_AND_operator);
 
                 prev = (this_randByte & (1<<offset_idj_mod8));
-                prev_Greater_zero = (this_randByte & (1<<offset_idj_mod8)) > 0;
-                prev_Greater_zero_arr[dim_jd] = prev_Greater_zero;
+                Is_prev_Greater_zero = prev > 0;
+                prev_Greater_zero_arr[dim_jd] = Is_prev_Greater_zero;
                 
                 
                 challenge_vectors_Ser[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0 ? 1 : 0;
