@@ -271,18 +271,27 @@ public class P4PServer extends P4PParameters {
         // challenge vector in P4PServer.java
         int idj = 0;
         int [] idj_array = new int[dimension_Ser];
+       
         int byteIndex_idj_SRShift3 = 0;
         int [] byteIndex_idj_SRShift3_arr = new int[dimension_Ser];
+      
         int offset_idj_mod8 = 0;
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
+        
         int s_1Lshift_Offset = 0;
         int [] s_1left_shift_Offset_arr = new int[dimension_Ser];
+        
         int initial_challenge = 0;
         int [] initial_challenge_vector = new int[dimension_Ser];
 
-        boolean []prev_Greater_zero = new boolean[dimension_Ser];
-        int []first_c_vector = new int[dimension_Ser];
-        boolean [] reinforce_c_vector_First_c_vector_Equal_1 =  new boolean[dimension_Ser];
+        boolean prev_Greater_zero = false;
+        boolean []prev_Greater_zero_arr = new boolean[dimension_Ser];
+
+        int first_c_vector;
+        int []first_c_vector_arr = new int[dimension_Ser];
+
+        boolean reinforce_c_vector_First_c_vector_Equal_1;
+        boolean [] reinforce_c_vector_First_c_vector_Equal_1_arr =  new boolean[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
@@ -305,15 +314,20 @@ public class P4PServer extends P4PParameters {
                 initial_challenge = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
                 initial_challenge_vector[j] = initial_challenge;
 
-                prev_Greater_zero[j] = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0;
+                prev_Greater_zero = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0;
+                prev_Greater_zero_arr[j] = prev_Greater_zero;
+                
+                
                 challenge_vectors_Ser[i][j] = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0 ? 1 : 0;
-                first_c_vector[j] = challenge_vectors_Ser[i][j];
+                first_c_vector = challenge_vectors_Ser[i][j];
+                first_c_vector_arr[j] = first_c_vector;
 
                 
                 if(challenge_vectors_Ser[i][j] == 1){
                     // flip half of the 1's
                     challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(offset_idj_mod8+1))) > 0 ? 1 : -1;
-                    reinforce_c_vector_First_c_vector_Equal_1[j] = true;
+                    reinforce_c_vector_First_c_vector_Equal_1 = true;
+                    reinforce_c_vector_First_c_vector_Equal_1_arr[j] = reinforce_c_vector_First_c_vector_Equal_1;
                 }
 
             }
