@@ -277,7 +277,7 @@ public class P4PServer extends P4PParameters {
 
         boolean []prev_Greater_zero = new boolean[dimension_Ser];
         int []first_c_vector = new int[dimension_Ser];
-        boolean [] reinforce_c_vector =  new boolean[dimension_Ser];
+        boolean [] reinforce_c_vector_First_c_vector_Equal_1 =  new boolean[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
@@ -305,7 +305,7 @@ public class P4PServer extends P4PParameters {
                 if(challenge_vectors_Ser[i][j] == 1){
                     // flip half of the 1's
                     challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex] & (1<<(offset+1))) > 0 ? 1 : -1;
-                    reinforce_c_vector[j] = true;
+                    reinforce_c_vector_First_c_vector_Equal_1[j] = true;
                 }
 
             }
