@@ -431,6 +431,8 @@ public class UserVector extends P4PParameters {
 
         // Lets make l = log_2 (m)
         int log_2_m = Math.max(10, (int) Math.ceil(Math.log(m) / Math.log(2.)));
+
+
         // We restrict L to be 32 bits
         long L_to_32_bits = ((long) 2) << log_2_m - 1;
         long F = BigInteger.probablePrime(log_2_m + 10, rand).longValue();

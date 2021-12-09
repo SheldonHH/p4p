@@ -279,7 +279,7 @@ public class P4PServer extends P4PParameters {
         int [] idj_array = new int[dimension_Ser];
 
         //  (i*dimension_Ser + j)%8
-        int offset_idj_mod8 = 0;
+        int Off_idj_Mod8 = 0;
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
 
         // 1<<offset_idj_mod8
@@ -318,12 +318,12 @@ public class P4PServer extends P4PParameters {
 
 
                 ///// offset //////
-                offset_idj_mod8 = (i*dimension_Ser + dim_jd)%8;
-                offset_idj_mod8_arr[dim_jd] = offset_idj_mod8;
+                Off_idj_Mod8 = (i*dimension_Ser + dim_jd)%8;
+                offset_idj_mod8_arr[dim_jd] = Off_idj_Mod8;
 
 
 
-                s1LShift_OMod8 = 1<<offset_idj_mod8; ////1*2^Offset
+                s1LShift_OMod8 = 1<<Off_idj_Mod8; ////1*2^Offset
                 s1LShift_OMod8_Array[dim_jd]=s1LShift_OMod8;
                 ///// offset //////
 
@@ -339,19 +339,19 @@ public class P4PServer extends P4PParameters {
                 initial_challenge_vector[dim_jd] = initial_challenge_AND_operator;
                 System.out.println("Learn Pattern of initial_challenge_AND_operator: "+ initial_challenge_AND_operator);
 
-                prev = (this_randByte & (1<<offset_idj_mod8));
+                prev = (this_randByte & (1<<Off_idj_Mod8));
                 Is_prev_Greater_zero = prev > 0;
                 prev_Greater_zero_arr[dim_jd] = Is_prev_Greater_zero;
                 
                 
-                challenge_vectors_Ser[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0 ? 1 : 0;
+                challenge_vectors_Ser[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
                 first_c_vector = challenge_vectors_Ser[i][dim_jd];
                 first_c_vector_arr[dim_jd] = first_c_vector;
 
                 
                 if(challenge_vectors_Ser[i][dim_jd] == 1){
                     // flip half of the 1's
-                    challenge_vectors_Ser[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(offset_idj_mod8+1))) > 0 ? 1 : -1;
+                    challenge_vectors_Ser[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
                     reinforce_c_vector_First_c_vector_Equal_1 = true;
                     reinforce_c_vector_First_c_vector_Equal_1_arr[dim_jd] = reinforce_c_vector_First_c_vector_Equal_1;
                 }
