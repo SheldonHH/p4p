@@ -305,18 +305,19 @@ public class P4PServer extends P4PParameters {
                 byteIndex_idj_SRShift3 = (i*dimension_Ser + j)>>3;
                 byteIndex_idj_SRShift3_arr[j] = byteIndex_idj_SRShift3;
 
+
+
+                ///// offset //////
                 offset_idj_mod8 = (i*dimension_Ser + j)%8;
                 offset_idj_mod8_arr[j] = offset_idj_mod8;
 
-
-
                 s_1Lshift_Offset = 1<<offset_idj_mod8;
                 s_1left_shift_Offset_arr[j]=s_1Lshift_Offset;
-
+                ///// offset //////
 
 
                 initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                initial_challenge_vector[j] = initial_challenge;
+                initial_challenge_vector[j] = initial_challenge_AND_operator;
 
                 byte this_randByte = randBytes[byteIndex_idj_SRShift3];
                 duplicate_randBytes[byteIndex_idj_SRShift3] = this_randByte;
@@ -336,6 +337,7 @@ public class P4PServer extends P4PParameters {
                     reinforce_c_vector_First_c_vector_Equal_1 = true;
                     reinforce_c_vector_First_c_vector_Equal_1_arr[j] = reinforce_c_vector_First_c_vector_Equal_1;
                 }
+                System.out.println("End loop of Num_Checksum_to_Compute_Server: " + j);
 
             }
         }
