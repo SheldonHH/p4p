@@ -154,7 +154,7 @@ public class P4PServer extends P4PParameters {
 
     /**
      */
-    public P4PServer(int m, long F, int l, int N, NativeBigInteger g, 
+    public P4PServer(int m, long F, int l, int N_zkpIterations, NativeBigInteger g,
                      NativeBigInteger h) {
         if(F < 0)
             throw new RuntimeException("Field order must be positive.");
@@ -163,7 +163,7 @@ public class P4PServer extends P4PParameters {
         this.group_order_F_Server = F;
         this.max_bits_2_norm_user_vector_l = l;
         this.L = ((long)1)<<l - 1;
-        this.Num_Checksum_to_Compute_Server = N;
+        this.Num_Checksum_to_Compute_Server = N_zkpIterations;
         this.g = g;
         this.h = h;
         
@@ -269,15 +269,23 @@ public class P4PServer extends P4PParameters {
 
 
 
-
+        // challenge vector in P4PServer.java
+        int []byteIndex_arr = new int[dimension_Ser];
+        int []offset_arr = new int[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
                 //int byteIndex = (int)2*(i*m + j)/8;
                 //int offset = 2*(i*m + j)%8;
                 int byteIndex = (i*dimension_Ser + j)>>3;
+                byteIndex_arr[j] = byteIndex;
+
                 int offset = (i*dimension_Ser + j)%8;
+                offset_arr[j] = offset;
+
                 challenge_vectors_Ser[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
+
+
                 if(challenge_vectors_Ser[i][j] == 1) // flip half of the 1's
                     challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex] & (1<<(offset+1))) > 0 ? 
                         1 : -1;

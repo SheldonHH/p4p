@@ -137,7 +137,8 @@ public class UserVector2 extends UserVector {
         }
 
         serverUserVector = Util.randVector(dimension, F, 0);
-        for(int generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
+        int generate_shares_ui = 0;
+        for(generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
             peerVector[generate_shares_ui] = Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
             assert (data[generate_shares_ui] == Util.mod(serverUserVector[generate_shares_ui] + peerVector[generate_shares_ui], F));
         }

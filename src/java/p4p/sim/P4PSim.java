@@ -238,6 +238,8 @@ public class P4PSim extends P4PParameters {
 
                 // Simulating the user:
                 uv2.generateShares();
+
+                // set CheckCoVector through server Challenge_Vector
                 uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
                 proverWatch.start();
                 UserVector2.L2NormBoundProof2 peerProof =
