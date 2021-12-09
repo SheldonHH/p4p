@@ -292,6 +292,8 @@ public class P4PServer extends P4PParameters {
 
         boolean reinforce_c_vector_First_c_vector_Equal_1;
         boolean [] reinforce_c_vector_First_c_vector_Equal_1_arr =  new boolean[dimension_Ser];
+
+        byte[] duplicate_randBytes = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
@@ -311,11 +313,15 @@ public class P4PServer extends P4PParameters {
                 s_1Lshift_Offset = 1<<offset_idj_mod8;
                 s_1left_shift_Offset_arr[j]=s_1Lshift_Offset;
 
-                int this_randByte = randBytes[byteIndex_idj_SRShift3];
+
+
                 initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
                 initial_challenge_vector[j] = initial_challenge;
 
-                prev_Greater_zero = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8)) > 0;
+                byte this_randByte = randBytes[byteIndex_idj_SRShift3];
+                duplicate_randBytes[byteIndex_idj_SRShift3] = this_randByte;
+
+                prev_Greater_zero = (this_randByte & (1<<offset_idj_mod8)) > 0;
                 prev_Greater_zero_arr[j] = prev_Greater_zero;
                 
                 
