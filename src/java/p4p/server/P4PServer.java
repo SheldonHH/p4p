@@ -388,10 +388,10 @@ public class P4PServer extends P4PParameters {
 
             UserInfo user = userEntry.getValue();
             long[] u = user.getVector();
-            long[] u_U2 = u;
+            long[] u_server_for_U2 = u;
             
             // Verify its proof in UserVector2:
-            uv.setU(u_U2);
+            uv.setU(u_server_for_U2);
             uv.setChecksumCoefficientVectors(challenge_vectors_Ser);
 
             BigInteger[] Y_U2 = user.getY();

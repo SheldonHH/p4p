@@ -204,7 +204,7 @@ public class P4PSim extends P4PParameters {
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
         double delta = 1.5;
-        double [] delta_array = new double[user_num];
+//        double [] delta_array = new double[user_num];
         int nfails = 0;
         for(int kk = 0; kk < nLoops; kk++) {
             int nQualifiedUsers = 0;
@@ -244,7 +244,7 @@ public class P4PSim extends P4PParameters {
                 // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
                 uv2.generateShares();
 
-                // set CheckCoVector through server Challenge_Vector
+                // set CheckCoVector through server Challenge_Vector for Each User
                 uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
                 proverWatch.start();
                 UserVector2.L2NormBoundProof2 peerProof =
