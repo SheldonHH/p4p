@@ -865,11 +865,14 @@ public class Util extends P4PParameters {
             double Sqrt_myL2_data = Math.sqrt(myL2_data_square);
             double scale_Util_randV = l2_norm_5dot49_Util_randVector/Sqrt_myL2_data;
             for(int i = 0; i < dimension; i++) {
+                long data_half_M_scale = 0;
                 if(data_Util_randVector[i] > 0) {
-                    data_Util_randVector[i] = (long)(((double)data_Util_randVector[i]+0.5)*scale_Util_randV);
+                    data_half_M_scale = (long)(((double)data_Util_randVector[i]+0.5)*scale_Util_randV);
+                    data_Util_randVector[i] = data_half_M_scale;
                 }
                 else{
-                    data_Util_randVector[i] = (long)(((double)data_Util_randVector[i]-0.5)*scale_Util_randV);
+                    data_half_M_scale  = (long)(((double)data_Util_randVector[i]-0.5)*scale_Util_randV);
+                    data_Util_randVector[i] = data_half_M_scale;
                 }
                 // Round to the closest long
             }

@@ -95,10 +95,12 @@ public class UserVector extends P4PParameters {
         this.l_UV = log_2_m_UV_P;
         this.L_UV = ((long) 1) << l_UV - 1;
 
+        int singaporeModF;
         // Convert the numbers into the finite field:
         if (data_UV_P != null) {
             for (int i_UV = 0; i_UV < dimension; i_UV++) {
-                this.data_UV[i_UV] = Util.mod(data_UV_P[i_UV], F);
+                 singaporeModF = Util.mod(data_UV_P[i_UV], F);
+                 this.data_UV[i_UV] = singaporeModF;
             }
             // The range should be [-F/2, F/2)
         }
