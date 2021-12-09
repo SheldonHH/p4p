@@ -69,7 +69,7 @@ import p4p.crypto.BitVectorCommitment;
  */
 
 public class UserVector extends P4PParameters {
-    protected long[] data = null;   // The user data
+    protected long[] data_UV = null;   // The user data
     protected int dimension = -1;          // The dimension of user vector
 
     protected long F = -1;
@@ -88,7 +88,7 @@ public class UserVector extends P4PParameters {
         if (F < 0 || !new BigInteger(new Long(F).toString()).isProbablePrime(200))
             throw new RuntimeException("Field order must be positive prime.");
 
-        this.data = data;
+        this.data_UV = data;
         this.dimension = data.length
         ;
         this.F = F;
@@ -98,7 +98,7 @@ public class UserVector extends P4PParameters {
         // Convert the numbers into the finite field:
         if (data != null) {
             for (int i = 0; i < dimension; i++) {
-                this.data[i] = Util.mod(data[i], F);
+                this.data_UV[i] = Util.mod(data[i], F);
             }
             // The range should be [-F/2, F/2)
         }
@@ -141,7 +141,7 @@ public class UserVector extends P4PParameters {
     /**
      */
     public long[] getUserData() {
-        return data;
+        return data_UV;
     }
 
     /**
@@ -175,9 +175,9 @@ public class UserVector extends P4PParameters {
                 for (int j = 0; j < dimension; j++) {
                     //s += c[i][j]*data[j];
                     if (checkCoVector[i][j] == 1)
-                        s += data[j];
+                        s += data_UV[j];
                     else
-                        s -= data[j];
+                        s -= data_UV[j];
                     // Maybe it is faster this way?
                     /**
                      * Note that although all the normal compuations are done in
@@ -297,7 +297,7 @@ public class UserVector extends P4PParameters {
         // will only be half of them
         for (int i = 0; i < s.length; i++) {
             // First make sure the checksums are computed correctly:
-            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[passed[i]], data))) {
+            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[passed[i]], data_UV))) {
                 DEBUG("Checksum " + i + " not computed correctly!");
                 return false;
             }

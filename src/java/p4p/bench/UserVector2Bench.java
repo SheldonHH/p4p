@@ -129,7 +129,7 @@ public class UserVector2Bench extends UserVector {
 // 		    else if(c[i][j] == -1)
 // 			checksums[i] -= data[j];
 //	    }
-                checksums[i] = Math.abs(Util.innerProduct(checkCoVector[i], data));
+                checksums[i] = Math.abs(Util.innerProduct(checkCoVector[i], data_UV));
                 /**
                  * Note that although all the normal compuations are done in
                  * a small finite field, we don't restrict the size of the
@@ -292,7 +292,7 @@ public class UserVector2Bench extends UserVector {
         // will only be half of them
         for (int i = 0; i < s.length; i++) {
             // First make sure the checksums are computed correctly:
-            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[i], data))) {
+            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[i], data_UV))) {
                 System.out.println("Checksum " + i + " not computed correctly!");
                 return false;
             }

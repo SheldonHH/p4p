@@ -118,7 +118,7 @@ public class UserVector2 extends UserVector {
     /**
      */
     public void setData(long[] data) {
-        this.data = data;
+        this.data_UV = data;
         if(dimension == -1)
             dimension = data.length;
     }
@@ -143,13 +143,13 @@ public class UserVector2 extends UserVector {
         boolean [] data_equal_mod_array_uv2 = new boolean[dimension];
         int generate_shares_ui = 0;
         for(generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
-            peerVector_UV2[generate_shares_ui] = Util.mod(data[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F);
+            peerVector_UV2[generate_shares_ui] = Util.mod(data_UV[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F);
 
-            if(data[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F)){
+            if(data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F)){
                 data_equal_mod_uv2 = true;
                 data_equal_mod_array_uv2[generate_shares_ui] = data_equal_mod_uv2;
             }
-            assert (data[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F));
+            assert (data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F));
             System.out.println("after assert in GenerateShares UV2");
         } // for 10 dimension, assert(data==mod)
     }
