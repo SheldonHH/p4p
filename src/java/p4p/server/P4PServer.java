@@ -66,7 +66,7 @@ import p4p.user.UserVector2;
 
 public class P4PServer extends P4PParameters {
     private NativeBigInteger g_server = null;
-    private NativeBigInteger h = null;
+    private NativeBigInteger h_server = null;
     
     protected int dimension_Ser = -1;            // The dimension of user vector
     protected long group_order_F_Server = -1;
@@ -76,7 +76,7 @@ public class P4PServer extends P4PParameters {
      * 64 bits).
      */
     
-    protected long L = -1;
+    protected long L_P4PServer = -1;
     protected int max_bits_2_norm_user_vector_l;   // The max number of bits of the 2 norm of user vector
     protected int Num_Checksum_to_Compute_Server_ZKP_Iteration_1 = 50;   //ZKP Iteration  // The number of chechsums to compute. Default 50
     private int challenge_vectors_Ser[][] = null; // The challenge vectors  
@@ -162,10 +162,10 @@ public class P4PServer extends P4PParameters {
         this.dimension_Ser = m;
         this.group_order_F_Server = F;
         this.max_bits_2_norm_user_vector_l = l;
-        this.L = ((long)1)<<l - 1;
+        this.L_P4PServer = ((long)1)<<l - 1;
         this.Num_Checksum_to_Compute_Server_ZKP_Iteration_1 = N_zkpIterations;
-        this.g = g;
-        this.h = h;
+        this.g_server = g;
+        this.h_server = h;
         
         init();
     }
@@ -387,7 +387,7 @@ public class P4PServer extends P4PParameters {
     public void compute() {
         Object[] users = usersMap.entrySet().toArray();
         
-        UserVector2 uv = new UserVector2(dimension_Ser, group_order_F_Server, max_bits_2_norm_user_vector_l, g, h);
+        UserVector2 uv = new UserVector2(dimension_Ser, group_order_F_Server, max_bits_2_norm_user_vector_l, g_server, h_server);
         System.out.println("Server:: computing. There are potentially " + usersMap.size() 
                            + " users.");
         int disqualified = 0;
@@ -397,8 +397,8 @@ public class P4PServer extends P4PParameters {
                 (Map.Entry<Integer, UserInfo>)users[i];
 
             UserInfo user = userEntry.getValue();
-            long[] u = user.getVector();
-            long[] u_server_for_U2 = u;
+            long[] u_userVector_compute = user.getVector();
+            long[] u_server_for_U2 = u_userVector_compute;
             
             // Verify its proof in UserVector2:
             uv.setU(u_server_for_U2);
@@ -421,7 +421,7 @@ public class P4PServer extends P4PParameters {
                 disqualified++;
                 continue;
             }
-            Util.vectorAdd(acc_vector_sum_Server, u, acc_vector_sum_Server, group_order_F_Server);
+            Util.vectorAdd(acc_vector_sum_Server, u_userVector_compute, acc_vector_sum_Server, group_order_F_Server);
         }
         Util.vectorAdd(acc_vector_sum_Server, peerSum, acc_vector_sum_Server, group_order_F_Server);
         System.out.println("Server:: done computing. " + disqualified + " users disqualified.");
