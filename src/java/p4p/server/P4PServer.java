@@ -283,7 +283,7 @@ public class P4PServer extends P4PParameters {
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
 
         // 1<<offset_idj_mod8
-        int s_1Lshift_Offset = 0;
+        int s_1Lshift_Offset_Mod8 = 0;
         int [] s_1left_shift_Offset_arr = new int[dimension_Ser];
 
         // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
@@ -323,8 +323,8 @@ public class P4PServer extends P4PParameters {
 
 
 
-                s_1Lshift_Offset = 1<<offset_idj_mod8; ////1*2^Offset
-                s_1left_shift_Offset_arr[dim_jd]=s_1Lshift_Offset;
+                s_1Lshift_Offset_Mod8 = 1<<offset_idj_mod8; ////1*2^Offset
+                s_1left_shift_Offset_arr[dim_jd]=s_1Lshift_Offset_Mod8;
                 ///// offset //////
 
                 // 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
@@ -334,10 +334,10 @@ public class P4PServer extends P4PParameters {
 
                 /// 🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
 //                initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                initial_challenge_AND_operator = (this_randByte & s_1Lshift_Offset);
-                initial_challenge_vector[dim_jd] = initial_challenge_AND_operator;
+                initial_challenge_AND_operator = (this_randByte & s_1Lshift_Offset_Mod8);
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧
-
+                initial_challenge_vector[dim_jd] = initial_challenge_AND_operator;
+                System.out.println("Learn Pattern of initial_challenge_AND_operator: "+ initial_challenge_AND_operator);
 
                 prev = (this_randByte & (1<<offset_idj_mod8));
                 prev_Greater_zero = (this_randByte & (1<<offset_idj_mod8)) > 0;
