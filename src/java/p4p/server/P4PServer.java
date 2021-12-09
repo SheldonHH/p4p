@@ -274,6 +274,10 @@ public class P4PServer extends P4PParameters {
         int []offset_s_right_shift3_arr = new int[dimension_Ser];
         int []s_1left_shift_Offset_arr = new int[dimension_Ser];
         int [] prev_challenge_vector = new int[dimension_Ser];
+
+        boolean []prev_Greater_zero = new boolean[dimension_Ser];
+        int []first_c_vector = new int[dimension_Ser];
+        boolean [] reinforce_c_vector =  new boolean[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
@@ -294,10 +298,14 @@ public class P4PServer extends P4PParameters {
                 prev_challenge_vector[j] = (randBytes[byteIndex] & (1<<offset));
                 challenge_vectors_Ser[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
 
+                prev_Greater_zero[j] = (randBytes[byteIndex] & (1<<offset)) > 0;
+                first_c_vector[j] = challenge_vectors_Ser[i][j];
+                if(challenge_vectors_Ser[i][j] == 1){
+                    // flip half of the 1's
+                    challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex] & (1<<(offset+1))) > 0 ? 1 : -1;
+                    reinforce_c_vector[j] = true;
+                }
 
-                if(challenge_vectors_Ser[i][j] == 1) // flip half of the 1's
-                    challenge_vectors_Ser[i][j] = (randBytes[mid+byteIndex] & (1<<(offset+1))) > 0 ? 
-                        1 : -1;
             }
         }
         System.out.println("c Challenge Vecter: "+ Arrays.deepToString(challenge_vectors_Ser));
