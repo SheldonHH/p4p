@@ -320,7 +320,7 @@ public class P4PServer extends P4PParameters {
                 offset_idj_mod8 = (i*dimension_Ser + dim_jd)%8;
                 offset_idj_mod8_arr[dim_jd] = offset_idj_mod8;
 
-                s_1Lshift_Offset = 1<<offset_idj_mod8;
+                s_1Lshift_Offset = 1<<offset_idj_mod8; ////1*2^Offset
                 s_1left_shift_Offset_arr[dim_jd]=s_1Lshift_Offset;
                 ///// offset //////
 
