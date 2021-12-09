@@ -273,7 +273,7 @@ public class P4PServer extends P4PParameters {
         int []byteIndex_mod_8_arr = new int[dimension_Ser];
         int []offset_s_right_shift3_arr = new int[dimension_Ser];
         int []s_1left_shift_Offset_arr = new int[dimension_Ser];
-        int [] prev_challenge_vector = new int[dimension_Ser];
+        int [] initial_challenge_vector = new int[dimension_Ser];
 
         boolean []prev_Greater_zero = new boolean[dimension_Ser];
         int []first_c_vector = new int[dimension_Ser];
@@ -295,10 +295,12 @@ public class P4PServer extends P4PParameters {
                 int this_randByte = randBytes[byteIndex];
                 int s_1left_shift = 1<<offset;
                 s_1left_shift_Offset_arr[j]=s_1left_shift;
-                prev_challenge_vector[j] = (randBytes[byteIndex] & (1<<offset));
-                challenge_vectors_Ser[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
+                initial_challenge_vector[j] = (randBytes[byteIndex] & (1<<offset));
 
                 prev_Greater_zero[j] = (randBytes[byteIndex] & (1<<offset)) > 0;
+                challenge_vectors_Ser[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
+
+
                 first_c_vector[j] = challenge_vectors_Ser[i][j];
                 if(challenge_vectors_Ser[i][j] == 1){
                     // flip half of the 1's
