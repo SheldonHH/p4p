@@ -185,7 +185,7 @@ public class P4PSim extends P4PParameters {
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
-        long[] data = new long[dimension];
+        long[] data_long_1array_Sim = new long[dimension];
         int[][] coefficient_vector = new int[zkpIterations][];
         NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
         g = two_generators_for_g_h[0];
@@ -230,9 +230,9 @@ public class P4PSim extends P4PParameters {
                     shouldPass_Counter[1]++;
                 }
                 double l2_norm = (double)L_1099511627776*delta;
-                data = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
+                data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
 
-                UserVector2 uv2 = new UserVector2(data, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+                UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
 
 
 
@@ -291,7 +291,7 @@ public class P4PSim extends P4PParameters {
                 shouldPass = l2_norm < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQualifiedUsers++;
-                    Util.vectorAdd(sum_in_Sim, data, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
+                    Util.vectorAdd(sum_in_Sim, data_long_1array_Sim, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
                     Util.vectorAdd(v_for_add_Sim, vv, v_for_add_Sim, FieldSize_larger_than_bitLength_Sim);
                 }
             }
