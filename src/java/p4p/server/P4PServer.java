@@ -329,7 +329,7 @@ public class P4PServer extends P4PParameters {
                 initial_challenge_vector[j] = initial_challenge_AND_operator;
 
                 byte this_randByte = randBytes[byteIndex_idj_SRShift3];
-                duplicate_randBytes[byteIndex_idj_SRShift3] = this_randByte;
+                duplicate_randBytes[j] = this_randByte;
 
                 prev = (this_randByte & (1<<offset_idj_mod8));
                 prev_Greater_zero = (this_randByte & (1<<offset_idj_mod8)) > 0;
