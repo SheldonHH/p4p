@@ -256,6 +256,8 @@ public class P4PServer extends P4PParameters {
         //  byte[] randBytes = new byte[(int)Math.ceil(2*N*m/8)];
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server*dimension_Ser/8)+1)];
         int byteIndex_idj_SRShift3 = 0;
+        int[] byteIndex_idj_SRShift3_array = new int[dimension_Ser];
+
         int randByteslength = randBytes.length;
         // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
         Util.rand.nextBytes(randBytes);
@@ -272,16 +274,14 @@ public class P4PServer extends P4PParameters {
         // challenge vector in P4PServer.java
         int idj = 0;
         int [] idj_array = new int[dimension_Ser];
-       
 
-        int [] byteIndex_idj_SRShift3_arr = new int[dimension_Ser];
-      
+        //  (i*dimension_Ser + j)%8
         int offset_idj_mod8 = 0;
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
         
         int s_1Lshift_Offset = 0;
         int [] s_1left_shift_Offset_arr = new int[dimension_Ser];
-        
+
         int initial_challenge_AND_operator = 0;
         int [] initial_challenge_vector = new int[dimension_Ser];
 
@@ -304,7 +304,7 @@ public class P4PServer extends P4PParameters {
                 idj_array[j] = idj;
 
                 byteIndex_idj_SRShift3 = (i*dimension_Ser + j)>>3;
-                byteIndex_idj_SRShift3_arr[j] = byteIndex_idj_SRShift3;
+                byteIndex_idj_SRShift3_array[j] = byteIndex_idj_SRShift3;
 
 
 
