@@ -270,18 +270,22 @@ public class P4PServer extends P4PParameters {
 
 
         // challenge vector in P4PServer.java
-        int []byteIndex_arr = new int[dimension_Ser];
-        int []offset_arr = new int[dimension_Ser];
+        int [] idj_array = new int[dimension_Ser];
+        int []byteIndex_mod_8_arr = new int[dimension_Ser];
+        int []offset_s_right_shift3_arr = new int[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server; i++) {
             challenge_vectors_Ser[i] = new int[dimension_Ser];
             for(int j = 0; j < dimension_Ser; j++) {
                 //int byteIndex = (int)2*(i*m + j)/8;
                 //int offset = 2*(i*m + j)%8;
+                int idj = i*dimension_Ser + j;
+                idj_array[j] = idj;
+
                 int byteIndex = (i*dimension_Ser + j)>>3;
-                byteIndex_arr[j] = byteIndex;
+                byteIndex_mod_8_arr[j] = byteIndex;
 
                 int offset = (i*dimension_Ser + j)%8;
-                offset_arr[j] = offset;
+                offset_s_right_shift3_arr[j] = offset;
 
                 challenge_vectors_Ser[i][j] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
 
