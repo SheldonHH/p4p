@@ -69,7 +69,7 @@ import p4p.crypto.BitVectorCommitment;
  */
 
 public class UserVector extends P4PParameters {
-    protected long[] data = null;   // The user data 
+    protected long[] data = null;   // The user data
     protected int dimension = -1;          // The dimension of user vector
 
     protected long F = -1;
@@ -123,6 +123,7 @@ public class UserVector extends P4PParameters {
      */
     public void setChecksumCoefficientVectors(int[][] c) {
         for (int i = 0; i < c.length; i++) {
+            // every challenge subarray must equal to dimension
             if (c[i].length != dimension) {
                 throw new RuntimeException("Incorrect dimension for c[" + i + "]!");
             }

@@ -240,7 +240,7 @@ public class P4PSim extends P4PParameters {
                 ////// Data && userVector2 & //////
 
 
-                // serverVector from randVector
+                // generate serverVector & peerVector
                 // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
                 uv2.generateShares();
 

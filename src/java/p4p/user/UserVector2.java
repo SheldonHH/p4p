@@ -130,7 +130,7 @@ public class UserVector2 extends UserVector {
      * Generates the shares of the user vector.
      */
     // iterate through dimensions
-    // generate peer vectors
+    // generate server & peer vectors
     public void generateShares() {
         if(serverUserVector == null) {
             serverUserVector = new long[dimension];
@@ -151,7 +151,7 @@ public class UserVector2 extends UserVector {
             }
             assert (data[generate_shares_ui] == Util.mod(serverUserVector[generate_shares_ui] + peerVector[generate_shares_ui], F));
             System.out.println("after assert in GenerateShares UV2");
-        }
+        } // for 10 dimension, assert(data==mod)
     }
 
 
