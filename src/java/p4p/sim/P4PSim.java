@@ -231,11 +231,11 @@ public class P4PSim extends P4PParameters {
                     shouldPass_Counter[1]++;
                 }
 
-                double l2_norm = (double)L_1099511627776*delta;
+                double l2_norm_double_Sim = (double)L_1099511627776*delta;
 
 
                 ////// 1. Generate Data_Array && UserVector2 & //////
-                data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
+                data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm_double_Sim);
                 UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
 
 
@@ -298,7 +298,7 @@ public class P4PSim extends P4PParameters {
                  * true.
                  */
 
-                shouldPass = l2_norm < L_1099511627776;   // Correct shouldPass using actual data.
+                shouldPass = l2_norm_double_Sim < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQualifiedUsers++;
                     Util.vectorAdd(sum_in_Sim, data_long_1array_Sim, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
