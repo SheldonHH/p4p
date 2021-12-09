@@ -204,6 +204,7 @@ public class P4PSim extends P4PParameters {
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
         double delta = 1.5;
+        double [] delta_array = new double[user_num];
         int nfails = 0;
         for(int kk = 0; kk < nLoops; kk++) {
             int nQualifiedUsers = 0;
@@ -229,6 +230,7 @@ public class P4PSim extends P4PParameters {
                     delta = 2.0;
                     shouldPass_Counter[1]++;
                 }
+
                 double l2_norm = (double)L_1099511627776*delta;
                 data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm);
 
