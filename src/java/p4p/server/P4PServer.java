@@ -33,10 +33,7 @@ package p4p.server;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 import net.i2p.util.NativeBigInteger;
 
@@ -292,15 +289,15 @@ public class P4PServer extends P4PParameters {
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
         int prev;
-        boolean Is_initial_challengeV_Greater_0;
+        boolean Is_initial_challV_Greater_0;
         boolean []initial_Greater_zero_arr = new boolean[dimension_Ser];
 
 
-        int first_c_vector;
-        int []first_c_vector_arr = new int[dimension_Ser];
+        int first_challV;
+        int []first_challV_arr = new int[dimension_Ser];
 
         boolean second_cv_Equal_1;
-        boolean [] second_CVector_Equal_1_arr =  new boolean[dimension_Ser];
+        ArrayList<Boolean> second_challV_arra =  new ArrayList<Boolean>();
 
         byte[] duplicate_randBytes = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
@@ -339,21 +336,21 @@ public class P4PServer extends P4PParameters {
                 initial_challenge_vector[dim_jd] = initial_challenge_AND_operator;
                 System.out.println("Learn Pattern of initial_challenge_AND_operator: "+ initial_challenge_AND_operator);
 
-                prev = (this_randByte & (1<<Off_idj_Mod8));
-                Is_initial_challengeV_Greater_0 = prev > 0;
-                initial_Greater_zero_arr[dim_jd] = Is_initial_challengeV_Greater_0;
+                initial_challV = (this_randByte & (1<<Off_idj_Mod8));
+                Is_initial_challV_Greater_0 = initial_challV > 0;
+                initial_Greater_zero_arr[dim_jd] = Is_initial_challV_Greater_0;
                 
                 
                 challenge_vectors_Ser[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
-                first_c_vector = challenge_vectors_Ser[i][dim_jd];
-                first_c_vector_arr[dim_jd] = first_c_vector;
+                first_challV = challenge_vectors_Ser[i][dim_jd];
+                first_challV_arr[dim_jd] = first_challV;
 
                 
                 if(challenge_vectors_Ser[i][dim_jd] == 1){
                     // flip half of the 1's
                     challenge_vectors_Ser[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
                     second_cv_Equal_1 = true;
-                    second_CVector_Equal_1_arr[dim_jd] = second_cv_Equal_1;
+                    second_challV_arra.add(second_cv_Equal_1);
                 }
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
