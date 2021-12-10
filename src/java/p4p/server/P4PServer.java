@@ -285,10 +285,10 @@ public class P4PServer extends P4PParameters {
 
         // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
         int initialCV_AND_operator = 0;
-        int [] initialCV = new int[dimension_Ser];
+        int [] firstCV_arr = new int[dimension_Ser];
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
-        int initial_challV;
+        int firstCV;
         boolean IS_initialCV_Greater_0;
         ArrayList<Boolean> IS_initialCV_Greater_0s = new ArrayList<Boolean>();
 
@@ -333,11 +333,11 @@ public class P4PServer extends P4PParameters {
 //                initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
                 initialCV_AND_operator = (this_randByte & s1LShift_OMod8);
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧
-                initialCV[dim_jd] = initialCV_AND_operator;
+                firstCV_arr[dim_jd] = initialCV_AND_operator;
                 System.out.println("Learn Pattern of initialCV_AND_operator: "+ initialCV_AND_operator);
 
-                initial_challV = (this_randByte & (1<<Off_idj_Mod8));
-                IS_initialCV_Greater_0 = initial_challV > 0;
+                firstCV = (this_randByte & (1<<Off_idj_Mod8));
+                IS_initialCV_Greater_0 = firstCV > 0;
                 IS_initialCV_Greater_0s.add(IS_initialCV_Greater_0);
                 
                 
