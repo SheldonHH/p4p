@@ -252,57 +252,49 @@ public class P4PServer extends P4PParameters {
     public void generateChallengeVectors() {
         //  byte[] randBytes = new byte[(int)Math.ceil(2*N*m/8)];
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server_ZKP_Iteration_1*dimension_Ser/8)+1)];
-        int randByteslength = randBytes.length;  //== 4
-
-        int idj_3RShift_idx = 0;
         int[] idjRShift3_arr = new int[dimension_Ser];
-
-
         // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
         Util.rand.nextBytes(randBytes);
-        int mid = randByteslength/2;
-
-
+        int mid = randBytes.length/2;
         //// //// //// //// //// //// ///// challenger //// //// //// //// //// //// //// //// //// ////
         final_CVs = new int[Num_Checksum_to_Compute_Server_ZKP_Iteration_1][];
         //// //// //// //// ////\\\
 
+        {
+            int bIndex_R3 = 0;
+            // challenge vector in P4PServer.java
+            //  idj=i*dimension_Ser + j
+            int idj = 0;
+            int[] idj_array = new int[dimension_Ser];
+
+            //  (i*dimension_Ser + j)%8
+            int Offset_idjM8 = 0;
+            int[] offset_idjM8_arr = new int[dimension_Ser];
+
+            // 1<<offset_idj_mod8
+            int LShift1_OMod8 = 0;
+            int[] LShift1_OMod8_arr = new int[dimension_Ser];
 
 
-
-        // challenge vector in P4PServer.java
-        //  idj=i*dimension_Ser + j
-        int idj = 0;
-        int [] idj_array = new int[dimension_Ser];
-
-        //  (i*dimension_Ser + j)%8
-        int Offset_idjM8 = 0;
-        int [] offset_idjM8_arr = new int[dimension_Ser];
-
-        // 1<<offset_idj_mod8
-        int LShift1_OMod8 = 0;
-        int [] LShift1_OMod8_arr = new int[dimension_Ser];
+            // TEST firstCV_AND
+            // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
+            int firstCV_AND = 0;
+            ArrayList<Integer> firstCV_arr = new ArrayList<Integer>();
+            // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
+            boolean IS_firstCV_Greater_0;
+            ArrayList<Boolean> IS_firstCV_Greater_0s = new ArrayList<Boolean>();
 
 
-        // TEST firstCV_AND
-        // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
-        int firstCV_AND = 0;
-        ArrayList<Integer> firstCV_arr = new ArrayList<Integer>();
-        // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
-        boolean IS_firstCV_Greater_0;
-        ArrayList<Boolean> IS_firstCV_Greater_0s = new ArrayList<Boolean>();
+            int secondCV;
+            ArrayList<Integer> secondCV_arr = new ArrayList<Integer>();
+            int thirdCV = Integer.MAX_VALUE;
+            ArrayList<Integer> thirdCV_arr = new ArrayList<Integer>();
+            int fourthCV = Integer.MAX_VALUE;
+            ArrayList<Integer> fourthCV_arr = new ArrayList<Integer>();
 
-
-        int secondCV;
-        ArrayList<Integer> secondCV_arr = new ArrayList<Integer>();
-        int thirdCV = Integer.MAX_VALUE;
-        ArrayList<Integer> thirdCV_arr = new ArrayList<Integer>();
-        int fourthCV = Integer.MAX_VALUE;
-        ArrayList<Integer> fourthCV_arr = new ArrayList<Integer>();
-
-        boolean IS_secondCV_Equal_1s;
-        ArrayList<Boolean> IS_2ndCV_Equal_1s =  new ArrayList<Boolean>();
-
+            boolean IS_secondCV_Equal_1s;
+            ArrayList<Boolean> IS_2ndCV_Equal_1s = new ArrayList<Boolean>();
+        }
         byte[] randBytes_10 = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
             final_CVs[i] = new int[dimension_Ser];
@@ -312,8 +304,8 @@ public class P4PServer extends P4PParameters {
                 idj = i*dimension_Ser + dim_jd;
                 idj_array[dim_jd] = idj;
 
-                idj_3RShift_idx = (i*dimension_Ser + dim_jd)>>3;
-                idjRShift3_arr[dim_jd] = idj_3RShift_idx;
+                bIndex_R3 = (i*dimension_Ser + dim_jd)>>3;
+                idjRShift3_arr[dim_jd] = bIndex_R3;
 
                 ///// offset //////
                 Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
@@ -324,7 +316,7 @@ public class P4PServer extends P4PParameters {
                 LShift1_OMod8_arr[dim_jd]=LShift1_OMod8;
 
 
-                byte added_randByte = randBytes[idj_3RShift_idx];
+                byte added_randByte = randBytes[bIndex_R3];
                 randBytes_10[dim_jd] = added_randByte;
 
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
@@ -337,20 +329,23 @@ public class P4PServer extends P4PParameters {
                 IS_firstCV_Greater_0s.add(IS_firstCV_Greater_0);
 
                 // 2⃣️
-                secondCV = (randBytes[idj_3RShift_idx] & (1<<Offset_idjM8)) > 0 ? 1 : 0;
+                secondCV = (randBytes[bIndex_R3] & (1<<Offset_idjM8)) > 0 ? 1 : 0;
                 final_CVs[i][dim_jd] = secondCV;
                 secondCV_arr.add(secondCV);
                 // 2⃣️🌟
                 IS_secondCV_Equal_1s = false;
                 if(final_CVs[i][dim_jd] == 1){
-                    thirdCV = (randBytes[mid+idj_3RShift_idx] & (1<<(Offset_idjM8+1)));
+                    thirdCV = (randBytes[mid+bIndex_R3] & (1<<(Offset_idjM8+1)));
                     fourthCV = thirdCV > 0 ? 1 : -1;
                     final_CVs[i][dim_jd] = fourthCV;
                     IS_secondCV_Equal_1s = true;
                 }
+
                 // 3⃣️🌟
                 thirdCV_arr.add(thirdCV);
                 thirdCV = Integer.MAX_VALUE;
+
+
                 // 4⃣️🌟
                 fourthCV_arr.add(fourthCV);
                 fourthCV = Integer.MAX_VALUE;
