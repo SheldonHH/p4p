@@ -284,8 +284,8 @@ public class P4PServer extends P4PParameters {
         int [] s1LShift_OMod8_Array = new int[dimension_Ser];
 
         // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
-        int initial_challenge_AND_operator = 0;
-        int [] initial_challenge_vector = new int[dimension_Ser];
+        int initialCV_AND_operator = 0;
+        int [] initialCV = new int[dimension_Ser];
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
         int initial_challV;
@@ -293,11 +293,11 @@ public class P4PServer extends P4PParameters {
         ArrayList<Boolean> IS_initialCV_Greater_0s = new ArrayList<Boolean>();
 
 
-        int first_challV;
-        int []first_challV_arr = new int[dimension_Ser];
+        int _1stCV;
+        int []_1stCV_arr = new int[dimension_Ser];
 
-        boolean second_cv_Equal_1;
-        ArrayList<Boolean> IS_second_challV_arr_Equal_1 =  new ArrayList<Boolean>();
+        boolean IS_2ndCV_Equal_1;
+        ArrayList<Boolean> IS_secondChallV_arr_Equal_1 =  new ArrayList<Boolean>();
 
         byte[] duplicate_randBytes = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
@@ -331,10 +331,10 @@ public class P4PServer extends P4PParameters {
 
                 /// 🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
 //                initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                initial_challenge_AND_operator = (this_randByte & s1LShift_OMod8);
+                initialCV_AND_operator = (this_randByte & s1LShift_OMod8);
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧
-                initial_challenge_vector[dim_jd] = initial_challenge_AND_operator;
-                System.out.println("Learn Pattern of initial_challenge_AND_operator: "+ initial_challenge_AND_operator);
+                initialCV[dim_jd] = initialCV_AND_operator;
+                System.out.println("Learn Pattern of initialCV_AND_operator: "+ initialCV_AND_operator);
 
                 initial_challV = (this_randByte & (1<<Off_idj_Mod8));
                 IS_initialCV_Greater_0 = initial_challV > 0;
@@ -342,16 +342,16 @@ public class P4PServer extends P4PParameters {
                 
                 
                 challVs_int2Array[i][dim_jd] = (randBytes[idjRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
-                first_challV = challVs_int2Array[i][dim_jd];
-                first_challV_arr[dim_jd] = first_challV;
+                _1stCV = challVs_int2Array[i][dim_jd];
+                _1stCV_arr[dim_jd] = _1stCV;
 
-                second_cv_Equal_1 = false;
+                IS_2ndCV_Equal_1 = false;
                 if(challVs_int2Array[i][dim_jd] == 1){
                     // flip half of the 1's
                     challVs_int2Array[i][dim_jd] = (randBytes[mid+idjRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
-                    second_cv_Equal_1 = true;
+                    IS_2ndCV_Equal_1 = true;
                 }
-                IS_second_challV_arr_Equal_1.add(second_cv_Equal_1);
+                IS_secondChallV_arr_Equal_1.add(IS_2ndCV_Equal_1);
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
             }
