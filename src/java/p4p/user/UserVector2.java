@@ -178,7 +178,7 @@ public class UserVector2 extends UserVector {
      * Sets the server share. This is useful for server-side manipulation,
      * e.g. verifying the server-side proof.
      *
-     * @param	serverUserVector_UV2       the vector
+     * @param	u_U2       the vector
      *
      */
     public void setU(long[] u_U2) {
