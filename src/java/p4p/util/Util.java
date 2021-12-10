@@ -855,6 +855,7 @@ public class Util extends P4PParameters {
                 l2_positive_counter_for_10_dimension[1]++;
             }
         }
+        System.out.println("l2_positive_counter_for_10_dimension: " + Arrays.toString(l2_positive_counter_for_10_dimension));
 
         System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
 
