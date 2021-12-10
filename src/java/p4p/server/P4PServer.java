@@ -299,8 +299,8 @@ public class P4PServer extends P4PParameters {
         int first_c_vector;
         int []first_c_vector_arr = new int[dimension_Ser];
 
-        boolean reinforce_c_vector_First_c_vector_Equal_1;
-        boolean [] reinforce_c_vector_First_c_vector_Equal_1_arr =  new boolean[dimension_Ser];
+        boolean second_cv_Equal_1;
+        boolean [] second_CVector_Equal_1_arr =  new boolean[dimension_Ser];
 
         byte[] duplicate_randBytes = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
@@ -352,8 +352,8 @@ public class P4PServer extends P4PParameters {
                 if(challenge_vectors_Ser[i][dim_jd] == 1){
                     // flip half of the 1's
                     challenge_vectors_Ser[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
-                    reinforce_c_vector_First_c_vector_Equal_1 = true;
-                    reinforce_c_vector_First_c_vector_Equal_1_arr[dim_jd] = reinforce_c_vector_First_c_vector_Equal_1;
+                    second_cv_Equal_1 = true;
+                    second_CVector_Equal_1_arr[dim_jd] = second_cv_Equal_1;
                 }
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
