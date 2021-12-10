@@ -90,7 +90,7 @@ public class UserVector2 extends UserVector {
      * Constructs a (share of) user vector.
      *
      * @param data  the user vector
-     * @param F     the size of the field where all user computations are
+     * @param F_UV     the size of the field where all user computations are
      *              performed
      * @param l     the max allowed number of bits of the L2 norm of user
      *              vector
@@ -98,9 +98,9 @@ public class UserVector2 extends UserVector {
      * @param h     the sceond generator used in commitment
      *
      */
-    public UserVector2(long[] data, long F, int l, NativeBigInteger g,
+    public UserVector2(long[] data, long F_UV, int l, NativeBigInteger g,
                        NativeBigInteger h) {
-        super(data, F, l);
+        super(data, F_UV, l);
         this.g_UV2 = g;
         this.h_UV2 = h;
         //sc = new SquareCommitment(g, h);
@@ -690,11 +690,11 @@ public class UserVector2 extends UserVector {
 
         // Check the checksums and their commitments:
         Commitment cm = new Commitment(g_UV2, h_UV2);
-        ThreeWayCommitment tc = new ThreeWayCommitment(g_UV2, h_UV2, F);
+        ThreeWayCommitment tc = new ThreeWayCommitment(g_UV2, h_UV2, F_UV);
         for(int i = 0; i < x.length; i++) {
             // First make sure the checksums are computed correctly:
             //if(s[i] != Math.abs(Util.innerProduct(c[i], data))) {
-            if(x[i] != Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector_UV2), F)) {
+            if(x[i] != Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector_UV2), F_UV)) {
                 // We are doing server
                 System.out.println("Checksum " + i
                                    + " not computed correctly!");
@@ -904,7 +904,7 @@ public class UserVector2 extends UserVector {
         F = BigInteger.probablePrime(62, rand).longValue();
 
         System.out.println("l = " + l + ", L = " + L);
-        System.out.println("F = " + F);
+        System.out.println("F = " + F_UV);
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
@@ -942,7 +942,7 @@ public class UserVector2 extends UserVector {
             double l2 = (double)L*delta;
             double sqrt_l2 = 0.;
             // Generate data in randVector //
-            data = Util.randVector(m, F, l2);
+            data = Util.randVector(m, F_UV, l2);
             // Generate Data in randVector //
 
 
@@ -982,7 +982,7 @@ public class UserVector2 extends UserVector {
             Util.innerProduct(c[0], data);
             innerProductTime += (System.currentTimeMillis()-t0);
 
-            UserVector2 uv = new UserVector2(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
+            UserVector2 uv = new UserVector2(data, F_UV, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
             data = uv.getUserData();
             uv.generateShares();
             uv.setChecksumCoefficientVectors(c);

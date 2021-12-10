@@ -98,9 +98,9 @@ public class UserVector extends P4PParameters {
         long singaporeModF;
         // Convert the numbers into the finite field:
         if (data_UV_P != null) {
-            for (int i_UV = 0; i_UV < dimension; i_UV++) {
-                 singaporeModF = Util.mod(data_UV_P[i_UV], F);
-                 this.data_UV[i_UV] = singaporeModF;
+            for (int i_dim_UV = 0; i_dim_UV < dimension; i_dim_UV++) {
+                 singaporeModF = Util.mod(data_UV_P[i_dim_UV], F);
+                 this.data_UV[i_dim_UV] = singaporeModF;
             }
             // The range should be [-F/2, F/2)
         }
