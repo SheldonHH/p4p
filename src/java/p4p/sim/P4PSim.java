@@ -322,16 +322,16 @@ public class P4PSim extends P4PParameters {
             verifierWatch.pause();
 
             // 10. server.getVectorSum();
-            // Check if the result is right
-            long[] result = server.getVectorSum();
-            System.out.println("getVectorSum from server: "+ Arrays.toString(result));
+            // Check if the vecSum_res is right
+            long[] vecSum_res = server.getVectorSum();
+            System.out.println("getVectorSum from server: "+ Arrays.toString(vecSum_res));
 
             // 11. dimension Util.mod(sum, F);
             for(int ii = 0; ii < dimension; ii++) {
-                if(result[ii] != Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim)) {
+                if(vecSum_res[ii] != Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
-                            + result[ii] + ", should be "
+                            + vecSum_res[ii] + ", should be "
                             + Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim));
                     passed = false;
                     nfails++;
