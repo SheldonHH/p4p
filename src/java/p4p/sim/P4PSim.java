@@ -230,7 +230,7 @@ public class P4PSim extends P4PParameters {
                     delta = 2.0;
                     shouldPass_Counter[1]++;
                 }
-
+                delta = 2.0;
                 double l2_norm_double_5dot49_Sim = (double)L_1099511627776*delta;
 
 

@@ -825,24 +825,24 @@ public class Util extends P4PParameters {
      *         where L is chosen to be 1000. This function is only for test. 
      *         Should be OK. 
      * @param dimension    the dimensionality of the vector
-     * @param Z_F_order_of_Group_Util    the order of the group Z_F
-     * @param l2_norm_5dot49755813888E11   the desired l2-norm of the vector. If it is 0, then a random
+     * @param ZF_orderGroup_utilRandV    the order of the group Z_F
+     * @param l2_norm_549OR219_Util_randVector   the desired l2-norm of the vector. If it is 0, then a random
      *             vector in (Z_F)^m is generated.
      * @return	   a random vector over Z_F L2-norm equal <code>l2</code>
      */
 // order of Z_F
-    public static long[] randVector(int dimension, long ZF_orderGroup_utilRandV, double l2_norm_5dot49_Util_randVector) {
+    public static long[] randVector(int dimension, long ZF_orderGroup_utilRandV, double l2_norm_549OR219_Util_randVector) {
         long[] data_Util_randVector = new long[dimension];
 
         BigInteger bigF_randV = null;
-        if(l2_norm_5dot49_Util_randVector <=0){
+        if(l2_norm_549OR219_Util_randVector <=0){
             bigF_randV = new BigInteger(Long.toString(ZF_orderGroup_utilRandV));
         }
         double myL2_SQUARE_util = 0.;
         int L_10000_util = 10000;
         int[] l2_positive_counter_for_10_dimension = new int[2];
         for(int dimension_id = 0; dimension_id < dimension; dimension_id++) {
-            if(l2_norm_5dot49_Util_randVector > 0) {
+            if(l2_norm_549OR219_Util_randVector > 0) {
                 data_Util_randVector[dimension_id] = rand.nextInt(2*L_10000_util+1)-L_10000_util;
                 myL2_SQUARE_util += (double)((double)data_Util_randVector[dimension_id]*(double)data_Util_randVector[dimension_id]);
                 l2_positive_counter_for_10_dimension[0]++;
@@ -858,9 +858,9 @@ public class Util extends P4PParameters {
         System.out.println("l2_positive_counter_for_10_dimension: " + Arrays.toString(l2_positive_counter_for_10_dimension));
         System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
 
-        if(l2_norm_5dot49_Util_randVector > 0) {
+        if(l2_norm_549OR219_Util_randVector > 0) {
             double myL2_SQRT = Math.sqrt(myL2_SQUARE_util);
-            double scale_Util_randV = l2_norm_5dot49_Util_randVector/myL2_SQRT;
+            double scale_Util_randV = l2_norm_549OR219_Util_randVector/myL2_SQRT;
             for(int did = 0; did < dimension; did++) {
                 long data_half_AM_scale = 0;
                 long data_ADD_half = (long)(((double)data_Util_randVector[did]+0.5)*scale_Util_randV);
