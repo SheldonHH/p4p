@@ -234,7 +234,7 @@ public class P4PSim extends P4PParameters {
                 double l2_norm_double_5dot49_Sim = (double)L_1099511627776*delta;
 
 
-                ////// 1. Generate Data_long_Array && UserVector2 & //////
+// 1. Generate Data_long_Array && UserVector2 &
                 data_long_1arr = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm_double_5dot49_Sim);
                 //I🌟 【 data_long = Util.randVector(dim, F, l2norm) 】
 
@@ -282,7 +282,6 @@ public class P4PSim extends P4PParameters {
                 verifierWatch.start();
 
 
-// peer Proof //
 // 7. peerPassed verify2(peerProof); disqualifyUser(user_id);  setY(uid, Y)
                 boolean peerPassed = pv.verify2(peerProof);
                 verifierWatch.pause();
