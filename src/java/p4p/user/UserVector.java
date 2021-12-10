@@ -101,6 +101,7 @@ public class UserVector extends P4PParameters {
             for (int i_dim_UV = 0; i_dim_UV < dimension; i_dim_UV++) {
                  singaporeModF = Util.mod(data_UV_P[i_dim_UV], F_UV_P);
                  this.data_UV[i_dim_UV] = singaporeModF;
+                 System.out.println("i_dim_UV: " + i_dim_UV + " singaporeModF: "+ singaporeModF);
             }
             // The range should be [-F/2, F/2)
         }
