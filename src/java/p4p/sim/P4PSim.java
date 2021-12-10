@@ -291,7 +291,7 @@ public class P4PSim extends P4PParameters {
                     server.disqualifyUser(user_id);
                 }
                 else{
-                    server.setY(user_id, pv.getY());
+                    server.setY(user_id, pv.getY_UV2());
                 }
 
                 /**

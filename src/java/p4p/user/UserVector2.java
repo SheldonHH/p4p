@@ -627,27 +627,27 @@ public class UserVector2 extends UserVector {
     public boolean verify2(Proof proof) {
         L2NormBoundProof2 l2Proof = (L2NormBoundProof2)proof;
         if(l2Proof.isForServer())
-            return serverVerify(l2Proof, Y_peer_UV2);
+            return serverVerify_uv2(l2Proof, Y_peer_UV2);
         else
-            return peerVerify(l2Proof);
+            return peerVerify_uv2(l2Proof);
     }
 
     /**
      * Call this method to set the commitments to the y's, which should be
      * verified by the peer and passed to the server.
      */
-    public void setY(BigInteger[] Y_U2) {
+    public void setY_UV2(BigInteger[] Y_U2) {
         this.Y_peer_UV2 = Y_U2;
     }
 
 
-    public BigInteger[] getY() {
+    public BigInteger[] getY_UV2() {
         return Y_peer_UV2;
     }
 
-    protected boolean peerVerify(L2NormBoundProof2 l2Proof) {
+    protected boolean peerVerify_uv2(L2NormBoundProof2 l2Proof) {
         long[] y_checksums_l2Proof = l2Proof.getChecksums();
-        System.out.println("peerVerify: [y.length] "+ String.valueOf(y_checksums_l2Proof.length));
+        System.out.println("peerVerify_uv2: [y.length] "+ String.valueOf(y_checksums_l2Proof.length));
         // This is only getting the peer's share of the checksums.
         BigInteger[] r = l2Proof.getChecksumRandomness();
         Y_peer_UV2  = new BigInteger[y_checksums_l2Proof.length];   // The commitments to the checksums
@@ -666,8 +666,8 @@ public class UserVector2 extends UserVector {
     }
 
 
-    public boolean serverVerify(L2NormBoundProof2 l2Proof, BigInteger[] Y_UV2_serverV_P) {
-        System.out.println("serverVerify: "+ Arrays.toString(Y_UV2_serverV_P));
+    public boolean serverVerify_uv2(L2NormBoundProof2 l2Proof, BigInteger[] Y_UV2_serverV_P) {
+        System.out.println("serverVerify_uv2: "+ Arrays.toString(Y_UV2_serverV_P));
         if(Y_UV2_serverV_P == null)
             throw new RuntimeException("Must perform peer verification first!");
 

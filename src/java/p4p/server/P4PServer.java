@@ -254,7 +254,7 @@ public class P4PServer extends P4PParameters {
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server_ZKP_Iteration_1*dimension_Ser/8)+1)];
         int randByteslength = randBytes.length;  //== 4
 
-        int idj_3RShift = 0;
+        int idj_3RShift_idx = 0;
         int[] idjRShift3_arr = new int[dimension_Ser];
 
 
@@ -276,12 +276,12 @@ public class P4PServer extends P4PParameters {
         int [] idj_array = new int[dimension_Ser];
 
         //  (i*dimension_Ser + j)%8
-        int Off_idjMod8 = 0;
+        int Offset_idjM8 = 0;
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
 
         // 1<<offset_idj_mod8
         int LShift1_OMod8 = 0;
-        int [] s1LShift_OMod8_Array = new int[dimension_Ser];
+        int [] LShift1_OMod8_arr = new int[dimension_Ser];
 
 
         // TEST firstCV_AND
@@ -297,6 +297,8 @@ public class P4PServer extends P4PParameters {
         ArrayList<Integer> secondCV_arr = new ArrayList<Integer>();
         int thirdCV = Integer.MAX_VALUE;
         ArrayList<Integer> thirdCV_arr = new ArrayList<Integer>();
+        int fourthCV = Integer.MAX_VALUE;
+        ArrayList<Integer> fourthCV_arr = new ArrayList<Integer>();
 
         boolean IS_secondCV_Equal_1s;
         ArrayList<Boolean> IS_secondChallV_arr_Equal_1 =  new ArrayList<Boolean>();
@@ -310,57 +312,49 @@ public class P4PServer extends P4PParameters {
                 idj = i*dimension_Ser + dim_jd;
                 idj_array[dim_jd] = idj;
 
-                // 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺🇺🇺
-                idj_3RShift = (i*dimension_Ser + dim_jd)>>3;
-                idjRShift3_arr[dim_jd] = idj_3RShift;
-                //  🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺
-
+                idj_3RShift_idx = (i*dimension_Ser + dim_jd)>>3;
+                idjRShift3_arr[dim_jd] = idj_3RShift_idx;
 
                 ///// offset //////
-                Off_idjMod8 = (i*dimension_Ser + dim_jd)%8;
-                offset_idj_mod8_arr[dim_jd] = Off_idjMod8;
+                Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
+                offset_idj_mod8_arr[dim_jd] = Offset_idjM8;
+
+                
+                LShift1_OMod8 = 1<<Offset_idjM8; ////1*2^Offset
+                LShift1_OMod8_arr[dim_jd]=LShift1_OMod8;
 
 
-
-                LShift1_OMod8 = 1<<Off_idjMod8; ////1*2^Offset
-                s1LShift_OMod8_Array[dim_jd]=LShift1_OMod8;
-                ///// offset //////
-
-                // 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
-                byte added_randByte = randBytes[idj_3RShift];
+                byte added_randByte = randBytes[idj_3RShift_idx];
                 randBytes_10[dim_jd] = added_randByte;
 
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
-                ///  initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                firstCV_AND = (added_randByte & LShift1_OMod8);
-
-                
                 // 1⃣️
+                firstCV_AND = (added_randByte & LShift1_OMod8);
                 firstCV_arr.add(firstCV_AND);
                 System.out.println("Learn Pattern of initialCV_AND_operator: "+ firstCV_AND);
                 // 1⃣️🌟
                 IS_firstCV_Greater_0 = firstCV_AND > 0;
                 IS_firstCV_Greater_0s.add(IS_firstCV_Greater_0);
 
-                CVs_2darr[i][dim_jd] = (randBytes[idj_3RShift] & (1<<Off_idjMod8)) > 0 ? 1 : 0;
-
                 // 2⃣️
-                secondCV = CVs_2darr[i][dim_jd];
+                secondCV = (randBytes[idj_3RShift_idx] & (1<<Offset_idjM8)) > 0 ? 1 : 0;
+                CVs_2darr[i][dim_jd] = secondCV;
                 secondCV_arr.add(secondCV);
                 // 2⃣️ 🌟
                 IS_secondCV_Equal_1s = false;
                 if(CVs_2darr[i][dim_jd] == 1){
-                    thirdCV = (randBytes[mid+idj_3RShift] & (1<<(Off_idjMod8+1))) > 0 ? 1 : -1;
-                    // flip half of the 1's
-                    CVs_2darr[i][dim_jd] = thirdCV;
-
+                    thirdCV = (randBytes[mid+idj_3RShift_idx] & (1<<(Offset_idjM8+1)));
+                    fourthCV = thirdCV > 0 ? 1 : -1;
+                    CVs_2darr[i][dim_jd] = fourthCV;
                     IS_secondCV_Equal_1s = true;
                 }
                 thirdCV_arr.add(thirdCV);
                 thirdCV = Integer.MAX_VALUE;
+                fourthCV_arr.add(fourthCV);
+                fourthCV = Integer.MAX_VALUE;
+
                 IS_secondChallV_arr_Equal_1.add(IS_secondCV_Equal_1s);
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
-
             }
         }
         System.out.println("c Challenge Vecter: "+ Arrays.deepToString(CVs_2darr));
@@ -409,7 +403,7 @@ public class P4PServer extends P4PParameters {
             uv.setChecksumCoefficientVectors(CVs_2darr);
 
             BigInteger[] Y_U2 = user.getY();
-            uv.setY(Y_U2);
+            uv.setY_UV2(Y_U2);
             UserVector2.L2NormBoundProof2 proof = user.getProof();
 
             if(uv.verify2(proof)){
