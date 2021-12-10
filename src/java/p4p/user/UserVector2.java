@@ -908,7 +908,7 @@ public class UserVector2 extends UserVector {
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
-        long[] data = new long[m];
+        long[] data_uv2_main = new long[m];
         int[][] c = new int[zkpIterations][];
         NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
 
@@ -942,12 +942,12 @@ public class UserVector2 extends UserVector {
             double l2_L_delta = (double)L*delta;
             double sqrt_l2 = 0.;
             // Generate data in randVector //
-            data = Util.randVector(m, F, l2_L_delta);
+            data_uv2_main = Util.randVector(m, F, l2_L_delta);
             // Generate Data in randVector //
 
 
             for(int j = 0; j < m; j++) {
-                sqrt_l2 += (double)data[j]*(double)data[j];
+                sqrt_l2 += (double)data_uv2_main[j]*(double)data_uv2_main[j];
             }
             sqrt_l2 = Math.sqrt(sqrt_l2);
 
@@ -979,11 +979,11 @@ public class UserVector2 extends UserVector {
 
             // Lets test how much time an inner product takes
             t0 = System.currentTimeMillis();
-            Util.innerProduct(c[0], data);
+            Util.innerProduct(c[0], data_uv2_main);
             innerProductTime += (System.currentTimeMillis()-t0);
 
-            UserVector2 uv = new UserVector2(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
-            data = uv.getUserData();
+            UserVector2 uv = new UserVector2(data_uv2_main, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
+            data_uv2_main = uv.getUserData();
             uv.generateShares();
             uv.setChecksumCoefficientVectors(c);
             proverWatch.start();

@@ -234,15 +234,21 @@ public class P4PSim extends P4PParameters {
                 double l2_norm_double_5dot49_Sim = (double)L_1099511627776*delta;
 
 
-                ////// 1. Generate Data_Array && UserVector2 & //////
+                ////// 1. Generate Data_long_Array && UserVector2 & //////
                 data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm_double_5dot49_Sim);
+                //I🌟 【 data_long = Util.randVector(dim, F, l2norm) 】
+
                 UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+
 
 
 
                 // 2. Generate ServerVector & PeerVector
                 // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
                 uv2.generateShares();
+                 //II🌟 uv2.generateShares(); 【 serverUserVector_UV2 = Util.randVector(dim, F, 0) 】
+                // III🌟 uv2.main() 【 data_uv2_main = Util.randVector(m, F, l2_L_delta); 】
+
 
                 // 3. set CheckCoVector through server Challenge_Vector for Each User
                 uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
