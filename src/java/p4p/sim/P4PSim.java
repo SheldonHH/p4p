@@ -86,7 +86,7 @@ public class P4PSim extends P4PParameters {
 
         int[] shouldPass_Counter = new int[2];
         shouldPass_Counter[0] = 0;
-        shouldPass_Counter[1] = 1;
+        shouldPass_Counter[1] = 0;
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
