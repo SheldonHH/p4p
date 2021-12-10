@@ -295,6 +295,8 @@ public class P4PServer extends P4PParameters {
 
         int secondCV;
         ArrayList<Integer> secondCV_arr = new ArrayList<Integer>();
+        int thirdCV;
+        ArrayList<Integer> thirdCV_arr = new ArrayList<Integer>();
 
         boolean IS_2ndCV_Equal_1;
         ArrayList<Boolean> IS_secondChallV_arr_Equal_1 =  new ArrayList<Boolean>();
@@ -348,8 +350,10 @@ public class P4PServer extends P4PParameters {
                 // 2⃣️ 🌟
                 IS_2ndCV_Equal_1 = false;
                 if(challVs_int2_arr[i][dim_jd] == 1){
+                    thirdCV = (randBytes[mid+idj_3RShift] & (1<<(Off_idjMod8+1))) > 0 ? 1 : -1;
                     // flip half of the 1's
-                    challVs_int2_arr[i][dim_jd] = (randBytes[mid+idj_3RShift] & (1<<(Off_idjMod8+1))) > 0 ? 1 : -1;
+                    challVs_int2_arr[i][dim_jd] = thirdCV;
+                    thirdCV_arr.add(thirdCV);
                     IS_2ndCV_Equal_1 = true;
                 }
                 IS_secondChallV_arr_Equal_1.add(IS_2ndCV_Equal_1);
