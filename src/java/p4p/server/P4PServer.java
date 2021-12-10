@@ -289,15 +289,15 @@ public class P4PServer extends P4PParameters {
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
         int initial_challV;
-        boolean Is_initial_challV_Greater_0;
-        boolean []initial_Greater_zero_arr = new boolean[dimension_Ser];
+        boolean Is_initial_CV_Greater_0;
+        boolean []IS_initialCV_Greater_zero_arr = new boolean[dimension_Ser];
 
 
         int first_challV;
         int []first_challV_arr = new int[dimension_Ser];
 
         boolean second_cv_Equal_1;
-        ArrayList<Boolean> second_challV_arra =  new ArrayList<Boolean>();
+        ArrayList<Boolean> IS_second_challV_arr_Equal_1 =  new ArrayList<Boolean>();
 
         byte[] duplicate_randBytes = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
@@ -337,8 +337,8 @@ public class P4PServer extends P4PParameters {
                 System.out.println("Learn Pattern of initial_challenge_AND_operator: "+ initial_challenge_AND_operator);
 
                 initial_challV = (this_randByte & (1<<Off_idj_Mod8));
-                Is_initial_challV_Greater_0 = initial_challV > 0;
-                initial_Greater_zero_arr[dim_jd] = Is_initial_challV_Greater_0;
+                Is_initial_CV_Greater_0 = initial_challV > 0;
+                IS_initialCV_Greater_zero_arr[dim_jd] = Is_initial_CV_Greater_0;
                 
                 
                 challenge_vectors_Ser[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
@@ -350,7 +350,7 @@ public class P4PServer extends P4PParameters {
                     // flip half of the 1's
                     challenge_vectors_Ser[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
                     second_cv_Equal_1 = true;
-                    second_challV_arra.add(second_cv_Equal_1);
+                    IS_second_challV_arr_Equal_1.add(second_cv_Equal_1);
                 }
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
