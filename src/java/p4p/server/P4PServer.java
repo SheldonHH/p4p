@@ -301,7 +301,7 @@ public class P4PServer extends P4PParameters {
         boolean IS_2ndCV_Equal_1;
         ArrayList<Boolean> IS_secondChallV_arr_Equal_1 =  new ArrayList<Boolean>();
 
-        byte[] duplicate_randBytes = new byte[dimension_Ser];
+        byte[] randBytes_10 = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
             challVs_int2_arr[i] = new int[dimension_Ser];
             for(int dim_jd = 0; dim_jd < dimension_Ser; dim_jd++) {
@@ -328,7 +328,7 @@ public class P4PServer extends P4PParameters {
 
                 // 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
                 byte this_randByte = randBytes[idj_3RShift];
-                duplicate_randBytes[dim_jd] = this_randByte;
+                randBytes_10[dim_jd] = this_randByte;
 
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
                 ///  initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
