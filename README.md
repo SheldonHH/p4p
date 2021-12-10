@@ -1,4 +1,4 @@
-## p4p Credit to Dr. Yitao Duan and Dr. John Canny from UC Berkleley
+## p4p Credit to [Dr. Yitao Duan](https://scholar.google.com/citations?user=p0L7kOkAAAAJ&hl=en&oi=ao) and [Dr. John Canny](https://scholar.google.com/citations?user=LAv0HTEAAAAJ&hl=en&oi=ao) from UC Berkleley
 https://bid.berkeley.edu/projects/p4p/
 
 ### Code originate from
