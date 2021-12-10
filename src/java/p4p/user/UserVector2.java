@@ -622,12 +622,12 @@ public class UserVector2 extends UserVector {
      * proof will construct <code>Y</code>. The peer can then call
      * {@link #getY()} to obtain <code>Y</code> and pass it to the server.
      */
-    private BigInteger[] Y_peer_UV2 = null;
+    private BigInteger[] Y_peerUV2 = null;
     // The peer share of the checksums. Put it here for tes
     public boolean verify2(Proof proof) {
         L2NormBoundProof2 l2Proof = (L2NormBoundProof2)proof;
         if(l2Proof.isForServer())
-            return serverVerify_uv2(l2Proof, Y_peer_UV2);
+            return serverVerify_uv2(l2Proof, Y_peerUV2);
         else
             return peerVerify_uv2(l2Proof);
     }
@@ -637,12 +637,12 @@ public class UserVector2 extends UserVector {
      * verified by the peer and passed to the server.
      */
     public void setY_UV2(BigInteger[] Y_U2) {
-        this.Y_peer_UV2 = Y_U2;
+        this.Y_peerUV2 = Y_U2;
     }
 
 
     public BigInteger[] getY_UV2() {
-        return Y_peer_UV2;
+        return Y_peerUV2;
     }
 
     protected boolean peerVerify_uv2(L2NormBoundProof2 l2Proof) {
@@ -650,13 +650,13 @@ public class UserVector2 extends UserVector {
         System.out.println("peerVerify_uv2: [y.length] "+ String.valueOf(y_checksums_l2Proof.length));
         // This is only getting the peer's share of the checksums.
         BigInteger[] r = l2Proof.getChecksumRandomness();
-        Y_peer_UV2  = new BigInteger[y_checksums_l2Proof.length];   // The commitments to the checksums
+        Y_peerUV2  = new BigInteger[y_checksums_l2Proof.length];   // The commitments to the checksums
 
         // Peer just computes the commitments to the checksums
         Commitment cm = new Commitment(g_UV2, h_UV2);
         for(int i = 0; i < y_checksums_l2Proof.length; i++) {
             y_checksums_l2Proof[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F_UV);
-            Y_peer_UV2[i] =
+            Y_peerUV2[i] =
                 cm.commit(new BigInteger(new Long(y_checksums_l2Proof[i]).toString()),
                           // The checksum
                           r[i]);       // The randomness
