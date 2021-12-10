@@ -336,6 +336,7 @@ public class P4PServer extends P4PParameters {
                 // 1⃣️
                 firstCV_arr.add(firstCV_AND);
                 System.out.println("Learn Pattern of initialCV_AND_operator: "+ firstCV_AND);
+                // 1⃣️🌟
                 IS_firstCV_Greater_0 = firstCV_AND > 0;
                 IS_firstCV_Greater_0s.add(IS_firstCV_Greater_0);
 
@@ -344,7 +345,7 @@ public class P4PServer extends P4PParameters {
                 // 2⃣️
                 secondCV = challVs_int2Array[i][dim_jd];
                 secondCV_arr.add(secondCV);
-
+                // 2⃣️ 🌟
                 IS_2ndCV_Equal_1 = false;
                 if(challVs_int2Array[i][dim_jd] == 1){
                     // flip half of the 1's
