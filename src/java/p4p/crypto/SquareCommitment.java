@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -43,7 +43,7 @@ import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
 
 /**
- * 
+ *
  * Given two numbers, a and b with b = a^2 mod q, produces two commitments s.t.
  * A = C(a), B = C(b) and a ZKP that proves, in zero-knowledge, that the 
  * the number contained in B is the square of the number contained in A.
@@ -93,10 +93,10 @@ public class SquareCommitment extends Commitment {
     private BigInteger a = null;
     private BigInteger b = null;
     private NativeBigInteger A = null;
-    private NativeBigInteger B = null;    
+    private NativeBigInteger B = null;
     private BigInteger sa = null;
     private BigInteger sb = null;
-    
+
     public SquareCommitment(NativeBigInteger g, NativeBigInteger h) {
         super(g, h);
     }
@@ -115,10 +115,10 @@ public class SquareCommitment extends Commitment {
         b = a.multiply(a).mod(q);
         B = new NativeBigInteger(super.commit(b));
         sb = getRandomness();
-        
+
         return A;
     }
-    
+
     /**
      * Commits to <code>a</code> using the given randomness. The method actually 
      * produces two <code>Commitment</code>s (A and B). Only A is returned. B 
@@ -140,10 +140,10 @@ public class SquareCommitment extends Commitment {
             if(!b.equals(a.mod(q).multiply(a.mod(q)).mod(q)))
                 throw new RuntimeException("b (should be a^2) is not correct!");
         }
-        
+
         sb = Util.randomBigInteger(q);
         B = new NativeBigInteger(computeCommitment(b, sb));
-        
+
         return A;
     }
 
@@ -153,22 +153,22 @@ public class SquareCommitment extends Commitment {
     public BigInteger getA() {
         return A;
     }
-    
+
     public BigInteger getB() {
         return B;
     }
-    
+
     /**
      * Gets the randomness
-     */ 
+     */
     public BigInteger getSa() {
         return sa;
     }
-    
+
     public BigInteger getSb() {
         return sb;
     }
-    
+
     /**
      * Constructs the square commitment proof.
      */
@@ -177,7 +177,7 @@ public class SquareCommitment extends Commitment {
         proof.construct();
         return proof;
     }
-    
+
 
     /**
      * A zero-knowledge proof that two commitments contain a number and its 
@@ -189,26 +189,26 @@ public class SquareCommitment extends Commitment {
      */
     public class SquareCommitmentProof extends Proof {
         public SquareCommitmentProof() { super(); }
-	
+
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
             if(A == null || B == null)
                 throw new RuntimeException("Must commit to the numbers before"
-                                           + " constructing the proof!");
+                        + " constructing the proof!");
             commitment = new BigInteger[4];
-            commitment[0] = A; 
+            commitment[0] = A;
             commitment[1] = B;
             BigInteger x = Util.randomBigInteger(q);
             BigInteger ra = Util.randomBigInteger(q);
             BigInteger rb = Util.randomBigInteger(q);
-            
+
             commitment[2] = g.modPow(x, p).multiply(h.modPow(ra, p)).mod(p);  // Ca
             commitment[3] = A.modPow(x, p).multiply(h.modPow(rb, p)).mod(p);  // Cb
             // The first two elements are the commitments to a and b.
             // The next two elements are Ca and Cb
-            
+
             challenge = new BigInteger[1];
-            
+
             // Get the challenge which should be a hash of the commitment:
             BigInteger c = null;
             try {
@@ -219,22 +219,22 @@ public class SquareCommitment extends Commitment {
                 System.err.println("Can't compute hash!");
                 e.printStackTrace();
             }
-            
+
             response = new BigInteger[3];
-            
+
             // 	    response[0] = a.multiply(c).add(x).mod(q);                             // v
             // 	    response[1] = sa.multiply(c).add(ra).mod(q);                           // za
             // 	    response[2] = sb.subtract(sa.multiply(a)).multiply(c).add(rb).mod(q);  // zb
-            
+
             BigInteger a1 = a.mod(q);
             response[0] = a1.multiply(c).add(x).mod(q);                    // v
             response[1] = sa.multiply(c).add(ra).mod(q);                   // za
             response[2] = sb.subtract(sa.multiply(a1)).multiply(c).add(rb)
-                .mod(q);  // zb
+                    .mod(q);  // zb
         }
     }
 
-    
+
     /**
      * Verifies the given proof using our own parameters.
      * <p>
@@ -247,15 +247,15 @@ public class SquareCommitment extends Commitment {
         BigInteger[] c = proof.getCommitment();
         BigInteger[] s = proof.getChallenge();
         BigInteger[] r = proof.getResponse();
-        
+
         if(c.length != 4 || s.length != 1 || r.length != 3)
             return false;
-        
+
         return verify(c[0], c[1], c[2], c[3], s[0], r[0], r[1], r[2]);
     }
-    
-    private boolean verify(BigInteger A, BigInteger B, BigInteger Ca, 
-                           BigInteger Cb, BigInteger c, BigInteger v, 
+
+    private boolean verify(BigInteger A, BigInteger B, BigInteger Ca,
+                           BigInteger Cb, BigInteger c, BigInteger v,
                            BigInteger za, BigInteger zb) {
         // Also need to verify the hash
         BigInteger[] msg = new BigInteger[4];
@@ -263,7 +263,7 @@ public class SquareCommitment extends Commitment {
         msg[1] = B;
         msg[2] = Ca;
         msg[3] = Cb;
-        
+
         try {
             if(!c.equals(Util.secureHash(msg, q))) {
                 System.out.println("Challenge is not equal to the hash!");
@@ -275,26 +275,26 @@ public class SquareCommitment extends Commitment {
             e.printStackTrace();
             return false;
         }
-        
-        
+
+
 
         // Pass 1: g^v*h^za = A^c*Ca mod p?
         if(!g.modPow(v, p).multiply(h.modPow(za, p)).mod(p)
-           .equals(A.modPow(c, p).multiply(Ca).mod(p))) {
+                .equals(A.modPow(c, p).multiply(Ca).mod(p))) {
             System.out.println("Pass 1: g^v*h^za = A^c*Ca mod p failed.");
             return false;
         }
-	
+
         // Pass 2: A^v*h^zb = B^c*Cb mod p?
-        BigInteger vv = Cb.multiply(B.modPow(c, p)).mod(p); 
+        BigInteger vv = Cb.multiply(B.modPow(c, p)).mod(p);
         if(!vv.equals(A.modPow(v, p).multiply(h.modPow(zb, p)).mod(p))) {
             System.out.println("Pass 2: A^v*h^zb = B^c*Cb mod p failed.");
             return false;
         }
-        
+
         return true;
     }
-    
+
 
     /**
      * Test the SquareCommitment and the ZKP
@@ -302,14 +302,14 @@ public class SquareCommitment extends Commitment {
     public static void main(String[] args) {
         int k = 512;
         int nLoops = 10;
-        
+
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
                     try {
                         k = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         k = 512;
                     }
@@ -317,7 +317,7 @@ public class SquareCommitment extends Commitment {
                 else if(arg.equals("-l")) {
                     try {
                         nLoops = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         nLoops = 10;
                     }
@@ -327,7 +327,7 @@ public class SquareCommitment extends Commitment {
                 }
             }
         }
-        
+
         // Setup the parameters:
         P4PParameters.initialize(k, false);
         NativeBigInteger g =  P4PParameters.getGenerator();
@@ -337,8 +337,8 @@ public class SquareCommitment extends Commitment {
         SquareCommitment sc = new SquareCommitment(g, h);
         SquareCommitment verifier = new SquareCommitment(g, h);
         // Construct a new SquareCommitment to verify. 
- 
-        System.out.println("Testing SquareCommitment for " + nLoops + " loops .");       
+
+        System.out.println("Testing SquareCommitment for " + nLoops + " loops .");
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
         long start = System.currentTimeMillis();
@@ -347,18 +347,18 @@ public class SquareCommitment extends Commitment {
             BigInteger r = Util.randomBigInteger(q);
             sc.commit(a.negate(), r);
             //sc.commit(a, r);
-            
+
             // Test the ZKP:
             System.out.print("Testing square commitment ZKP ...");
             proverWatch.start();
             SquareCommitmentProof proof = (SquareCommitmentProof)sc.getProof();
             proverWatch.pause();
-            
+
             verifierWatch.start();
             if(!sc.verify(proof))
-                System.out.println("ZKP failed for test " + j 
-                                   + ". Should have passed.");
-            // how do we test failed zkp?
+                System.out.println("ZKP failed for test " + j
+                        + ". Should have passed.");
+                // how do we test failed zkp?
             else
                 System.out.println(" passed");
             verifierWatch.pause();
@@ -366,19 +366,19 @@ public class SquareCommitment extends Commitment {
         verifierWatch.stop();
         proverWatch.stop();
         long end = System.currentTimeMillis();
-        System.out.println("Square commitment ZKP: " + nLoops 
-                           + " loops. ms per loop:");
+        System.out.println("Square commitment ZKP: " + nLoops
+                + " loops. ms per loop:");
         System.out.println("\n  Prover time         Verifier time        Total");
         System.out.println("===================================================");
-        System.out.println("    " 
-                           + (double)proverWatch.getElapsedTime()/(double)nLoops 
-                           + "                 " 
-                           + (double)verifierWatch.getElapsedTime()/(double)nLoops 
-                           + "              " 
-                           + (double)(proverWatch.getElapsedTime()+verifierWatch
-                                      .getElapsedTime())/(double)nLoops);
+        System.out.println("    "
+                + (double)proverWatch.getElapsedTime()/(double)nLoops
+                + "                 "
+                + (double)verifierWatch.getElapsedTime()/(double)nLoops
+                + "              "
+                + (double)(proverWatch.getElapsedTime()+verifierWatch
+                .getElapsedTime())/(double)nLoops);
 
-        
-	
+
+
     }
 }

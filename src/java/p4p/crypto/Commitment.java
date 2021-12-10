@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -41,7 +41,7 @@ import p4p.util.Util;
 import p4p.util.P4PParameters;
 
 /**
- * 
+ *
  * This is a commitment scheme based on Pedersen's discrete log-based 
  * commitment scheme:
  * <p>
@@ -55,46 +55,47 @@ import p4p.util.P4PParameters;
 public class Commitment extends P4PParameters {
     protected NativeBigInteger g = null;
     protected NativeBigInteger h = null;
-    
+
     /**
      * verify that the parameters are correct.
      */
-    
+
     public void sanityCheck() {
         if(!g.modPow(q, p).equals(BigInteger.ONE))
             throw new IllegalArgumentException("g does not have the correct order!");
-        
+
         if(!h.modPow(q, p).equals(BigInteger.ONE))
             throw new IllegalArgumentException("h does not have the correct order!");
     }
-    
+
     // The committer:
-    
-    /** 
+
+    /**
      * The value to be committed to.
      */
-    protected BigInteger val = null;    
+    protected BigInteger val = null;
 
-    /** 
+    /**
      * The randomness used in the commitment.
      */
-    protected BigInteger r = null;    
-    
+    protected BigInteger r = null;
+
     /**
      */
     public Commitment(NativeBigInteger g, NativeBigInteger h) {
         this.g = g;
         this.h = h;
-        sanityCheck();	
+        sanityCheck();
     }
 
     /**
      * Compute the commitment using the given value and randomness.
      * Make this method final to prevent subclass from overiding it.
      */
-    protected final BigInteger computeCommitment(BigInteger val, 
+    protected final BigInteger computeCommitment(BigInteger val,
                                                  BigInteger r) {
         //BigInteger rr = r.mod(q);
+
         if(val.equals(BigInteger.ONE))
             return g.multiply(h.modPow(r, p)).mod(p);
         else if (val.equals(BigInteger.ZERO))
@@ -108,12 +109,12 @@ public class Commitment extends P4PParameters {
         //return g.modPow(val, p).multiply(h.modPow(r, p)).mod(p);
         return g.modPow(val.mod(q), p).multiply(h.modPow(r, p)).mod(p);
     }
-    
+
 
     /**
      * Commit to a long
      */
-    
+
     public BigInteger commit(long val) {
         return commit(new BigInteger(new Long(val).toString()));
     }
@@ -121,7 +122,7 @@ public class Commitment extends P4PParameters {
     /**
      * Commit to a number in Z_q
      */
-    
+
     public BigInteger commit(BigInteger val) {
         r = Util.randomBigInteger(q);
         this.val = val;
@@ -135,11 +136,11 @@ public class Commitment extends P4PParameters {
     /**
      * Commit to a number in Z_q using the given randomness
      */
-    
+
     public BigInteger commit(BigInteger val, BigInteger r) {
         this.r = r.mod(q);
         this.val = val;
-        
+
         return computeCommitment(this.val, this.r);
     }
 
@@ -150,7 +151,7 @@ public class Commitment extends P4PParameters {
     public BigInteger getRandomness() {
         return r;
     }
-    
+
     /**
      * Return the vector contained in this commitment
      */
@@ -158,7 +159,7 @@ public class Commitment extends P4PParameters {
         return val;
     }
 
-    
+
     // The verifier:
     /**
      * Verify if the given triple consist a valid commitment using the 

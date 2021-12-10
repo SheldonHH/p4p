@@ -9,7 +9,7 @@ import p4p.util.Util;
 import p4p.util.P4PParameters;
 
 /**
- * 
+ *
  * A bit vector commitment. It allows the committer to commit to an N-dimensional 
  * vector of bits (0's or 1's). The commitment is a single element in Z_q. It 
  * also includes a ZKP that proves that the commmitment contains a vector of bits 
@@ -25,11 +25,11 @@ import p4p.util.P4PParameters;
 public class BitVectorCommitment extends VectorCommitment {
     // The bit vector
     boolean[] bitVec = null;
-    
+
     public BitVectorCommitment(NativeBigInteger g[], NativeBigInteger h) {
         super(g, h);
     }
-    
+
     /**
      * Override this method to prevent users from using a BitVectorCommitment 
      * object to commit to non-bit vectors. Since all commit calls in 
@@ -37,9 +37,9 @@ public class BitVectorCommitment extends VectorCommitment {
      * them all here.
      */
     protected BigInteger vectorCommit(BigInteger[] vals, BigInteger r) {
-        if(vals.length != N) 
+        if(vals.length != N)
             throw new RuntimeException("Incorrect dimension!");
-        
+
         BigInteger c = h.modPow(r, p);
         for(int i = 0; i < N; i++) {
             if(vals[i].equals(BigInteger.ZERO))
@@ -49,33 +49,33 @@ public class BitVectorCommitment extends VectorCommitment {
             else
                 throw new RuntimeException("Can only commit to bits!");
         }
-        
+
         return c;
     }
-    
+
     /**
      * Given a matrix of bits, commit to a column specified by the 
      * 2nd argument. The columns are numbered 0, 1, 2, ..., starting
      * from the LSB. Note that col specifies the position of ``bit'',
      * not ``byte''.
      */
-    
+
     public BigInteger commit(byte[][] bits, int col) {
         r = Util.randomBigInteger(q);
         return commit(bits, col, r);
     }
-    
+
     public BigInteger commit(byte[][] bits, int col, BigInteger r) {
-        if(bits.length != N) 
+        if(bits.length != N)
             throw new RuntimeException("Incorrect dimension!");
-        
+
         int byteIndex = col/8;   // Which byte this bit belongs to
         int offset = col%8;      // The offset within this byte. Starting from right
-        
+
         if(col < 0 || byteIndex > bits[0].length) return null;
-        
+
         bitVec = new boolean[N];   // Number of rows is the size of the bit vector
-        
+
         BigInteger c = h.modPow(r, p);
         for(int i = 0; i < N; i++) {
             if((bits[i][byteIndex] & (1<<offset)) > 0) {
@@ -86,47 +86,47 @@ public class BitVectorCommitment extends VectorCommitment {
                 bitVec[i] = false;
             // Nothing to do if the bit is 0
         }
-        
+
         return c;
     }
-    
-    
+
+
     /**
      * Given an array of longs, commit to a bit vector consisting of the 
      * col-th bits of each number. The columns are numbered 0, 1, 2, ..., 
      * starting from the LSB. Note that col specifies the position of 
      * ``bit'', not ``byte''.
      */
-    
+
     public BigInteger commit(long[] vals, int col) {
         boolean[] bits = new boolean[vals.length];
-        
+
         for(int i = 0; i < vals.length; i++) {
             String bs = Long.toBinaryString(vals[i]);
             int len = bs.length();
             if(len <= col)
                 bits[i] = false;   // It is a 0
-            else 
+            else
                 bits[i] = (bs.charAt(len-col-1) == '1');
         }
-        
+
         return commit(bits);
     }
-    
-    
+
+
     /**
      * Commit to a bit vector.
      */
-    
+
     public BigInteger commit(boolean[] bits) {
         r = Util.randomBigInteger(q);
         return commit(bits, r);
     }
-    
+
     public BigInteger commit(boolean[] bits, BigInteger r) {
-        if(bits.length != N) 
+        if(bits.length != N)
             throw new RuntimeException("Incorrect dimension! N = " + N
-                                       + ", vector size = " + bits.length);
+                    + ", vector size = " + bits.length);
         bitVec = bits;
         BigInteger c = h.modPow(r, p);
         for(int i = 0; i < N; i++) {
@@ -135,17 +135,17 @@ public class BitVectorCommitment extends VectorCommitment {
             }
             // Nothing to do if the bit is 0
         }
-        
+
         return c;
     }
-    
+
     /**
      * Return the bit vector contained in this commitment
      */
     public boolean[] getBitVector() {
         return bitVec;
     }
-    
+
     // The verifier:
     /**
      * Verify if the given vector is the one contained in the commitment.
@@ -154,7 +154,7 @@ public class BitVectorCommitment extends VectorCommitment {
         BigInteger cc = commit(vec, r);
         return cc.equals(c);
     }
-    
+
     /**
      * A zero-knowledge proof that the commitment contains a bit vector. 
      * This proof consists of N parallel bit commitment proofs which
@@ -163,18 +163,18 @@ public class BitVectorCommitment extends VectorCommitment {
      */
     public class BitVectorCommitmentProof extends Proof {
         BitCommitment.BitCommitmentProof[] bitProofs;
-        
+
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
             commitment = new BigInteger[1];
             commitment[0] = commit(bitVec, r);
             // Store the commitment in commitment[0]
-            
+
             bitProofs = new BitCommitment.BitCommitmentProof[N];
-            
+
             BitCommitment bc;
             BigInteger rr = BigInteger.ZERO;
-            
+
             for(int i = 0; i < N - 1; i++) {
                 bc = new BitCommitment(g[i], h);
                 BigInteger c = bc.commit(bitVec[i]);
@@ -187,7 +187,7 @@ public class BitVectorCommitment extends VectorCommitment {
             BigInteger c = bc.commit(bitVec[N-1], rr);
             bitProofs[N-1] = (BitCommitment.BitCommitmentProof)bc.getProof();
         }
-        
+
         public BitCommitment.BitCommitmentProof[] getBitProofs() {
             return bitProofs;
         }
@@ -198,16 +198,16 @@ public class BitVectorCommitment extends VectorCommitment {
         proof.construct();
         return proof;
     }
-    
+
 
     // The ZKP verify
     public boolean verify(Proof proof) {
         BitVectorCommitmentProof bvProof = (BitVectorCommitmentProof)proof;
         BitCommitment.BitCommitmentProof[] bitProofs = bvProof.getBitProofs();
-        
+
         BigInteger c = BigInteger.ONE;
         BitCommitment bc;
-        
+
         for(int i = 0; i < N; i++) {
             bc = new BitCommitment(g[i], h);
             if(!bc.verify(bitProofs[i])) {
@@ -217,23 +217,23 @@ public class BitVectorCommitment extends VectorCommitment {
             // The first element in the proof's commitment is the 
             // bit commitment itself,            
         }
-        
+
         // Now check the commitment itself:
         if(!c.equals(bvProof.getCommitment()[0])) {
             System.out.println("Homomorphism does not hold. ");
             return false;
         }
-        
+
         return true;
     }
 
     /**
      * Test the BitVectorCommitment. One run produced:
-     * 
+     *
      *  ./bin/p4p p4p.BitVectorCommitment -d -k 1024 -l 600
      *
      * Total time: 2046921 ms. Average: 3411.535 ms per loop
-     * 
+     *
      * This is with N = 32.
      *
      * Note that the binding of the commitment is probabilistic and 
@@ -245,14 +245,14 @@ public class BitVectorCommitment extends VectorCommitment {
         int k = 512;
         int N = 32;
         int nLoops = 10;
-        
+
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
                     try {
                         k = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         k = 512;
                     }
@@ -260,7 +260,7 @@ public class BitVectorCommitment extends VectorCommitment {
                 else if(arg.equals("-N")) {
                     try {
                         N = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         N = 32;
                     }
@@ -268,7 +268,7 @@ public class BitVectorCommitment extends VectorCommitment {
                 else if(arg.equals("-l")) {
                     try {
                         nLoops = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         nLoops = 10;
                     }
@@ -278,18 +278,18 @@ public class BitVectorCommitment extends VectorCommitment {
                 }
             }
         }
-        
+
         System.out.println("k = " + k);
         System.out.println("N = " + N);
         System.out.println("nLoops = " + nLoops);
-        
+
         // Setup the parameters:
         P4PParameters.initialize(k, false);
-        BitVectorCommitment bvc = 
-            new BitVectorCommitment(P4PParameters.getGenerators(N), 
-                                    P4PParameters.getGenerator());
+        BitVectorCommitment bvc =
+                new BitVectorCommitment(P4PParameters.getGenerators(N),
+                        P4PParameters.getGenerator());
 
-     	SecureRandom rand = null;
+        SecureRandom rand = null;
         try {
             rand = SecureRandom.getInstance("SHA1PRNG");
         }
@@ -298,12 +298,12 @@ public class BitVectorCommitment extends VectorCommitment {
             e.printStackTrace();
             rand = new SecureRandom();
         }
-        
+
         rand.nextBoolean();
         // Generate the vector:
         boolean[] vec = new boolean[N];
         boolean[] dummy = new boolean[N];
-        
+
         System.out.println("Testing BitVectorCommitment for " + nLoops + " loops .");
         long start = System.currentTimeMillis();
         for(int i = 0; i < nLoops; i++) {
@@ -311,30 +311,30 @@ public class BitVectorCommitment extends VectorCommitment {
                 vec[j] = rand.nextBoolean();
                 dummy[j] = rand.nextBoolean();
             }
-            
+
             BigInteger c = bvc.commit(vec);
-            
+
             // Verify
             System.out.print("Testing commitment verification ...");
             if(!bvc.verify(c, vec, bvc.getRandomness()))
-                System.out.println("Verification failed for test " 
-                                   + i + ". Should have passed.");
+                System.out.println("Verification failed for test "
+                        + i + ". Should have passed.");
             else
                 System.out.println(" passed");
-            
+
             // Wrong randomness. Should fail:
             if(bvc.verify(c, vec, Util.randomBigInteger(q)))
-                System.out.println("Verification passed for test " 
-                                   + i + ". Should have failed (wrong r submitted).");	
-            
+                System.out.println("Verification passed for test "
+                        + i + ". Should have failed (wrong r submitted).");
+
             // Wrong value. Should fail:	    
             if(bvc.verify(c, dummy, bvc.getRandomness()))
-                System.out.println("Verification passed for test " 
-                                   + i + ". Should have failed (wrong vector submitted).");
-            
+                System.out.println("Verification passed for test "
+                        + i + ". Should have failed (wrong vector submitted).");
+
             // Test the ZKP:
             System.out.print("Testing bit vector commitment ZKP ...");
-            
+
             Proof proof = bvc.getProof();
             if(!bvc.verify(proof))
                 System.out.println("ZKP failed for test " + i + ". Should have passed.");
@@ -342,9 +342,9 @@ public class BitVectorCommitment extends VectorCommitment {
                 System.out.println(" passed");
         }
         long end = System.currentTimeMillis();
-        System.out.println("Total time: " + (end-start) + " ms. Average: " 
-                           + (double)(end-start)/(double)nLoops + " ms per loop");
-        
+        System.out.println("Total time: " + (end-start) + " ms. Average: "
+                + (double)(end-start)/(double)nLoops + " ms per loop");
+
     }
 }
 

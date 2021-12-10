@@ -1,21 +1,21 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * <p>
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * <p>
+ *
  * 1. Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- * <p>
+ *    notice, this list of conditions and the following disclaimer.
+ *
  * 2. Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- * <p>
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
  * 3. The name of the University may not be used to endorse or promote products
- * derived from this software without specific prior written permission.
- * <p>
+ *    derived from this software without specific prior written permission.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -58,8 +58,8 @@ import p4p.user.UserVector;
 /**
  *
  * This is essentailly the same class as user.UserVector2 as of reversion r15 (until 12/08/2005).
- * As an initial implementation, it only implemented the basic crypographic tools, no real 
- * computation. It is good as a benchmarking tool since it contains all the expensive crypto 
+ * As an initial implementation, it only implemented the basic crypographic tools, no real
+ * computation. It is good as a benchmarking tool since it contains all the expensive crypto
  * steps. It is moved to this package to preserve the banchmarking capability. Real development
  * will go on in the user package.
  *
@@ -86,7 +86,7 @@ public class UserVector2Bench extends UserVector {
 
     public UserVector2Bench(long[] data, long F, int l, NativeBigInteger g, NativeBigInteger h) {
         super(data, F, l);
-        this.g = g;
+        this. g = g;
         this.h = h;
         sc = new SquareCommitment(g, h);
     }
@@ -95,8 +95,8 @@ public class UserVector2Bench extends UserVector {
     /**
      * A zero-knowledge proof that the vector L2 norm is bounded by L.
      * <p>
-     * This proof uses another method. Namely instead of checking each checksum individually 
-     * it checks the sum of their squares. This still gives the bound but uses fewer bit 
+     * This proof uses another method. Namely instead of checking each checksum individually
+     * it checks the sum of their squares. This still gives the bound but uses fewer bit
      * commitment proofs. Note that the challenge vectors are chosen from {-1, 0, 1}.
      */
     public class L2NormBoundProof2 extends Proof {
@@ -108,11 +108,11 @@ public class UserVector2Bench extends UserVector {
 
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
-            if (checkCoVector == null)
+            if(c == null)
                 throw new RuntimeException("Checksum vector not set yet.");
 
-            checksums = new long[checkCoVector.length];
-            scProofs = new SquareCommitment.SquareCommitmentProof[checkCoVector.length];
+            checksums = new long[c.length];
+            scProofs = new SquareCommitment.SquareCommitmentProof[c.length];
             SquareCommitment sc = new SquareCommitment(g, h);
 
             // Compute the checksums:
@@ -120,7 +120,7 @@ public class UserVector2Bench extends UserVector {
             BigInteger squareSumCommitment = BigInteger.ONE;   // Commitment to the sum of the squares
             BigInteger sRandomness = BigInteger.ZERO;
 
-            for (int i = 0; i < checkCoVector.length; i++) {
+            for(int i = 0; i < c.length; i++) {
 // 		checksums[i] = 0;
 // 		for(int j = 0; j < m; j++) {
 // 		    //s += c[i][j]*data[j];
@@ -129,7 +129,7 @@ public class UserVector2Bench extends UserVector {
 // 		    else if(c[i][j] == -1)
 // 			checksums[i] -= data[j];
 //	    }
-                checksums[i] = Math.abs(Util.innerProduct(checkCoVector[i], data_UV));
+                checksums[i] = Math.abs(Util.innerProduct(c[i], data));
                 /**
                  * Note that although all the normal compuations are done in
                  * a small finite field, we don't restrict the size of the
@@ -143,11 +143,11 @@ public class UserVector2Bench extends UserVector {
                 //System.out.println("cs = " + cs);
 
                 sc.commit(cs);
-                scProofs[i] = (SquareCommitment.SquareCommitmentProof) sc.getProof();
+                scProofs[i] = (SquareCommitment.SquareCommitmentProof)sc.getProof();
 
-                if (debug) {
+                if(debug) {
                     // lets check here:
-                    if (!sc.verify(scProofs[i])) {
+                    if(!sc.verify(scProofs[i])) {
                         throw new RuntimeException("Square commitment proof or verification is not working properly. i = " + 1);
                     }
                 }
@@ -158,12 +158,12 @@ public class UserVector2Bench extends UserVector {
                 sRandomness = sRandomness.add(sc.getSb()).mod(q);
             }
 
-            if (debug) {
+            if(debug) {
                 // Lets verify if we compute the commitment to the sum of squares correcly:
                 System.out.print("Checking commitment to sum of squares ...");
                 Commitment cm = new Commitment(g, h);
                 BigInteger ssc = cm.commit(squareSum, sRandomness);
-                if (!ssc.equals(squareSumCommitment)) {
+                if(!ssc.equals(squareSumCommitment)) {
                     throw new RuntimeException("Commitment to sum of squares wasn't computed correctly!");
                 }
                 System.out.println(" done.");
@@ -178,10 +178,10 @@ public class UserVector2Bench extends UserVector {
             squareSumCommitment = squareSumCommitment.multiply(squareSumCommitment).mod(p);   // 2x
 
             // Lets check if the commitment was computed correctly:
-            if (debug) {
+            if(debug) {
                 System.out.print("Checking commitment to 2*(sum of squares) ...");
                 Commitment cm = new Commitment(g, h);
-                if (!cm.verify(squareSumCommitment, squareSum, sRandomness))
+                if(!cm.verify(squareSumCommitment, squareSum, sRandomness))
                     throw new RuntimeException("Commitment to 2*(sum of squares) wasn't computed correctly!");
                 System.out.println(" done.");
             }
@@ -191,18 +191,18 @@ public class UserVector2Bench extends UserVector {
             commitment[0] = squareSumCommitment;
 
 
-            int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(checkCoVector.length).length() + 2 * l_UV);
+            int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(c.length).length()+2*l);
             // Even for small squares we must do all the commitments otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits");
 
             bcProofs = new BitCommitment.BitCommitmentProof[numBits];
             BitCommitment bc = new BitCommitment(g, h);
-            for (int i = 0; i < numBits - 1; i++) {
+            for(int i = 0; i < numBits - 1; i++) {
                 BigInteger cc = bc.commit(squareSum.testBit(i));
-                bcProofs[i] = (BitCommitment.BitCommitmentProof) bc.getProof();
+                bcProofs[i] = (BitCommitment.BitCommitmentProof)bc.getProof();
 
-                if (debug) {
-                    if (!cc.equals(bcProofs[i].getCommitment()[0]))
+                if(debug) {
+                    if(!cc.equals(bcProofs[i].getCommitment()[0]))
                         throw new RuntimeException("Bit commitment wasn't computed correctly!");
                 }
 
@@ -216,39 +216,39 @@ public class UserVector2Bench extends UserVector {
             // Now the last bit:
             // First need to compute the randomness correctly:
             // BigInteger e = new BigInteger(new Long(((long)1)<<(numBits-1)).toString());   // 2^l
-            BigInteger e = BigInteger.ZERO.setBit(numBits - 1);    // 2^l
+            BigInteger e = BigInteger.ZERO.setBit(numBits-1);    // 2^l
             e = e.modInverse(q);
             sRandomness = sRandomness.multiply(e).mod(q);         // divide by 2^l
 
-            bc.commit(squareSum.testBit(numBits - 1), sRandomness);
-            bcProofs[numBits - 1] = (BitCommitment.BitCommitmentProof) bc.getProof();
+            bc.commit(squareSum.testBit(numBits-1), sRandomness);
+            bcProofs[numBits-1] = (BitCommitment.BitCommitmentProof)bc.getProof();
 
 
             // Lets check it here:
-            if (debug) {
+            if(debug) {
                 System.out.print("Checking homomorphism ...");
                 BigInteger ZZ = BigInteger.ONE;
                 BigInteger z = BigInteger.ZERO;
 
-                for (int i = 0; i < numBits; i++) {
+                for(int i = 0; i < numBits; i++) {
                     //BigInteger e = new BigInteger(new Long(((long)1)<<i).toString());  // 2^i
                     e = BigInteger.ZERO.setBit(i);
                     // Note that we can't use ((long)1)<<i because long doesn't have enough bits!
 
-                    if (squareSum.testBit(i))
+                    if(squareSum.testBit(i))
                         z = z.add(e);
 
-                    NativeBigInteger Z = (NativeBigInteger) bcProofs[i].getCommitment()[0];
+                    NativeBigInteger Z = (NativeBigInteger)bcProofs[i].getCommitment()[0];
 
                     ZZ = ZZ.multiply(Z.modPow(e, p)).mod(p);
                 }
 
-                if (!z.equals(squareSum)) {
+                if(!z.equals(squareSum)) {
                     System.out.println("z = " + z);
                     System.out.println("squareSum = " + squareSum);
                     throw new RuntimeException("2*(sum of squares) wasn't computed correctly!");
                 }
-                if (!ZZ.equals(squareSumCommitment))
+                if(!ZZ.equals(squareSumCommitment))
                     throw new RuntimeException("Homomorphism doesn't hold!");
 
                 System.out.println("done");
@@ -282,7 +282,7 @@ public class UserVector2Bench extends UserVector {
 
     // The ZKP verify
     public boolean verify2(Proof proof) {
-        L2NormBoundProof2 l2Proof = (L2NormBoundProof2) proof;
+        L2NormBoundProof2 l2Proof = (L2NormBoundProof2)proof;
         BitCommitment.BitCommitmentProof[] bcProofs = l2Proof.getBitCommitmentProofs();
         SquareCommitment.SquareCommitmentProof[] scProofs = l2Proof.getSquareCommitmentProofs();
         long[] s = l2Proof.getChecksums();
@@ -290,18 +290,18 @@ public class UserVector2Bench extends UserVector {
 
         // Pretend we can see the user vector and the checksum. In a real deployment, they
         // will only be half of them
-        for (int i = 0; i < s.length; i++) {
+        for(int i = 0; i < s.length; i++) {
             // First make sure the checksums are computed correctly:
-            if (s[i] != Math.abs(Util.innerProduct(checkCoVector[i], data_UV))) {
+            if(s[i] != Math.abs(Util.innerProduct(c[i], data))) {
                 System.out.println("Checksum " + i + " not computed correctly!");
                 return false;
             }
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        if (bcProofs.length > Integer.toBinaryString(checkCoVector.length).length() + 2 * l_UV) {
+        if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l) {
             System.out.println("Sum of squares has too many bits: " + bcProofs.length
-                    + ", the limit is " + (Integer.toBinaryString(checkCoVector.length).length() + 2 * l_UV));
+                    + ", the limit is " + (Integer.toBinaryString(c.length).length()+2*l));
             return false;
         }
 
@@ -310,8 +310,8 @@ public class UserVector2Bench extends UserVector {
 
         // Check the square proofs:
         SquareCommitment sc = new SquareCommitment(g, h);
-        for (int i = 0; i < scProofs.length; i++) {
-            if (!sc.verify(scProofs[i])) {
+        for(int i = 0; i < scProofs.length; i++) {
+            if(!sc.verify(scProofs[i])) {
                 System.out.println("Square verification " + i + " failed.");
                 return false;
             }
@@ -320,12 +320,12 @@ public class UserVector2Bench extends UserVector {
         // Now the bit commitment for the sum. First check if the commitment is
         // computed correctly:
         BigInteger z = BigInteger.ONE;
-        for (int i = 0; i < scProofs.length; i++) {
+        for(int i = 0; i < scProofs.length; i++) {
             z = z.multiply(scProofs[i].getCommitment()[1]).mod(p);   // *= B
         }
         z = z.multiply(z).mod(p);    // commitment[0] actually stores 2X
 
-        if (!l2Proof.getCommitment()[0].equals(z)) {
+        if(!l2Proof.getCommitment()[0].equals(z)) {
             System.out.println("Commitment to square sum wasn't computed correctly.");
             return false;
         }
@@ -337,8 +337,8 @@ public class UserVector2Bench extends UserVector {
         DEBUG("Checking  " + bcProofs.length + " bit commitments");
 
         BigInteger ZZ = BigInteger.ONE;
-        for (int i = 0; i < bcProofs.length; i++) {
-            if (!bc.verify(bcProofs[i])) {
+        for(int i = 0; i < bcProofs.length; i++) {
+            if(!bc.verify(bcProofs[i])) {
                 System.out.println("Bit commitment verification " + i + " failed.");
                 return false;
             }
@@ -347,11 +347,11 @@ public class UserVector2Bench extends UserVector {
             BigInteger e = BigInteger.ZERO.setBit(i);
             // Note that we can't use ((long)1)<<i because long doesn't have enough bits!
 
-            NativeBigInteger Z = (NativeBigInteger) bcProofs[i].getCommitment()[0];
+            NativeBigInteger Z = (NativeBigInteger)bcProofs[i].getCommitment()[0];
             ZZ = ZZ.multiply(Z.modPow(e, p)).mod(p);
         }
 
-        if (!ZZ.equals(z)) {
+        if(!ZZ.equals(z)) {
             System.out.println("Homomorphism does not hold.");
             return false;
         }
@@ -364,7 +364,7 @@ public class UserVector2Bench extends UserVector {
      * Test the UserVector L2 norm bound ZKP.
      *
      * Note that the zkp is probabilistic and its sucess probability is
-     * only accurate when m is large, So with small m it may not pass 
+     * only accurate when m is large, So with small m it may not pass
      * some of the tests.
      *
      */
@@ -384,42 +384,57 @@ public class UserVector2Bench extends UserVector {
 
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
-            if (arg.length() > 0 && arg.charAt(0) == '-') {
+            if(arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
                     try {
                         k = Integer.parseInt(args[i++]);
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         k = 512;
                     }
-                } else if (arg.equals("-m")) {
+                }
+                else if(arg.equals("-m")) {
                     try {
                         m = Integer.parseInt(args[i++]);
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         m = 10;
                     }
-                } else if (arg.equals("-N")) {
+                }
+                else if(arg.equals("-N")) {
                     try {
                         zkpIterations = Integer.parseInt(args[i++]);
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         zkpIterations = 50;
                     }
-                } else if (arg.equals("-o")) {
+                }
+
+                else if(arg.equals("-o")) {
                     try {
                         nLoops = Integer.parseInt(args[i++]);
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         nLoops = 10;
                     }
-                } else if (arg.equals("-l")) {
+                }
+
+                else if(arg.equals("-l")) {
                     try {
                         l = Integer.parseInt(args[i++]);
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         l = 40;
                     }
-                } else if (arg.equals("-d")) {
+                }
+
+                else if(arg.equals("-d")) {
                     debug = true;
-                } else if (arg.equals("-w")) {
+                }
+                else if(arg.equals("-w")) {
                     worstcase = true;  // test the worst case cost. i.e. every vector should pass. this is when the verifier spends longest time.
-                } else if (arg.equals("-bench")) {
+                }
+                else if(arg.equals("-bench")) {
                     doBench = true;
                 }
             }
@@ -434,7 +449,8 @@ public class UserVector2Bench extends UserVector {
         SecureRandom rand = null;
         try {
             rand = SecureRandom.getInstance("SHA1PRNG");
-        } catch (java.security.NoSuchAlgorithmException e) {
+        }
+        catch(java.security.NoSuchAlgorithmException e) {
             System.err.println("NoSuchAlgorithmException!");
             e.printStackTrace();
             rand = new SecureRandom();
@@ -444,8 +460,8 @@ public class UserVector2Bench extends UserVector {
 
         // Lets make l = log_2 (m)
         //int l = Math.max(10, (int)Math.ceil(Math.log(m)/Math.log(2.)));    // We restrict L to be 32 bits
-        long L = ((long) 2) << l - 1;
-        long F = BigInteger.probablePrime(l + 10, rand).longValue();
+        long L = ((long)2)<<l - 1;
+        long F = BigInteger.probablePrime(l+10, rand).longValue();
         // Make the field size to be 10 bits larger than l
 
         System.out.println("l = " + l + ", L = " + L);
@@ -455,31 +471,31 @@ public class UserVector2Bench extends UserVector {
         // Generate the data and the checksum coefficient vector:
         long[] data = new long[m];
         int[][] c = new int[zkpIterations][];
-        NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
+        NativeBigInteger[] bi = P4PParameters.getGenerators(2);
 
-        for (int j = 0; j < zkpIterations; j++)
+        for(int j = 0; j < zkpIterations; j++)
             c[j] = new int[m];
 
         int nfails = 0;
 
-        if (doBench) {
+        if(doBench) {
             System.out.println("Benchmarking UserVector L2 bound ZKP for " + nLoops + " loops .");
             StopWatch proverWatch = new StopWatch();
             StopWatch verifierWatch = new StopWatch();
 
             //	    long mean = (long)((double)L/Math.sqrt(m));
-            long mean = (long) ((double) L / Math.sqrt(m));
+            long mean = (long)((double)L/Math.sqrt(m));
             System.out.println("mean = " + mean);
 
             long start = System.currentTimeMillis();
             long innerProductTime = 0;
             long randChallengeTime = 0;
-            for (int i = 0; i < nLoops; i++) {
+            for(int i = 0; i < nLoops; i++) {
                 boolean shouldPass;   // We should create a vector that passes the zkp
-                if (worstcase)
+                if(worstcase)
                     shouldPass = true;     // Test the worst case
                 else {
-                    if (i < nLoops / 2)
+                    if(i < nLoops/2)
                         shouldPass = true;
                     else
                         shouldPass = false;
@@ -487,50 +503,52 @@ public class UserVector2Bench extends UserVector {
                 //shouldPass = rand.nextBoolean();
                 double l2 = 0.;
 
-                for (int j = 0; j < m; j++) {
-                    if (shouldPass) {
-                        if (mean > 10)
+                for(int j = 0; j < m; j++) {
+                    if(shouldPass) {
+                        if(mean > 10)
                             data[j] = Math.abs(rand.nextLong()) % mean;
                         else {
-                            if (l2 < L / 2)
+                            if(l2 < L/2)
                                 data[j] = 1;
                             else
                                 data[j] = 0;
                         }
-                        l2 += data[j] * data[j];
-                    } else
-                        data[j] = Math.abs(rand.nextLong()) % mean * (1 + Math.abs(rand.nextInt() % 4));
+                        l2 += data[j]*data[j];
+                    }
+
+                    else
+                        data[j] = Math.abs(rand.nextLong()) % mean * (1+Math.abs(rand.nextInt()%4));
                     //data[j] = (long)Math.abs(rand.nextInt());  // Make it small deliberately
                     //DEBUG("d["+j+"] = " + data[j]);
                 }
 
-                byte[] randBytes = new byte[(int) Math.ceil(2 * zkpIterations * m / 8)];
+                byte[] randBytes = new byte[(int)Math.ceil(2*zkpIterations*m/8)];
                 long t0 = System.currentTimeMillis();
                 rand.nextBytes(randBytes);
-                for (int j = 0; j < zkpIterations; j++) {
-                    for (int kk = 0; kk < m; kk++) {
+                for(int j = 0; j < zkpIterations; j++) {
+                    for(int kk = 0; kk < m; kk++) {
 // 		        c[j][kk] = rand.nextBoolean() ? 1 : 0;
 // 			if(c[j][kk] == 1) // flip half of the 1's
 // 			    c[j][kk] = rand.nextBoolean() ? 1 : -1;
-                        int byteIndex = (int) 2 * (j * m + kk) / 8;
-                        int offset = 2 * (j * m + kk) % 8;
+                        int byteIndex = (int)2*(j*m + kk)/8;
+                        int offset = 2*(j*m + kk)%8;
 
-                        c[j][kk] = (randBytes[byteIndex] & (1 << offset)) > 0 ? 1 : 0;
+                        c[j][kk] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
 
-                        if (c[j][kk] == 1) // flip half of the 1's
-                            c[j][kk] = (randBytes[byteIndex] & (1 << (offset + 1))) > 0 ? 1 : -1;
+                        if(c[j][kk] == 1) // flip half of the 1's
+                            c[j][kk] = (randBytes[byteIndex] & (1<<(offset+1))) > 0 ? 1 : -1;
                     }
                 }
 
                 randChallengeTime += (System.currentTimeMillis() - t0);
 
-                UserVector2Bench uv = new UserVector2Bench(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
+                UserVector2Bench uv = new UserVector2Bench(data, F, l, bi[0], bi[1]);
                 data = uv.getUserData();
 
                 l2 = 0.;
-                for (int j = 0; j < m; j++) {
+                for(int j = 0; j < m; j++) {
                     //DEBUG("d["+j+"] = " + data[j]);
-                    l2 += (double) data[j] * data[j];
+                    l2 += (double)data[j]*data[j];
                 }
 
                 l2 = Math.sqrt(l2);
@@ -540,11 +558,11 @@ public class UserVector2Bench extends UserVector {
 
                 t0 = System.currentTimeMillis();
                 Util.innerProduct(c[0], data);
-                innerProductTime += (System.currentTimeMillis() - t0);
+                innerProductTime += (System.currentTimeMillis()-t0);
 
                 uv.setChecksumCoefficientVectors(c);
                 proverWatch.start();
-                L2NormBoundProof2 proof = (L2NormBoundProof2) uv.getL2NormBoundProof2();
+                L2NormBoundProof2 proof = (L2NormBoundProof2)uv.getL2NormBoundProof2();
                 proverWatch.pause();
 
                 shouldPass = l2 < L;     // Correct shouldPass using actual data.
@@ -552,10 +570,11 @@ public class UserVector2Bench extends UserVector {
                 boolean didPass = uv.verify2(proof);
                 verifierWatch.pause();
 
-                if (shouldPass != didPass) {
+                if(shouldPass != didPass) {
                     nfails++;
                     System.out.println("Test No. " + i + " failed. shouldPass = " + shouldPass + ", result = " + didPass);
-                } else
+                }
+                else
                     System.out.println("Test No. " + i + " passed. shouldPass = didPass = " + shouldPass);
             }
 
@@ -566,45 +585,46 @@ public class UserVector2Bench extends UserVector {
             System.out.println("UserVector L2 norm ZKP: " + nLoops + " loops. Failed " + nfails + " times. ms per loop:");
             System.out.println("\n  Prover time         Verifier time        Total");
             System.out.println("===================================================");
-            System.out.println("    " + (double) proverWatch.getElapsedTime() / (double) nLoops + "                 "
-                    + (double) verifierWatch.getElapsedTime() / (double) nLoops + "              "
-                    + (double) (proverWatch.getElapsedTime() + verifierWatch.getElapsedTime()) / (double) nLoops);
-            System.out.println("Time for doing 1 experiement: " + (double) (end - start) / (double) nLoops);
-            System.out.println("Time for doing 1 inner product: " + (double) innerProductTime / (double) nLoops);
-            System.out.println("Time for generating N challenge vectors: " + (double) randChallengeTime / (double) nLoops);
-        } else {
+            System.out.println("    " + (double)proverWatch.getElapsedTime()/(double)nLoops + "                 "
+                    + (double)verifierWatch.getElapsedTime()/(double)nLoops + "              "
+                    + (double)(proverWatch.getElapsedTime()+verifierWatch.getElapsedTime())/(double)nLoops);
+            System.out.println("Time for doing 1 experiement: " + (double)(end-start)/(double)nLoops);
+            System.out.println("Time for doing 1 inner product: " + (double)innerProductTime/(double)nLoops);
+            System.out.println("Time for generating N challenge vectors: " + (double)randChallengeTime/(double)nLoops);
+        }
+        else {
             System.out.println("Testing UserVector L2 bound ZKP for " + nLoops + " loops .");
             long start = System.currentTimeMillis();
-            for (int i = 0; i < nLoops; i++) {
-                for (int j = 0; j < m; j++) {
-                    data[j] = (long) Math.abs(rand.nextInt());  // Make it small deliberately
+            for(int i = 0; i < nLoops; i++) {
+                for(int j = 0; j < m; j++) {
+                    data[j] = (long)Math.abs(rand.nextInt());  // Make it small deliberately
                     //DEBUG("d["+j+"] = " + data[j]);
                 }
 
-                for (int j = 0; j < zkpIterations; j++) {
+                for(int j = 0; j < zkpIterations; j++) {
                     c[j] = new int[m];
 
-                    for (int kk = 0; kk < m; kk++) {
+                    for(int kk = 0; kk < m; kk++) {
                         c[j][kk] = rand.nextBoolean() ? 1 : 0;
-                        if (c[j][kk] == 1) // flip half of the 1's
+                        if(c[j][kk] == 1) // flip half of the 1's
                             c[j][kk] = rand.nextBoolean() ? 1 : -1;
                     }
                 }
 
-                UserVector2Bench uv = new UserVector2Bench(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
+                UserVector2Bench uv = new UserVector2Bench(data, F, l, bi[0], bi[1]);
                 data = uv.getUserData();
 
                 double l2 = 0.;
-                for (int j = 0; j < m; j++) {
+                for(int j = 0; j < m; j++) {
                     //DEBUG("d["+j+"] = " + data[j]);
-                    l2 += (double) data[j] * data[j];
+                    l2 += (double)data[j]*data[j];
                 }
 
                 l2 = Math.sqrt(l2);
                 System.out.println("L2 norm of user data = " + l2);
 
                 uv.setChecksumCoefficientVectors(c);
-                L2NormBoundProof2 proof = (L2NormBoundProof2) uv.getL2NormBoundProof2();
+                L2NormBoundProof2 proof = (L2NormBoundProof2)uv.getL2NormBoundProof2();
 
                 boolean shouldPass = l2 < L;
                 boolean didPass = uv.verify2(proof);
@@ -614,8 +634,8 @@ public class UserVector2Bench extends UserVector {
             }
 
             long end = System.currentTimeMillis();
-            System.out.println("Total time: " + (end - start) + " ms. Average: "
-                    + (double) (end - start) / (double) nLoops + " ms per loop");
+            System.out.println("Total time: " + (end-start) + " ms. Average: "
+                    + (double)(end-start)/(double)nLoops + " ms per loop");
         }
     }
 }

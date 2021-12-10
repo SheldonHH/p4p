@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -64,7 +64,7 @@ import p4p.util.P4PParameters;
 
 public class ThreeWayCommitment extends Commitment {
     public final NativeBigInteger CONST;    // The public constant
-    
+
     public ThreeWayCommitment(NativeBigInteger g, NativeBigInteger h,
                               BigInteger c) {
         super(g, h);
@@ -76,44 +76,44 @@ public class ThreeWayCommitment extends Commitment {
         super(g, h);
         this.CONST = new NativeBigInteger(new BigInteger(String.valueOf(c)).abs());
     }
-    
+
     /**
      */
     public BigInteger commit(BigInteger val) {
         if(!val.equals(BigInteger.ZERO) && !val.equals(CONST)
-           && !val.equals(CONST.negate()))
-           throw new RuntimeException("ThreeWayCommitment.commit can only" 
-                                      + "be invoked with 0 or +/-" + CONST);        
+                && !val.equals(CONST.negate()))
+            throw new RuntimeException("ThreeWayCommitment.commit can only"
+                    + "be invoked with 0 or +/-" + CONST);
         return super.commit(val);
         // Commitment is smart enough to avoid doing 
         // exponetiation if val is either 0 or 1.
     }
-    
+
     /**
-     */    
+     */
     public BigInteger commit(long val) {
         long c = CONST.longValue();
         if(val != 0 && val != c && val != -c)
-            throw new RuntimeException("ThreeWayCommitment.commit can only" 
-                                       + "be invoked with 0 or +/-" + c);
-        
+            throw new RuntimeException("ThreeWayCommitment.commit can only"
+                    + "be invoked with 0 or +/-" + c);
+
         return super.commit(new BigInteger(String.valueOf(val)));
         // Commitment is smart enough to avoid doing exponetiation 
         // if val is either 0 or 1.
     }
-    
+
     public BigInteger commit(long val, BigInteger r) {
         long c = CONST.longValue();
         if(val != 0 && val != c && val != -c)
-            throw new RuntimeException("ThreeWayCommitment.commit can only" 
-                                       + "be invoked with 0 or +/-" + c);
-        
+            throw new RuntimeException("ThreeWayCommitment.commit can only"
+                    + "be invoked with 0 or +/-" + c);
+
         return super.commit(new BigInteger(String.valueOf(val)), r);
         // Commitment is smart enough to avoid doing exponetiation 
         // if val is either 0 or 1.
     }
-    
-    
+
+
     // The verifier:
     /**
      * Verify if the given bit <code>val</code> is contained in the commitment
@@ -122,9 +122,9 @@ public class ThreeWayCommitment extends Commitment {
      */
     public boolean verify(BigInteger c, BigInteger val, BigInteger r) {
         if(!val.equals(BigInteger.ZERO) && !val.equals(CONST)
-           && !val.equals(CONST.negate()))
+                && !val.equals(CONST.negate()))
             return false;
-        
+
         return super.verify(c, val, r);
     }
 
@@ -133,7 +133,7 @@ public class ThreeWayCommitment extends Commitment {
         proof.construct();
         return proof;
     }
-    
+
     /**
      * A zero-knowledge proof that the commitment contains 0,or +/-c. The protocol 
      * is based on
@@ -155,20 +155,20 @@ public class ThreeWayCommitment extends Commitment {
          * itself so we don't need to store the bit commitments.
          */
         private BitCommitment.BitCommitmentProof bcp1 = null;
-        private BitCommitment.BitCommitmentProof bcp2 = null;       
+        private BitCommitment.BitCommitmentProof bcp2 = null;
 
         public ThreeWayCommitmentProof() { super(); }
-        
+
         // Construct the ZKP that the commitment contains 0,or +/-c
         public void construct() {
             if(val == null)
-                throw new RuntimeException("Must commit to a value first" 
-                                           + "before constructing the proof!");
-            
+                throw new RuntimeException("Must commit to a value first"
+                        + "before constructing the proof!");
+
             // We do need to store this commitment:
             commitment = new BigInteger[1];
 
-            if(val != null) 
+            if(val != null)
                 commitment[0] = commit(val, r);
             else
                 commitment[0] = commit(val);
@@ -202,7 +202,7 @@ public class ThreeWayCommitment extends Commitment {
                 bc2.commit(1);
                 bc1.commit(0, rc.add(bc2.getRandomness()).mod(q));
             }
-            
+
             /**
              * The first element in the BitCommitmentProof is the commitment 
              * itself so we don't need to store the bit commitment.
@@ -226,9 +226,9 @@ public class ThreeWayCommitment extends Commitment {
          */
         public BitCommitment.BitCommitmentProof getDenominatorProof() {
             return bcp2;
-        }   
+        }
     }
-    
+
     /**
      * Verifies the given proof using our own parameters.
      *
@@ -236,19 +236,19 @@ public class ThreeWayCommitment extends Commitment {
      * who does not have the values, should construct a fresh new commitment
      * and pass the proof to it. The verifier and the prover should use the
      * same parameters (e.g. g and h).
-     */    
+     */
 
     public boolean verify(ThreeWayCommitmentProof proof) {
         BitCommitment.BitCommitmentProof bcp1 = proof.getNumeratorProof();
         BitCommitment.BitCommitmentProof bcp2 = proof.getDenominatorProof();
 
         // Check the bit commitments
-        BitCommitment bc = new BitCommitment(g, h);        
+        BitCommitment bc = new BitCommitment(g, h);
         if(!bc.verify(bcp1) || !bc.verify(bcp2)) {
             System.out.println("BitCommitment verification failed!");
             return false;
         }
-        
+
         // This commitment
         BigInteger C = proof.getCommitment()[0];
         BigInteger C1 = bcp1.getCommitment()[0];
@@ -258,10 +258,10 @@ public class ThreeWayCommitment extends Commitment {
             System.out.println("C1: " + C1 + ", C2: " + C2);
             return false;
         }
-        
+
         return true;
     }
-    
+
 
     /**
      * Test the ThreeCommitment and the ZKP
@@ -269,14 +269,14 @@ public class ThreeWayCommitment extends Commitment {
     public static void main(String[] args) {
         int k = 512;
         int nLoops = 10;
-        
+
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
                     try {
                         k = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         k = 512;
                     }
@@ -284,22 +284,22 @@ public class ThreeWayCommitment extends Commitment {
                 else if(arg.equals("-l")) {
                     try {
                         nLoops = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         nLoops = 10;
                     }
                 }
-                
+
             }
         }
-        
+
         // Setup the parameters:
         P4PParameters.initialize(k, false);
         NativeBigInteger g =  P4PParameters.getGenerator();
         NativeBigInteger h =  P4PParameters.getFreshGenerator();
         // We should use the same generators for both the prover and the verifier.
 
-     	SecureRandom rand = null;
+        SecureRandom rand = null;
         try {
             rand = SecureRandom.getInstance("SHA1PRNG");
         }
@@ -308,9 +308,9 @@ public class ThreeWayCommitment extends Commitment {
             e.printStackTrace();
             rand = new SecureRandom();
         }
-        
+
         rand.nextBoolean();
-        
+
         System.out.println("Testing ThreeWayCommitment for " + nLoops + " loops .");
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
@@ -319,7 +319,7 @@ public class ThreeWayCommitment extends Commitment {
         for(int j = 0; j < nLoops; j++) {
             long c = rand.nextLong();
             if(k < 66) c = (long)rand.nextInt()%(1<<(k-2));
-            
+
             if(c < 0) c = -c;
             long val = rand.nextLong();
             if(val%3 == 0)      val = 0;
@@ -327,29 +327,29 @@ public class ThreeWayCommitment extends Commitment {
             else                val = -c;
 
             ThreeWayCommitment tc = new ThreeWayCommitment(g, h, c);
-            BigInteger C = tc.commit(val);            
-            
+            BigInteger C = tc.commit(val);
+
             // Verify
             System.out.print("Testing commitment verification No. " + j + "....");
             System.out.println(" Committed to " + val);
-            if(!tc.verify(C, new BigInteger(String.valueOf(val)), 
-                          tc.getRandomness())) {
-                System.out.println("Verification failed for test " + j 
-                                   + ". Should have passed.");
+            if(!tc.verify(C, new BigInteger(String.valueOf(val)),
+                    tc.getRandomness())) {
+                System.out.println("Verification failed for test " + j
+                        + ". Should have passed.");
                 nfails++;
             }
-            
+
             // Wrong randomness. Should fail:
-            if(tc.verify(C, new BigInteger(String.valueOf(val)), 
-                         Util.randomBigInteger(q))) {
-                System.out.println("Verification passed for test " + j 
-                                   + ". Should have failed (wrong r).");
+            if(tc.verify(C, new BigInteger(String.valueOf(val)),
+                    Util.randomBigInteger(q))) {
+                System.out.println("Verification passed for test " + j
+                        + ". Should have failed (wrong r).");
                 nfails++;
             }
             // Wrong value. Should fail:
             if(tc.verify(C, Util.randomBigInteger(q), tc.getRandomness())) {
-                System.out.println("Verification passed for test " + j 
-                                   + ". Should have failed (wrong value).");	
+                System.out.println("Verification passed for test " + j
+                        + ". Should have failed (wrong value).");
                 nfails++;
             }
 
@@ -374,18 +374,18 @@ public class ThreeWayCommitment extends Commitment {
         long end = System.currentTimeMillis();
         verifierWatch.stop();
         proverWatch.stop();
-        System.out.println("3-Way commitment ZKP: " + nLoops 
-                           + " loops. Total failed tests: " + nfails + ". ms per loop:");
+        System.out.println("3-Way commitment ZKP: " + nLoops
+                + " loops. Total failed tests: " + nfails + ". ms per loop:");
         System.out.println("\n  Prover time         Verifier time        Total");
         System.out.println("===================================================");
-        System.out.println("    " 
-                           + (double)proverWatch.getElapsedTime()/(double)nLoops 
-                           + "                 "
-                           + (double)verifierWatch.getElapsedTime()/(double)nLoops 
-                           + "              " 
-                           + (double)(proverWatch.getElapsedTime()
-                                      +verifierWatch.getElapsedTime())
-                           /(double)nLoops);
+        System.out.println("    "
+                + (double)proverWatch.getElapsedTime()/(double)nLoops
+                + "                 "
+                + (double)verifierWatch.getElapsedTime()/(double)nLoops
+                + "              "
+                + (double)(proverWatch.getElapsedTime()
+                +verifierWatch.getElapsedTime())
+                /(double)nLoops);
         System.out.println("Total testing time: " + (end-start) + " ms.");
     }
 }

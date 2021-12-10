@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -36,19 +36,19 @@ import java.security.SecureRandom;
 import java.util.Vector;
 
 import net.i2p.util.NativeBigInteger;
-import java.util.Arrays;
+
 import p4p.util.Util;
 import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
-//import p4p.crypto.SquareCommitment;
-//import p4p.crypto.Proof;
-//import p4p.crypto.BitCommitment;
-//import p4p.crypto.Commitment;
+import p4p.crypto.SquareCommitment;
+import p4p.crypto.Proof;
+import p4p.crypto.BitCommitment;
+import p4p.crypto.Commitment;
 import p4p.user.UserVector2;
 import p4p.server.P4PServer;
 
 /**
- * 
+ *
  * Providing a simulation framework for a P4P system. This allows one to debug
  * and benchmark the cryptographic primitives without having to provide other
  * components necessary for a real deployment (e.g. secure communication).
@@ -59,59 +59,52 @@ import p4p.server.P4PServer;
 public class P4PSim extends P4PParameters {
     private static NativeBigInteger g = null;
     private static NativeBigInteger h = null;
-    
-    private static int security_parameter_Sim = 512;     // Security parameter
-    private static int dimension = 10;      // User vector dimension
-//    private static int n = 10;      // Number of users
-    private static int user_num = 10;      // Number of users
-    private static int bitLength = 40;      // Bit length of L
-    
+
+    private static int k = 512;     // Security parameter
+    private static int m = 10;      // User vector dimension
+    private static int n = 10;      // Number of users
+    private static int l = 40;      // Bit length of L
+
     /**
      * Start a simulation.
      */
     public static void main(String[] args) {
-        int nLoops = 1;
+        int nLoops = 10;
         boolean doBench = false;
         boolean worstcase = false;
         /**
-         * Test the worst case cost. i.e. every vector should pass. This is 
+         * Test the worst case cost. i.e. every vector should pass. This is
          * when the verifier spends longest time.
          */
 
         // Definie the number of iterations that the bound ZKP must have:
-        int zkpIterations = 1;
+        int zkpIterations = 50;
 
-        System.out.println("args.length: " + args.length);
-
-
-        int[] shouldPass_Counter = new int[2];
-        shouldPass_Counter[0] = 0;
-        shouldPass_Counter[1] = 1;
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
-                if (arg.equals("-security_parameter_Sim")) {
+                if (arg.equals("-k")) {
                     try {
-                        security_parameter_Sim = Integer.parseInt(args[i++]);
+                        k = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        security_parameter_Sim = 512;
+                        k = 512;
                     }
                 }
                 else if(arg.equals("-m")) {
                     try {
-                        dimension = Integer.parseInt(args[i++]);
+                        m = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        dimension = 10;
+                        m = 10;
                     }
                 }
                 else if(arg.equals("-n")) {
                     try {
-                        user_num = Integer.parseInt(args[i++]);
+                        n = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        user_num = 10;
+                        n = 10;
                     }
                 }
                 else if(arg.equals("-N")) {
@@ -134,10 +127,10 @@ public class P4PSim extends P4PParameters {
 
                 else if(arg.equals("-l")) {
                     try {
-                        bitLength = Integer.parseInt(args[i++]);
+                        l = Integer.parseInt(args[i++]);
                     }
                     catch (NumberFormatException e) {
-                        bitLength = 40;
+                        l = 40;
                     }
                 }
 
@@ -153,13 +146,13 @@ public class P4PSim extends P4PParameters {
             }
         }
 
-        System.out.println("securityParameter = " + security_parameter_Sim);
-        System.out.println("dimension = " + dimension);
-        System.out.println("n = " + user_num);
+        System.out.println("k = " + k);
+        System.out.println("m = " + m);
+        System.out.println("n = " + n);
         System.out.println("nLoops = " + nLoops);
 
         // Setup the parameters:
-        P4PParameters.initialize(security_parameter_Sim, false);
+        P4PParameters.initialize(k, false);
         SecureRandom rand = null;
         try {
             rand = SecureRandom.getInstance("SHA1PRNG");
@@ -169,165 +162,121 @@ public class P4PSim extends P4PParameters {
             e.printStackTrace();
             rand = new SecureRandom();
         }
+
         rand.nextBoolean();
 
-        long L_1099511627776 = ((long)2)<<bitLength - 1; //1099511627776
-        long FieldSize_larger_than_bitLength_Sim = BigInteger.probablePrime(Math.min(bitLength+30,62), rand).longValue();
+        long L = ((long)2)<<l - 1;
+        long F = BigInteger.probablePrime(Math.min(l+30,62), rand).longValue();
         // Make the field size to be 10 bits larger than l
 
-        // Or just make FieldSize_larger_than_bitLength_Sim 62 bits? Note that we can't use 64 bit since there is no
+        // Or just make F 62 bits? Note that we can't use 64 bit since there is no
         // unsigned long in java.
-        //FieldSize_larger_than_bitLength_Sim = BigInteger.probablePrime(62, rand).longValue();
+        //F = BigInteger.probablePrime(62, rand).longValue();
 
-        int iteration_N = zkpIterations;
-        System.out.println("bitLength = " + bitLength + ", L_1099511627776 = " + L_1099511627776);
-        System.out.println("FieldSize_larger_than_bitLength_Sim = " + FieldSize_larger_than_bitLength_Sim);
+        int N = zkpIterations;
+        System.out.println("l = " + l + ", L = " + L);
+        System.out.println("F = " + F);
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
-        long[] data_long_1array_Sim = new long[dimension];
-        int[][] idle_coefficient_vector = new int[zkpIterations][];
-        NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
-        g = two_generators_for_g_h[0];
-        h = two_generators_for_g_h[1];
+        long[] data = new long[m];
+        int[][] c = new int[zkpIterations][];
+        NativeBigInteger[] bi = P4PParameters.getGenerators(2);
+        g = bi[0];
+        h = bi[1];
 
+        P4PServer server = new P4PServer(m, F, l, zkpIterations, g, h);
 
-/////////////////////////////////           P4PServer            /////////////////////////////////////////////////////
-        P4PServer server = new P4PServer(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, zkpIterations, g, h);
-        ////////////////////////////////////////////////////////////////////////
-
-
-
-        long[] sum_in_Sim = new long[dimension];
-        long[] v_for_add_Sim = new long[dimension];
+        long[] s = new long[m];
+        long[] v = new long[m];
 
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
         double delta = 1.5;
-//        double [] delta_array = new double[user_num];
         int nfails = 0;
+
         for(int kk = 0; kk < nLoops; kk++) {
-            int nQualifiedUsers = 0;
+            int nQulaifiedUsers = 0;
             boolean passed = true;
             server.init(); // Must clear old states and data
             server.generateChallengeVectors();
-            for(int i = 0; i < dimension; i++) {
-                sum_in_Sim[i] = 0;   v_for_add_Sim[i] = 0;
+            for(int i = 0; i < m; i++) {
+                s[i] = 0;   v[i] = 0;
             }
-            for(int user_id = 0; user_id < user_num; user_id++) {
+            for(int i = 0; i < n; i++) {
                 long start = System.currentTimeMillis();
                 long innerProductTime = 0;
                 long randChallengeTime = 0;
                 boolean shouldPass;
                 // We should create a vector that passes the zkp
-                if (worstcase) shouldPass = true;     // Test the worst case
+                if(worstcase) shouldPass = true;     // Test the worst case
                 else shouldPass = rand.nextBoolean();
-                System.out.println("Loop " + kk + ", user " + user_id + ". shouldPass = " + shouldPass);
-                if (shouldPass){
-                    delta = 0.5;
-                    shouldPass_Counter[0]++;
-                }else{
-                    delta = 2.0;
-                    shouldPass_Counter[1]++;
-                }
+                //System.out.println("Loop " + kk + ", user " + i + ". shouldPass = " + shouldPass);
+                if(shouldPass) delta = 0.5;
+                else delta = 2.0;
+                double l2 = (double)L*delta;
+                data = Util.randVector(m, F, l2);
 
-                double l2_norm_double_5dot49_Sim = (double)L_1099511627776*delta;
-
-
-                ////// 1. Generate Data_long_Array && UserVector2 & //////
-                data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm_double_5dot49_Sim);
-                //I🌟 【 data_long = Util.randVector(dim, F, l2norm) 】
-
-                UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
-
-
-
-
-                // 2. Generate ServerVector & PeerVector
-                // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
-                uv2.generateShares();
-                 //II🌟 uv2.generateShares(); 【 serverUserVector_UV2 = Util.randVector(dim, F, 0) 】
-                // III🌟 uv2.main() 【 data_uv2_main = Util.randVector(m, F, l2_L_delta); 】
-
-
-                // 3. set CheckCoVector through server Challenge_Vector for Each User
-                uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
+                UserVector2 uv = new UserVector2(data, F, l, g, h);
+                // Simulating the user:
+                uv.generateShares();
+                uv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 proverWatch.start();
-
-
-
-                // 4. peerProof & serverProof
                 UserVector2.L2NormBoundProof2 peerProof =
-                        (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(false);
+                        (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(false);
                 UserVector2.L2NormBoundProof2 serverProof =
-                        (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(true);
+                        (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(true);
                 proverWatch.pause();
 
+                // The server:
+                server.setUserVector(i, uv.getU());
+                server.setProof(i, serverProof);
 
-
-
-
-                // 5. setUserVector(uid, U) & setProof(uid, sProof)
-                server.setUserVector(user_id, uv2.getU());
-                server.setProof(user_id, serverProof);
-
-
-
-
-                // 6. peer & UV2 pv:
-                long[] vv = uv2.getV();
-                UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+                // The peer:
+                long[] vv = uv.getV();
+                UserVector2 pv = new UserVector2(m, F, l, g, h);
                 pv.setV(vv);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
-
-
-                // peer Proof //
                 boolean peerPassed = pv.verify2(peerProof);
                 verifierWatch.pause();
-                System.out.println("here");
-                if(!peerPassed){
-                    System.out.println("!peerPassed");
-                    server.disqualifyUser(user_id);
-                }
-                else{
-                    server.setY(user_id, pv.getY_UV2());
-                }
 
+                if(!peerPassed)
+                    server.disqualifyUser(i);
+                else
+                    server.setY(i, pv.getY());
                 /**
-                 * Note that peer's verification simply computes some 
-                 * commitments the peer's shares of the checksums (i.e. the 
-                 * Y's) which should be forwarded to the server. We simulate 
+                 * Note that peer's verification simply computes some
+                 * commitments the peer's shares of the checksums (i.e. the
+                 * Y's) which should be forwarded to the server. We simulate
                  * this by the server.setY call. The server then use them to
-                 * verify the proof. This is where the real verification 
-                 * happens. The peer's verification actually always returns 
+                 * verify the proof. This is where the real verification
+                 * happens. The peer's verification actually always returns
                  * true.
                  */
 
-                shouldPass = l2_norm_double_5dot49_Sim < L_1099511627776;   // Correct shouldPass using actual data.
+                shouldPass = l2 < L;   // Correct shouldPass using actual data.
                 if(shouldPass) {
-                    nQualifiedUsers++;
-                    Util.vectorAdd(sum_in_Sim, data_long_1array_Sim, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
-                    Util.vectorAdd(v_for_add_Sim, vv, v_for_add_Sim, FieldSize_larger_than_bitLength_Sim);
+                    nQulaifiedUsers++;
+                    Util.vectorAdd(s, data, s, F);
+                    Util.vectorAdd(v, vv, v, F);
                 }
             }
 
             // Now the server is ready to verify
-            server.setPeerSum(v_for_add_Sim);
+            server.setPeerSum(v);
             verifierWatch.start();
             server.compute();
             verifierWatch.pause();
             // Check if the result is right
             long[] result = server.getVectorSum();
-            System.out.println("result: "+ Arrays.toString(result));
 
-
-            for(int ii = 0; ii < dimension; ii++) {
-                if(result[ii] != Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim)) {
+            for(int ii = 0; ii < m; ii++) {
+                if(result[ii] != Util.mod(s[ii], F)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
                             + result[ii] + ", should be "
-                            + Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim));
+                            + Util.mod(s[ii], F));
                     passed = false;
                     nfails++;
                     break;
@@ -335,11 +284,11 @@ public class P4PSim extends P4PParameters {
             }
             if(passed)
                 System.out.println("Test " + kk + " passed. Number of qualified users "
-                        + " should be " + nQualifiedUsers + ". Server reported "
+                        + " should be " + nQulaifiedUsers + ". Server reported "
                         + server.getNQulaifiedUsers());
             else
                 System.out.println("Test " + kk + " failed. Number of qualified users should be "
-                        + nQualifiedUsers + ". Server reported "
+                        + nQulaifiedUsers + ". Server reported "
                         + server.getNQulaifiedUsers());
 
         }
@@ -357,7 +306,7 @@ public class P4PSim extends P4PParameters {
                 + "              "
                 + ((double)(proverWatch.getElapsedTime()
                 +verifierWatch.getElapsedTime()))/nLoops);
-        System.out.println("Note that the time is for all "+user_num+" users in ms.");
+        System.out.println("Note that the time is for all "+n+" users in ms.");
         System.out.println("Also note that the prover needs to compute proofs"
                 + " for both the server and the privacy peer.");
 

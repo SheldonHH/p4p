@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -55,14 +55,14 @@ public class BitCommitment extends Commitment {
     public BitCommitment(NativeBigInteger g, NativeBigInteger h) {
         super(g, h);
     }
-    
+
     /**
      * Commit to a bit
      */
     public BigInteger commit(BigInteger val) {
         if(!val.equals(BigInteger.ZERO) && !val.equals(BigInteger.ONE))
-            throw new IllegalArgumentException("BitCommitment.commit can only" 
-                                       + "be invoked with 0 or 1!");        
+            throw new IllegalArgumentException("BitCommitment.commit can only"
+                    + "be invoked with 0 or 1!");
         return super.commit(val);
         // Commitment is smart enough to avoid doing 
         // exponetiation if val is either 0 or 1.
@@ -71,41 +71,41 @@ public class BitCommitment extends Commitment {
 
     /**
      * Commit to a bit
-     */    
+     */
     public BigInteger commit(int val) {
         if(val != 0 && val != 1)
-            throw new IllegalArgumentException("BitCommitment.commit can only" 
-                                       + "be invoked with 0 or 1!");
-        
+            throw new IllegalArgumentException("BitCommitment.commit can only"
+                    + "be invoked with 0 or 1!");
+
         return super.commit(new BigInteger(String.valueOf(val)));
         // Commitment is smart enough to avoid doing exponetiation 
         // if val is either 0 or 1.
     }
-    
+
     public BigInteger commit(int val, BigInteger r) {
         if(val != 0 && val != 1)
-            throw new IllegalArgumentException("BitCommitment.commit can only" 
-                                       + "be invoked with 0 or 1!");
-        
+            throw new IllegalArgumentException("BitCommitment.commit can only"
+                    + "be invoked with 0 or 1!");
+
         return super.commit(new BigInteger(String.valueOf(val)), r);
         // Commitment is smart enough to avoid doing exponetiation 
         // if val is either 0 or 1.
     }
-    
+
     /**
      * Commit to a bit
-     */    
+     */
     public BigInteger commit(boolean val) {
         return commit(val ? 1 : 0);
     }
-    
+
     /**
      * Commit to a bit
-     */    
+     */
     public BigInteger commit(boolean val, BigInteger r) {
         return commit(val ? 1 : 0, r);
     }
-    
+
     // The verifier:
     /**
      * Verify if the given bit <code>val</code> is contained in the commitment
@@ -115,7 +115,7 @@ public class BitCommitment extends Commitment {
     public boolean verify(BigInteger c, BigInteger val, BigInteger r) {
         if(!val.equals(BigInteger.ZERO) && !val.equals(BigInteger.ONE))
             return false;
-        
+
         return super.verify(c, val, r);
     }
 
@@ -129,8 +129,8 @@ public class BitCommitment extends Commitment {
     public BigInteger f(BigInteger i){
         return h.modPow(i, p);
     }
-    
-    
+
+
     /**
      * A zero-knowledge proof that the commitment contains a bit. The protocol 
      * is based on the f-preimage proof of
@@ -141,15 +141,15 @@ public class BitCommitment extends Commitment {
      */
     public class BitCommitmentProof extends Proof {
         public BitCommitmentProof() { super(); }
-        
+
         // Construct the ZKP that the commitment contains a bit
         public void construct() {
             if(val == null)
-                throw new RuntimeException("Must commit to a bit first" 
-                                           + "before constructing the proof!");
-            
+                throw new RuntimeException("Must commit to a bit first"
+                        + "before constructing the proof!");
+
             commitment = new BigInteger[3];
-            commitment[0] = new NativeBigInteger(commit(val, r)); 
+            commitment[0] = new NativeBigInteger(commit(val, r));
             /**
              * The first element is the commitment itself. Note we must use our 
              * own randomness here since we already committed to a bit. 
@@ -158,7 +158,7 @@ public class BitCommitment extends Commitment {
              */
             challenge = new BigInteger[1];
             response = new BigInteger[4];
-	    
+
             BigInteger v = Util.randomBigInteger(q);;
             BigInteger e1 = null;
             BigInteger z1 = null;
@@ -166,23 +166,23 @@ public class BitCommitment extends Commitment {
             BigInteger z0 = null;
             BigInteger m0 = null;
             BigInteger m1 = null;
-            
+
             if(val.equals(BigInteger.ZERO)) {
                 e1 = Util.randomBigInteger(q);;
                 z1 = Util.randomBigInteger(q);;
                 // calculate m0, m1:
                 m0 = f(v);
-                
+
                 /**
                  * Note: NativeBigInteger seems to be unable to handle negative 
                  * exponents properly. We should avoid using 
                  * modPow(e1.negate(), p) before we fix the implementation.
                  */
-                BigInteger t = (commitment[0].modInverse(p)).modPow(e1, p); 
+                BigInteger t = (commitment[0].modInverse(p)).modPow(e1, p);
                 // c^ -e1 
                 t = t.multiply(g.modPow(e1, p));
                 m1 = (t.multiply(f(z1))).mod(p); // f(z1) * c ^ (-e1) * g ^ e1
-                
+
                 commitment[1] = m0;
                 commitment[2] = m1;
                 // Get challenge which should be a hash of the commitment:
@@ -202,12 +202,12 @@ public class BitCommitment extends Commitment {
             else if(val.equals(BigInteger.ONE)) {
                 e0 = Util.randomBigInteger(q);;
                 z0 = Util.randomBigInteger(q);;
-                
+
                 // calculate m0, m1:
                 m1 = f(v);
-                m0 = f(z0).multiply((commitment[0].modInverse(p)).modPow(e0, p)); 
+                m0 = f(z0).multiply((commitment[0].modInverse(p)).modPow(e0, p));
                 // f(z0) * c ^ (-e0)
-                
+
                 commitment[1] = m0;
                 commitment[2] = m1;
                 // Get challenge which should be a hash of the commitment:
@@ -224,15 +224,15 @@ public class BitCommitment extends Commitment {
                 z1 = v.add(e1.multiply(r)).mod(q); // v + e1 * r;
             }
             else
-                throw new RuntimeException("Not a bit commitment!");		
-            
+                throw new RuntimeException("Not a bit commitment!");
+
             response[0] = e0;
             response[1] = e1;
             response[2] = z0;
             response[3] = z1;
         }
     }
-    
+
     /**
      * Verifies the given proof using our own parameters.
      *
@@ -246,16 +246,16 @@ public class BitCommitment extends Commitment {
         BigInteger[] c = proof.getCommitment();
         BigInteger[] s = proof.getChallenge();
         BigInteger[] r = proof.getResponse();
-        
+
         if(c.length != 3 || s.length != 1 || r.length != 4)
             return false;
-        
+
         return verify(c[0], c[1], c[2], s[0], r[0], r[1], r[2], r[3]);
     }
-    
 
-    private boolean verify(BigInteger c, BigInteger m0, BigInteger m1, 
-                           BigInteger s, BigInteger e0, BigInteger e1, 
+
+    private boolean verify(BigInteger c, BigInteger m0, BigInteger m1,
+                           BigInteger s, BigInteger e0, BigInteger e1,
                            BigInteger z0, BigInteger z1) {
 
         // Also need to verify the hash
@@ -263,7 +263,7 @@ public class BitCommitment extends Commitment {
         msg[0] = c;
         msg[1] = m0;
         msg[2] = m1;
-        
+
         try {
             if(!s.equals(Util.secureHash(msg, q))) {
                 System.out.println("Challenge is not equal to the hash!");
@@ -275,36 +275,36 @@ public class BitCommitment extends Commitment {
             e.printStackTrace();
             return false;
         }
-        
+
         // Pass 1:
         if(!s.equals((e0.add(e1)).mod(q))) {
             System.out.println("Verification failed 1");
             return false;
         }
-        
+
         // Pass 2:
         BigInteger vv = (m0.multiply(c.modPow(e0, p))).mod(p);  // m0*c ^ e0
         if(!f(z0).equals(vv)) {
             System.out.println("Verification failed 2");
             return false;
         }
-        
+
         // Pass 3;
         //NativeBigInteger nvv = new NativeBigInteger(bit_c.multiply(g.modInverse(p)));
-        NativeBigInteger nvv = 
-            new NativeBigInteger(c.multiply(g.modInverse(p)).mod(p));
+        NativeBigInteger nvv =
+                new NativeBigInteger(c.multiply(g.modInverse(p)).mod(p));
         vv = nvv.modPow(e1, p); //m1 * (c/y)^e1
         vv = (vv.multiply(m1)).mod(p);
         if(!f(z1).equals(vv)) {
-            System.out.println("Verification failed 3. f(z1) = " + f(z1) 
-                               + ", vv = " + vv);
+            System.out.println("Verification failed 3. f(z1) = " + f(z1)
+                    + ", vv = " + vv);
             return false;
-            
+
         }
-        
+
         return true;
     }
-    
+
 
     /**
      * Test the BitCommitment and the ZKP
@@ -313,14 +313,14 @@ public class BitCommitment extends Commitment {
         int k = 512;
         int N = 32;
         int nLoops = 100;
-        
+
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
                     try {
                         k = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         k = 512;
                     }
@@ -328,7 +328,7 @@ public class BitCommitment extends Commitment {
                 else if(arg.equals("-N")) {
                     try {
                         N = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         N = 32;
                     }
@@ -336,15 +336,15 @@ public class BitCommitment extends Commitment {
                 else if(arg.equals("-l")) {
                     try {
                         nLoops = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         nLoops = 10;
                     }
                 }
-                
+
             }
         }
-        
+
         // Setup the parameters:
         P4PParameters.initialize(k, false);
         NativeBigInteger g =  P4PParameters.getGenerator();
@@ -353,7 +353,7 @@ public class BitCommitment extends Commitment {
 
         BitCommitment bc = new BitCommitment(g, h);
 
-     	SecureRandom rand = null;
+        SecureRandom rand = null;
         try {
             rand = SecureRandom.getInstance("SHA1PRNG");
         }
@@ -362,9 +362,9 @@ public class BitCommitment extends Commitment {
             e.printStackTrace();
             rand = new SecureRandom();
         }
-        
+
         rand.nextBoolean();
-        
+
         System.out.println("Testing BitCommitment for " + nLoops + " loops .");
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
@@ -372,27 +372,27 @@ public class BitCommitment extends Commitment {
         for(int j = 0; j < nLoops; j++) {
             int val = rand.nextBoolean() ? 1 : 0;
             BigInteger c = bc.commit(val);
-            
-            System.out.println("BitCommitted to " + val);
-            
+
+            System.out.println("Committed to " + val);
+
             // Verify
             System.out.print("Testing commitment verification ...");
-            if(!bc.verify(c, new BigInteger(String.valueOf(val)), 
-                          bc.getRandomness()))
-                System.out.println("Verification failed for test " + j 
-                                   + ". Should have passed.");
+            if(!bc.verify(c, new BigInteger(String.valueOf(val)),
+                    bc.getRandomness()))
+                System.out.println("Verification failed for test " + j
+                        + ". Should have passed.");
             else
                 System.out.println(" passed");
-            
+
             // Wrong randomness. Should fail:
-            if(bc.verify(c, new BigInteger(String.valueOf(val)), 
-                         Util.randomBigInteger(q)))
-                System.out.println("Verification passed for test " + j 
-                                   + ". Should have failed (wrong r).");
+            if(bc.verify(c, new BigInteger(String.valueOf(val)),
+                    Util.randomBigInteger(q)))
+                System.out.println("Verification passed for test " + j
+                        + ". Should have failed (wrong r).");
             // Wrong value. Should fail:
             if(bc.verify(c, Util.randomBigInteger(q), bc.getRandomness()))
-                System.out.println("Verification passed for test " + j 
-                                   + ". Should have failed (wrong value).");	
+                System.out.println("Verification passed for test " + j
+                        + ". Should have failed (wrong value).");
 
             // Test the ZKP:
             System.out.print("Testing bit commitment ZKP ...");
@@ -407,8 +407,8 @@ public class BitCommitment extends Commitment {
 
             verifierWatch.start();
             if(!verifier.verify(proof))
-                System.out.println("ZKP failed for test " + j 
-                                   + ". Should have passed.");
+                System.out.println("ZKP failed for test " + j
+                        + ". Should have passed.");
             else
                 System.out.println(" passed");
             verifierWatch.pause();
@@ -416,18 +416,18 @@ public class BitCommitment extends Commitment {
         long end = System.currentTimeMillis();
         verifierWatch.stop();
         proverWatch.stop();
-        System.out.println("Bit commitment ZKP: " + nLoops 
-                           + " loops. ms per loop:");
+        System.out.println("Bit commitment ZKP: " + nLoops
+                + " loops. ms per loop:");
         System.out.println("\n  Prover time         Verifier time        Total");
         System.out.println("===================================================");
-        System.out.println("    " 
-                           + (double)proverWatch.getElapsedTime()/(double)nLoops 
-                           + "                 "
-                           + (double)verifierWatch.getElapsedTime()/(double)nLoops 
-                           + "              " 
-                           + (double)(proverWatch.getElapsedTime()
-                                      +verifierWatch.getElapsedTime())
-                           /(double)nLoops);
+        System.out.println("    "
+                + (double)proverWatch.getElapsedTime()/(double)nLoops
+                + "                 "
+                + (double)verifierWatch.getElapsedTime()/(double)nLoops
+                + "              "
+                + (double)(proverWatch.getElapsedTime()
+                +verifierWatch.getElapsedTime())
+                /(double)nLoops);
         System.out.println("Total testing time: " + (end-start) + " ms.");
     }
 }

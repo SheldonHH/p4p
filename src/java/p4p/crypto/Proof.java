@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -37,7 +37,7 @@ import java.security.SecureRandom;
 import p4p.util.P4PParameters;
 
 /**
- * 
+ *
  * This is an abstract 3-round (a.k.a $\Sigma$) proof consisting of 3 rounds:
  * <p>
  *     Prover -> Verifier:  commitment
@@ -51,7 +51,7 @@ import p4p.util.P4PParameters;
 
 
 public abstract class Proof extends P4PParameters {
-    protected BigInteger[] commitment = null;  
+    protected BigInteger[] commitment = null;
     /**
      * This is the first message in a 3-round proof. The prover ``commits''
      * to her data using some kind of commitment scheme. This is essentially
@@ -71,7 +71,7 @@ public abstract class Proof extends P4PParameters {
 
     public Proof() {}
 
-    public Proof(BigInteger[] commitment, BigInteger[] challenge, 
+    public Proof(BigInteger[] commitment, BigInteger[] challenge,
                  BigInteger[] response) {
         this.commitment = commitment;
         this.challenge = challenge;
@@ -81,12 +81,12 @@ public abstract class Proof extends P4PParameters {
     public BigInteger[] getCommitment() { return commitment; }
     public BigInteger[] getChallenge() { return challenge; }
     public BigInteger[] getResponse() { return response; }
-    
+
     /**
      * Construct the proof. This should be overriden by subclasses.
      */
     public abstract void construct();
-    
+
     /**
      * Verify the proof. To be overriden by subclasses.
      */

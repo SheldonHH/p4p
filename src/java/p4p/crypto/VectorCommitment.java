@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -41,7 +41,7 @@ import p4p.util.Util;
 import p4p.util.P4PParameters;
 
 /**
- * 
+ *
  * Vector commitment. It allows the committer to commit to an N-dimensional 
  * vector. The commitment is a single element in Z_q. The scheme is based on
  * Pedersen's discrete log based commitment scheme:
@@ -59,32 +59,32 @@ import p4p.util.P4PParameters;
 public class VectorCommitment extends P4PParameters {
     protected NativeBigInteger[] g = null;
     protected NativeBigInteger h = null;
-    
+
     /**
      * The dimension of the vector
      */
-    int N = -1; 
-    
+    int N = -1;
+
     /**
      * verify that the parameters are correct.
      */
-    
+
     public void sanityCheck() {
         super.sanityCheck();
-        
+
         if(!h.modPow(q, p).equals(BigInteger.ONE))
             throw new IllegalArgumentException("h does not have the correct order!");
-        
+
         if(N <= 0)
             throw new IllegalArgumentException("Non-positive dimension!");
-        
+
         for(int i = 0; i < N; i++) {
             if(g[i].equals(BigInteger.ONE))
                 throw new IllegalArgumentException("g[" + i + "] is ONE!");
             if(!g[i].modPow(q, p).equals(BigInteger.ONE))
                 throw new IllegalArgumentException("g[" + i + "] does not have the correct order!");
         }
-        
+
     }
 
     /**
@@ -93,9 +93,9 @@ public class VectorCommitment extends P4PParameters {
      * to bits). 
      */
     protected BigInteger vectorCommit(BigInteger[] vals, BigInteger r) {
-        if(vals.length != N) 
+        if(vals.length != N)
             throw new IllegalArgumentException("Incorrect dimension!");
-        
+
         BigInteger c = h.modPow(r, p);
         for(int i = 0; i < N; i++) {
             if(vals[i].equals(BigInteger.ZERO))
@@ -105,107 +105,107 @@ public class VectorCommitment extends P4PParameters {
             else
                 c = c.multiply(g[i].modPow(vals[i].mod(q), p)).mod(p);
         }
-        
+
         return c;
     }
 
     // The committer:
-    /** 
+    /**
      * The values to be committed to.
      */
-    protected BigInteger[] vals = null;    
-    
-    /** 
+    protected BigInteger[] vals = null;
+
+    /**
      * The randomness used in the commitment.
      */
-    protected BigInteger r = null;    
-    
+    protected BigInteger r = null;
+
     /**
      */
     public VectorCommitment(NativeBigInteger g[], NativeBigInteger h) {
         this.g = g;
         this.h = h;
         N = g.length;
-        sanityCheck();	
+        sanityCheck();
     }
-    
+
     public int getDemension() { return N; }
-    
+
     /**
      * Commits to a vector of long integers. (Assume q > Long.MAX_VALUE) 
-     */    
+     */
     public BigInteger commit(long[] vals) {
         this.vals = new BigInteger[vals.length];
-        for(int i = 0; i < vals.length; i++) 
+        for(int i = 0; i < vals.length; i++)
             this.vals[i] = new BigInteger(String.valueOf(vals[i]));
-        
+
         return commit(this.vals);
     }
-    
-    
+
+
     /**
-     * Commits to a  vector of long integers using the given randomness
+     * Commits to a vector of long integers using the given randomness
      * (Assume q > Long.MAX_VALUE) 
-     */    
+     */
     public BigInteger commit(long[] vals, BigInteger r) {
         this.vals = new BigInteger[vals.length];
-        for(int i = 0; i < vals.length; i++) 
+        for(int i = 0; i < vals.length; i++)
             this.vals[i] = new BigInteger(String.valueOf(vals[i]));
-        
+
         return commit(this.vals, r);
     }
-    
-    
+
+
     /**
      * Commits to a vector of integers. (Assume q > Integer.MAX_VALUE) 
-     */    
+     */
     public BigInteger commit(int[] vals) {
         this.vals = new BigInteger[vals.length];
-        for(int i = 0; i < vals.length; i++) 
+        for(int i = 0; i < vals.length; i++)
             this.vals[i] = new BigInteger(String.valueOf(vals[i]));
-        
+
         return commit(this.vals);
     }
-    
+
     /**
      * Commits to a vector of integers using the given randomness. 
      * (Assume q > Integer.MAX_VALUE) 
-     */    
+     */
     public BigInteger commit(int[] vals, BigInteger r) {
         this.vals = new BigInteger[vals.length];
-        for(int i = 0; i < vals.length; i++) 
+        for(int i = 0; i < vals.length; i++)
             this.vals[i] = new BigInteger(String.valueOf(vals[i]));
-        
+
         return commit(this.vals, r);
     }
-    
+
     /**
      * Commits to a vector of BigInteger
      */
-    
+
     public BigInteger commit(BigInteger[] vals) {
         r = Util.randomBigInteger(q);
         return commit(vals, r);
     }
-    
+
     /**
      * Commits to a vector of BigInteger using the given randomness
      */
-    
+
     public BigInteger commit(BigInteger[] vals, BigInteger r) {
         this.r = r;
         this.vals = vals;
-        
+
         return vectorCommit(vals, r);
     }
-    
+
     /**
      * Returns the randomness used in this commitment
      */
     public BigInteger getRandomness() {
         return r;
     }
-    
+
     /**
      * Returns the vector contained in this commitment
      */
@@ -213,7 +213,7 @@ public class VectorCommitment extends P4PParameters {
         return vals;
     }
 
-    
+
     // The verifier:
     /**
      * Verify if the given vector is the one contained in the commitment.
@@ -223,7 +223,7 @@ public class VectorCommitment extends P4PParameters {
         BigInteger cc = vectorCommit(vec, r);
         return cc.equals(c);
     }
-    
+
     /**
      * Test the VectorCommitment
      */
@@ -231,14 +231,14 @@ public class VectorCommitment extends P4PParameters {
         int k = 512;
         int N = 32;
         int nLoops = 10;
-        
+
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             if(arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
                     try {
                         k = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         k = 512;
                     }
@@ -246,7 +246,7 @@ public class VectorCommitment extends P4PParameters {
                 else if(arg.equals("-N")) {
                     try {
                         N = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         N = 32;
                     }
@@ -254,31 +254,31 @@ public class VectorCommitment extends P4PParameters {
                 else if(arg.equals("-l")) {
                     try {
                         nLoops = Integer.parseInt(args[i++]);
-                    } 
+                    }
                     catch (NumberFormatException e) {
                         nLoops = 10;
                     }
                 }
-                
+
             }
         }
-        
+
         // Setup the parameters:
         P4PParameters.initialize(k, false);
-        
-        VectorCommitment vc = 
-            new VectorCommitment(P4PParameters.getGenerators(N), 
-                                 P4PParameters.getGenerator()) ;
-    
+
+        VectorCommitment vc =
+                new VectorCommitment(P4PParameters.getGenerators(N),
+                        P4PParameters.getGenerator()) ;
+
         // Generate the vector:
         BigInteger[] vec = new BigInteger[N];
         BigInteger[] sum = new BigInteger[N];
-        
+
         // dummy
         BigInteger[] dummy = new BigInteger[N];
         for(int i = 0; i < N; i++)
             dummy[i] = Util.randomBigInteger(q);
-        
+
         System.out.println("Testing VectorCommitment .");
         for(int j = 0; j < nLoops; j++) {
             //System.out.print(".");
@@ -286,31 +286,31 @@ public class VectorCommitment extends P4PParameters {
                 vec[i] = Util.randomBigInteger(q);
                 sum[i] = vec[i].add(dummy[i]);
             }
-            
+
             // Commit
             BigInteger c = vc.commit(vec);
             BigInteger r = vc.getRandomness();
-            
+
             // Verify
             if(!vc.verify(c, vec, r))
-                System.out.println("Verification failed for test " 
-                                   + j + ". Should have passed.");
-            
+                System.out.println("Verification failed for test "
+                        + j + ". Should have passed.");
+
             // Wrong randomness. Should fail:
             if(vc.verify(c, vec, Util.randomBigInteger(q)))
-                System.out.println("Verification passed for test " 
-                                   + j + ". Should have failed (wrong r submitted).");	
-            
+                System.out.println("Verification passed for test "
+                        + j + ". Should have failed (wrong r submitted).");
+
             // Wrong vector. Should fail:
             if(vc.verify(c, dummy, r))
-                System.out.println("Verification passed for test " 
-                                   + j + ". Should have failed (wrong vector submitted).");	
-            
+                System.out.println("Verification passed for test "
+                        + j + ". Should have failed (wrong vector submitted).");
+
             // Now check the homomorphism:
             System.out.print("Verifying homomorphism ....");
             BigInteger dc = vc.commit(dummy);
             BigInteger dr = vc.getRandomness();
-            
+
             // c*dc = commit(sum, r+dr)
             if(!c.multiply(dc).mod(p).equals(vc.commit(sum, r.add(dr)).mod(p)))
                 System.out.println(" failed. Homomorphism doesn't hold.");
