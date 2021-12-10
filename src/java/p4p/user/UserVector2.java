@@ -139,8 +139,8 @@ public class UserVector2 extends UserVector {
     // 1. serverUVector
         serverUserVector_UV2 = Util.randVector(dimension, F_UV, 0);
 
-        boolean data_equal_mod_uv2;
-        boolean [] data_equal_mod_array_uv2 = new boolean[dimension];
+        boolean data_equalMod_uv2;
+        boolean [] data_equalMod_uv2s = new boolean[dimension];
         int generate_shares_ui = 0;
         for(generate_shares_ui = 0; generate_shares_ui < dimension; generate_shares_ui++) {
 
@@ -150,8 +150,8 @@ public class UserVector2 extends UserVector {
             peerVector_UV2[generate_shares_ui] = Util.mod(data_UV[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F_UV);
 
             if(data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F_UV)){
-                data_equal_mod_uv2 = true;
-                data_equal_mod_array_uv2[generate_shares_ui] = data_equal_mod_uv2;
+                data_equalMod_uv2 = true;
+                data_equalMod_uv2s[generate_shares_ui] = data_equalMod_uv2;
             }
             assert (data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F_UV));
             System.out.println("after assert in GenerateShares UV2");
