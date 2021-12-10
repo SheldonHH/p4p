@@ -17,7 +17,7 @@ http://bid.berkeley.edu/projects/p4p/p4p/code/p4p.tar.gz
 
 [Distributed_Data_Mining in P4P](https://www.researchgate.net/publication/220906886_Practical_Private_Computation_and_Zero-Knowledge_Tools_for_Privacy-Preserving_Distributed_Data_Mining)
 
-### Objects for Further Understanding
+### Objects for Further Understanding, see [issues](https://github.com/SheldonHH/p4p/issues)
 1. Challenge vector generation process
 2. Data Generation Pattern
 3. PeerPassed situation
