@@ -68,11 +68,11 @@ import p4p.crypto.Commitment;
  *
  * The privacy peer only
  * sets and accesses the <code>v</code> part of the data (by calling
- * {@link #setV(long[])}, {@link #getV()} and {@link #getL2NormBoundProof2(boolean)})
+ * {@link #setPeerV(long[])}, {@link #getV()} and {@link #getL2NormBoundProof2(boolean)})
  * with argument <code>false</code>.
  *
  *
- * The server manipulates the <code>u</code> part via {@link #setV(long[])},
+ * The server manipulates the <code>u</code> part via {@link #setPeerV(long[])},
  * {@link #getV()} and {@link #getL2NormBoundProof2(boolean)} with argument <code>true</code>. In addition, the
  * server should receive <code>Y's</code> from the peer and call {@link #setY}
  * to set the data. Once <code>Y</code> is set, the server can use this class
@@ -193,7 +193,7 @@ public class UserVector2 extends UserVector {
      * @param	v       the vector
      *
      */
-    public void setV(long[] v) {
+    public void setPeerV(long[] v) {
         this.peerVector_UV2 = v;
     }
 

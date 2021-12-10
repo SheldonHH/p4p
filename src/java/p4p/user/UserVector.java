@@ -124,10 +124,10 @@ public class UserVector extends P4PParameters {
      *
      * @param    server_getChallengeVectors_from_Sim    the checksum coefficient vectors
      */
-    public void setChecksumCoefficientVectors(int[][] server_getChallengeVectors_from_Sim) {
-        for (int i = 0; i < server_getChallengeVectors_from_Sim.length; i++) {
+    public void setChecksumCoefficientVectors(int[][] server_getChallengeVectors_sim) {
+        for (int i = 0; i < server_getChallengeVectors_sim.length; i++) {
             // every challenge subarray must equal to dimension
-            if (server_getChallengeVectors_from_Sim[i].length != dimension) {
+            if (server_getChallengeVectors_sim[i].length != dimension) {
                 throw new RuntimeException("Incorrect dimension for c[" + i + "]!");
             }
 // 	    for(int j = 0; j < m; j++) {
@@ -137,7 +137,7 @@ public class UserVector extends P4PParameters {
 // 	    }
         }
 
-        this.checkCoVector = server_getChallengeVectors_from_Sim;
+        this.checkCoVector = server_getChallengeVectors_sim;
     }
 
 
