@@ -319,7 +319,7 @@ public class P4PSim extends P4PParameters {
             verifierWatch.pause();
             // Check if the result is right
             long[] result = server.getVectorSum();
-            System.out.println("result: "+ Arrays.toString(result));
+            System.out.println("getVectorSum from server: "+ Arrays.toString(result));
 
 
             for(int ii = 0; ii < dimension; ii++) {

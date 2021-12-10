@@ -856,11 +856,7 @@ public class Util extends P4PParameters {
             }
         }
         System.out.println("l2_positive_counter_for_10_dimension: " + Arrays.toString(l2_positive_counter_for_10_dimension));
-
         System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
-
-
-
 
         if(l2_norm_5dot49_Util_randVector > 0) {
             double myL2_SQRT = Math.sqrt(myL2_square);
