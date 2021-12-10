@@ -386,7 +386,7 @@ public class P4PServer extends P4PParameters {
     public void compute() {
         Object[] users = usersMap.entrySet().toArray();
         
-        UserVector2 uv = new UserVector2(dimension_Ser, group_order_F_Server, max_bits_2_norm_user_vector_l, g_server, h_server);
+        UserVector2 uv2_P4Pserver = new UserVector2(dimension_Ser, group_order_F_Server, max_bits_2_norm_user_vector_l, g_server, h_server);
         System.out.println("Server:: computing. There are potentially " + usersMap.size() 
                            + " users.");
         int disqualified = 0;
@@ -400,18 +400,18 @@ public class P4PServer extends P4PParameters {
             long[] u_server_U2 = u_userVector_compute;
             
             // Verify its proof in UserVector2:
-            uv.setU(u_server_U2);
-            uv.setChecksumCoefficientVectors(final_CVs);
+            uv2_P4Pserver.setU(u_server_U2);
+            uv2_P4Pserver.setChecksumCoefficientVectors(final_CVs);
 
             BigInteger[] Y_U2 = user.getY();
-            uv.setY_UV2(Y_U2);
+            uv2_P4Pserver.setY_UV2(Y_U2);
             UserVector2.L2NormBoundProof2 proof = user.getProof();
 
-            if(uv.verify2(proof)){
+            if(uv2_P4Pserver.verify2(proof)){
                 System.out.println("User " + user.ID
                         + "'s vector succeed the verification.");
             }
-            if(!uv.verify2(proof)) {
+            if(!uv2_P4Pserver.verify2(proof)) {
                 System.out.println("User " + user.ID 
                                    + "'s vector failed the verification.");
                 disqualifyUser(user.ID);
