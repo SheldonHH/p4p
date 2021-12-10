@@ -831,12 +831,12 @@ public class Util extends P4PParameters {
      * @return	   a random vector over Z_F L2-norm equal <code>l2</code>
      */
 // order of Z_F
-    public static long[] randVector(int dimension, long Z_F_order_of_Group_Util_RandV, double l2_norm_5dot49_Util_randVector) {
+    public static long[] randVector(int dimension, long Z_F_order_of_Group_Util_RandV_long, double l2_norm_5dot49_Util_randVector) {
         long[] data_Util_randVector = new long[dimension];
 
         BigInteger bigF = null;
         if(l2_norm_5dot49_Util_randVector <=0){
-            bigF = new BigInteger(Long.toString(Z_F_order_of_Group_Util_RandV));
+            bigF = new BigInteger(Long.toString(Z_F_order_of_Group_Util_RandV_long));
         }
         double myL2_data_square = 0.;
         int L_10000 = 10000;
@@ -850,7 +850,7 @@ public class Util extends P4PParameters {
             else {
                 data_Util_randVector[dimension_id] = randomBigInteger(bigF).longValue();
                 // A random long in [0, F-1]
-                data_Util_randVector[dimension_id] -= Math.floor((double) Z_F_order_of_Group_Util_RandV / 2.);
+                data_Util_randVector[dimension_id] -= Math.floor((double) Z_F_order_of_Group_Util_RandV_long / 2.);
                 // Shift to Z_F
                 l2_positive_counter_for_10_dimension[1]++;
             }
