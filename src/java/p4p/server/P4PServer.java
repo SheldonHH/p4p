@@ -254,8 +254,8 @@ public class P4PServer extends P4PParameters {
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server_ZKP_Iteration_1*dimension_Ser/8)+1)];
         int randByteslength = randBytes.length;  //== 4
 
-        int byteIndex_idj_SRShift3 = 0;
-        int[] byteIndex_idj_SRShift3_array = new int[dimension_Ser];
+        int idjRShift3 = 0;
+        int[] idjRShift3_arr = new int[dimension_Ser];
 
 
         // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
@@ -309,8 +309,8 @@ public class P4PServer extends P4PParameters {
                 idj_array[dim_jd] = idj;
 
                 // 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺🇺🇺
-                byteIndex_idj_SRShift3 = (i*dimension_Ser + dim_jd)>>3;
-                byteIndex_idj_SRShift3_array[dim_jd] = byteIndex_idj_SRShift3;
+                idjRShift3 = (i*dimension_Ser + dim_jd)>>3;
+                idjRShift3_arr[dim_jd] = idjRShift3;
                 //  🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺
 
 
@@ -325,7 +325,7 @@ public class P4PServer extends P4PParameters {
                 ///// offset //////
 
                 // 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
-                byte this_randByte = randBytes[byteIndex_idj_SRShift3];
+                byte this_randByte = randBytes[idjRShift3];
                 duplicate_randBytes[dim_jd] = this_randByte;
                 // 🇿🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
 
@@ -341,14 +341,14 @@ public class P4PServer extends P4PParameters {
                 IS_initialCV_Greater_zero_arr.add(Is_initial_CV_Greater_0);
                 
                 
-                challVs_int2Array[i][dim_jd] = (randBytes[byteIndex_idj_SRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
+                challVs_int2Array[i][dim_jd] = (randBytes[idjRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
                 first_challV = challVs_int2Array[i][dim_jd];
                 first_challV_arr[dim_jd] = first_challV;
 
                 
                 if(challVs_int2Array[i][dim_jd] == 1){
                     // flip half of the 1's
-                    challVs_int2Array[i][dim_jd] = (randBytes[mid+byteIndex_idj_SRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
+                    challVs_int2Array[i][dim_jd] = (randBytes[mid+idjRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
                     second_cv_Equal_1 = true;
                     IS_second_challV_arr_Equal_1.add(second_cv_Equal_1);
                 }
