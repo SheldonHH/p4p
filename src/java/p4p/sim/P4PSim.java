@@ -185,7 +185,7 @@ public class P4PSim extends P4PParameters {
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
-        long[] data_long_1array_Sim = new long[dimension];
+        long[] data_long_1arr = new long[dimension];
         int[][] idle_coefficient_vector = new int[zkpIterations][];
         NativeBigInteger[] two_generators_for_g_h = P4PParameters.getGenerators(2);
         g = two_generators_for_g_h[0];
@@ -199,7 +199,7 @@ public class P4PSim extends P4PParameters {
 
 
         long[] sum_in_Sim = new long[dimension];
-        long[] v_for_add_Sim = new long[dimension];
+        long[] v_Add_PeerSum = new long[dimension];
 
         StopWatch proverWatch = new StopWatch();
         StopWatch verifierWatch = new StopWatch();
@@ -212,7 +212,7 @@ public class P4PSim extends P4PParameters {
             server.init(); // Must clear old states and data
             server.generateChallengeVectors();
             for(int i = 0; i < dimension; i++) {
-                sum_in_Sim[i] = 0;   v_for_add_Sim[i] = 0;
+                sum_in_Sim[i] = 0;   v_Add_PeerSum[i] = 0;
             }
             for(int user_id = 0; user_id < user_num; user_id++) {
                 long start = System.currentTimeMillis();
@@ -235,10 +235,10 @@ public class P4PSim extends P4PParameters {
 
 
                 ////// 1. Generate Data_long_Array && UserVector2 & //////
-                data_long_1array_Sim = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm_double_5dot49_Sim);
+                data_long_1arr = Util.randVector(dimension, FieldSize_larger_than_bitLength_Sim, l2_norm_double_5dot49_Sim);
                 //I🌟 【 data_long = Util.randVector(dim, F, l2norm) 】
 
-                UserVector2 uv2 = new UserVector2(data_long_1array_Sim, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
+                UserVector2 uv2 = new UserVector2(data_long_1arr, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
 
 
 
@@ -275,9 +275,9 @@ public class P4PSim extends P4PParameters {
 
 
 // 6. []vv=UV2 &  pv.setV(vv) & setChecksumCoefficientVectors()
-                long[] vv = uv2.getV();
+                long[] vv_peerVector = uv2.getV();
                 UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
-                pv.setV(vv);
+                pv.setV(vv_peerVector);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
 
@@ -309,14 +309,14 @@ public class P4PSim extends P4PParameters {
                 shouldPass = l2_norm_double_5dot49_Sim < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQualifiedUsers++;
-                    Util.vectorAdd(sum_in_Sim, data_long_1array_Sim, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
-                    Util.vectorAdd(v_for_add_Sim, vv, v_for_add_Sim, FieldSize_larger_than_bitLength_Sim);
+                    Util.vectorAdd(sum_in_Sim, data_long_1arr, sum_in_Sim, FieldSize_larger_than_bitLength_Sim);
+                    Util.vectorAdd(v_Add_PeerSum, vv_peerVector, v_Add_PeerSum, FieldSize_larger_than_bitLength_Sim);
                 }
             }
 
             // 9. server.setPeerSum(v)
             // Now the server is ready to verify
-            server.setPeerSum(v_for_add_Sim);
+            server.setPeerSum(v_Add_PeerSum);
             verifierWatch.start();
             server.compute();
             verifierWatch.pause();
