@@ -340,7 +340,7 @@ public class P4PServer extends P4PParameters {
                 secondCV = (randBytes[idj_3RShift_idx] & (1<<Offset_idjM8)) > 0 ? 1 : 0;
                 final_CVs[i][dim_jd] = secondCV;
                 secondCV_arr.add(secondCV);
-                // 2⃣️ 🌟
+                // 2⃣️🌟
                 IS_secondCV_Equal_1s = false;
                 if(final_CVs[i][dim_jd] == 1){
                     thirdCV = (randBytes[mid+idj_3RShift_idx] & (1<<(Offset_idjM8+1)));
@@ -348,8 +348,10 @@ public class P4PServer extends P4PParameters {
                     final_CVs[i][dim_jd] = fourthCV;
                     IS_secondCV_Equal_1s = true;
                 }
+                // 3⃣️🌟
                 thirdCV_arr.add(thirdCV);
                 thirdCV = Integer.MAX_VALUE;
+                // 4⃣️🌟
                 fourthCV_arr.add(fourthCV);
                 fourthCV = Integer.MAX_VALUE;
 
