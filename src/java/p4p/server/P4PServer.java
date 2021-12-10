@@ -327,12 +327,12 @@ public class P4PServer extends P4PParameters {
                 ///// offset //////
 
                 // 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
-                byte this_randByte = randBytes[idj_3RShift];
-                randBytes_10[dim_jd] = this_randByte;
+                byte added_randByte = randBytes[idj_3RShift];
+                randBytes_10[dim_jd] = added_randByte;
 
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
                 ///  initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                firstCV_AND = (this_randByte & LShift1_OMod8);
+                firstCV_AND = (added_randByte & LShift1_OMod8);
 
                 
                 // 1⃣️
