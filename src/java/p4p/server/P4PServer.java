@@ -217,13 +217,13 @@ public class P4PServer extends P4PParameters {
 
     /**
      * Set the l2 norm proof for the given user.
-     * @param user The user index.
+     * @param user_idx The user index.
      * @param proof The proof to set.
      * @return <code>true</code> if the user is sucessfuly updated. 
      *         <code>false</code> if the user is not found in the record.
      */
-    public boolean setProof(int user, UserVector2.L2NormBoundProof2 proof) {
-        UserInfo userInfo = usersMap.get(user);
+    public boolean setProof(int user_idx, UserVector2.L2NormBoundProof2 proof) {
+        UserInfo userInfo = usersMap.get(user_idx);
         if(userInfo == null)
             return false;
         userInfo.setProof(proof);
@@ -232,13 +232,13 @@ public class P4PServer extends P4PParameters {
 
     /**
      * Sets Y for the given user.
-     * @param user     The user index.
+     * @param user_idx     The user index.
      * @param Y_commitments_to_peer_share_of_checksum       The commitments to the peer's share of the checksums
      * @return <code>true</code> if the user is sucessfuly updated. 
      *         <code>false</code> if the user is not found in the record.
      */
-    public boolean setY(int user, BigInteger[] Y_commitments_to_peer_share_of_checksum) {
-        UserInfo userInfo = usersMap.get(user);
+    public boolean setY(int user_idx, BigInteger[] Y_commitments_to_peer_share_of_checksum) {
+        UserInfo userInfo = usersMap.get(user_idx);
         if(userInfo == null)
             return false;
         

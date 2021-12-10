@@ -243,20 +243,20 @@ public class P4PSim extends P4PParameters {
 
 
 
-                // 2. Generate ServerVector & PeerVector
-                // peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
+// 2. Generate ServerVector & PeerVector
+// peerVector from  Util.mod(data[generate_shares_ui] - serverUserVector[generate_shares_ui], F);
                 uv2.generateShares();
                  //II🌟 uv2.generateShares(); 【 serverUserVector_UV2 = Util.randVector(dim, F, 0) 】
                 // III🌟 uv2.main() 【 data_uv2_main = Util.randVector(m, F, l2_L_delta); 】
 
 
-                // 3. set CheckCoVector through server Challenge_Vector for Each User
+// 3. set CheckCoVector through server Challenge_Vector for Each User
                 uv2.setChecksumCoefficientVectors(server.getChallengeVectors());
                 proverWatch.start();
 
 
 
-                // 4. peerProof & serverProof
+// 4. peerProof & serverProof
                 UserVector2.L2NormBoundProof2 peerProof =
                         (UserVector2.L2NormBoundProof2)uv2.getL2NormBoundProof2(false);
                 UserVector2.L2NormBoundProof2 serverProof =
@@ -267,14 +267,14 @@ public class P4PSim extends P4PParameters {
 
 
 
-                // 5. setUserVector(uid, U) & setProof(uid, sProof)
+// 5. setUserVector(uid, U) & setProof(uid, sProof)
                 server.setUserVector(user_id, uv2.getU());
                 server.setProof(user_id, serverProof);
 
 
 
 
-                // 6. peer & UV2 pv:
+// 6. []vv=UV2 &  pv.setV(vv) & setChecksumCoefficientVectors()
                 long[] vv = uv2.getV();
                 UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
                 pv.setV(vv);
@@ -282,7 +282,8 @@ public class P4PSim extends P4PParameters {
                 verifierWatch.start();
 
 
-                // peer Proof //
+// peer Proof //
+// 7. peerPassed verify2(peerProof); disqualifyUser(user_id);  setY(uid, Y)
                 boolean peerPassed = pv.verify2(peerProof);
                 verifierWatch.pause();
                 System.out.println("here");
@@ -304,6 +305,7 @@ public class P4PSim extends P4PParameters {
                  * true.
                  */
 
+                // 8. shouldPass
                 shouldPass = l2_norm_double_5dot49_Sim < L_1099511627776;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQualifiedUsers++;
@@ -312,16 +314,19 @@ public class P4PSim extends P4PParameters {
                 }
             }
 
+            // 9. server.setPeerSum(v)
             // Now the server is ready to verify
             server.setPeerSum(v_for_add_Sim);
             verifierWatch.start();
             server.compute();
             verifierWatch.pause();
+
+            // 10. server.getVectorSum();
             // Check if the result is right
             long[] result = server.getVectorSum();
             System.out.println("getVectorSum from server: "+ Arrays.toString(result));
 
-
+            // 11. dimension Util.mod(sum, F);
             for(int ii = 0; ii < dimension; ii++) {
                 if(result[ii] != Util.mod(sum_in_Sim[ii], FieldSize_larger_than_bitLength_Sim)) {
                     System.out.println("\tElement " + ii
