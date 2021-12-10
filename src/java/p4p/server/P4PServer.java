@@ -288,7 +288,7 @@ public class P4PServer extends P4PParameters {
         int [] initial_challenge_vector = new int[dimension_Ser];
 
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
-        int prev;
+        int initial_challV;
         boolean Is_initial_challV_Greater_0;
         boolean []initial_Greater_zero_arr = new boolean[dimension_Ser];
 
