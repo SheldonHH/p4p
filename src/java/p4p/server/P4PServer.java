@@ -277,7 +277,7 @@ public class P4PServer extends P4PParameters {
 
         //  (i*dimension_Ser + j)%8
         int Offset_idjM8 = 0;
-        int [] offset_idj_mod8_arr = new int[dimension_Ser];
+        int [] offset_idjM8_arr = new int[dimension_Ser];
 
         // 1<<offset_idj_mod8
         int LShift1_OMod8 = 0;
@@ -317,7 +317,7 @@ public class P4PServer extends P4PParameters {
 
                 ///// offset //////
                 Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
-                offset_idj_mod8_arr[dim_jd] = Offset_idjM8;
+                offset_idjM8_arr[dim_jd] = Offset_idjM8;
 
                 
                 LShift1_OMod8 = 1<<Offset_idjM8; ////1*2^Offset
