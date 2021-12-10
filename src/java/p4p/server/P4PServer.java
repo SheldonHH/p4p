@@ -252,7 +252,7 @@ public class P4PServer extends P4PParameters {
     public void generateChallengeVectors() {
         //  byte[] randBytes = new byte[(int)Math.ceil(2*N*m/8)];
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_cs_to_server_ZKP_iteration*dimension_Ser/8)+1)];
-        int[] idjRShift3_arr = new int[dimension_Ser];
+        int[] idjRShift3s = new int[dimension_Ser];
         // We need twice the random bits in challenge_vectors_Ser. We need half of them to flip the 1's
         Util.rand.nextBytes(randBytes);
         int mid = randBytes.length/2;
@@ -303,9 +303,8 @@ public class P4PServer extends P4PParameters {
                 //int offset = 2*(i*m + dim_jd)%8;
                 idj = i*dimension_Ser + dim_jd;
                 idj_arr[dim_jd] = idj;
-
                 bIndex_R3 = (i*dimension_Ser + dim_jd)>>3;
-                idjRShift3_arr[dim_jd] = bIndex_R3;
+                idjRShift3s[dim_jd] = bIndex_R3;
 
                 ///// offset //////
                 Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
