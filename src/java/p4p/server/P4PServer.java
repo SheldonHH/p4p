@@ -272,10 +272,10 @@ public class P4PServer extends P4PParameters {
             int[] offset_idjM8_arr = new int[dimension_Ser];
 
             // 1<<offset_idj_mod8
-            int LShift1_OMod8 = 0;
-            int[] LShift1_OMod8_arr = new int[dimension_Ser];
-            int LShift1_OMod8_ADD_1 = 0;
-            int[] LShift1_OMod8_ADD_1_arr = new int[dimension_Ser];
+            int LShift1_OffMod8 = 0;
+            int[] LShift1_OffMod8_arr = new int[dimension_Ser];
+            int LShift1_OffMod8A1 = 0;
+            int[] LShift1_OffMod8A1_arr = new int[dimension_Ser];
 
             // TEST firstCV_AND
             // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
@@ -311,11 +311,12 @@ public class P4PServer extends P4PParameters {
                 Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
                 offset_idjM8_arr[dim_jd] = Offset_idjM8;
 
-                
-                LShift1_OMod8 = 1<<Offset_idjM8; ////1*2^Offset
-                LShift1_OMod8_arr[dim_jd]=LShift1_OMod8;
-                LShift1_OMod8_ADD_1 = LShift1_OMod8+1;  //1*2^(Offset+1)
-                LShift1_OMod8_ADD_1_arr[dim_jd] =LShift1_OMod8_ADD_1
+                // 1<<(i*m + j)%8;
+                LShift1_OffMod8 = 1<<Offset_idjM8; ////1*2^Offset
+                LShift1_OffMod8_arr[dim_jd]=LShift1_OffMod8;
+                // [1<<(i*m + j)%8]+1;
+                LShift1_OffMod8A1 = LShift1_OffMod8+1;  //1*2^(Offset+1)
+                LShift1_OffMod8A1_arr[dim_jd] =LShift1_OffMod8A1
 
 
                 byte added_randByte = randBytes[bIndex_R3];
@@ -323,7 +324,7 @@ public class P4PServer extends P4PParameters {
 
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
                 // 1⃣️
-                firstCV_AND = (added_randByte & LShift1_OMod8);
+                firstCV_AND = (added_randByte & LShift1_OffMod8);
                 firstCV_arr.add(firstCV_AND);
                 System.out.println("Learn Pattern of initialCV_AND_operator: "+ firstCV_AND);
                 // 1⃣️🌟
@@ -332,13 +333,13 @@ public class P4PServer extends P4PParameters {
 
 
                 // 2⃣️
-                secondCV = (randBytes[bIndex_R3] & LShift1_OMod8) > 0 ? 1 : 0;
+                secondCV = (randBytes[bIndex_R3] & LShift1_OffMod8) > 0 ? 1 : 0;
                 final_CVs[i][dim_jd] = secondCV;
                 secondCV_arr.add(secondCV);
                 // 2⃣️🌟
                 IS_secondCV_Equal_1s = false;
                 if(final_CVs[i][dim_jd] == 1){
-                    thirdCV = (randBytes[mid+bIndex_R3] & LShift1_OMod8_ADD_1);
+                    thirdCV = (randBytes[mid+bIndex_R3] & LShift1_OffMod8A1);
                     fourthCV = thirdCV > 0 ? 1 : -1;
                     final_CVs[i][dim_jd] = fourthCV;
                     IS_secondCV_Equal_1s = true;
