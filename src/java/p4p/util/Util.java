@@ -863,8 +863,8 @@ public class Util extends P4PParameters {
 
 
         if(l2_norm_5dot49_Util_randVector > 0) {
-            double Sqrt_myL2_SQRT = Math.sqrt(myL2_square);
-            double scale_Util_randV = l2_norm_5dot49_Util_randVector/Sqrt_myL2_SQRT;
+            double myL2_SQRT = Math.sqrt(myL2_square);
+            double scale_Util_randV = l2_norm_5dot49_Util_randVector/myL2_SQRT;
             for(int i = 0; i < dimension; i++) {
                 long data_half_M_scale = 0;
                 long data_ADD_half = (long)(((double)data_Util_randVector[i]+0.5)*scale_Util_randV);
