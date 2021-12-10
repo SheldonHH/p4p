@@ -293,8 +293,8 @@ public class P4PServer extends P4PParameters {
         ArrayList<Boolean> IS_initialCV_Greater_0s = new ArrayList<Boolean>();
 
 
-        int _1stCV;
-        int []_1stCV_arr = new int[dimension_Ser];
+        int secondCV;
+        int []secondCV_arr = new int[dimension_Ser];
 
         boolean IS_2ndCV_Equal_1;
         ArrayList<Boolean> IS_secondChallV_arr_Equal_1 =  new ArrayList<Boolean>();
@@ -342,8 +342,8 @@ public class P4PServer extends P4PParameters {
                 
                 
                 challVs_int2Array[i][dim_jd] = (randBytes[idjRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
-                _1stCV = challVs_int2Array[i][dim_jd];
-                _1stCV_arr[dim_jd] = _1stCV;
+                secondCV = challVs_int2Array[i][dim_jd];
+                secondCV_arr[dim_jd] = secondCV;
 
                 IS_2ndCV_Equal_1 = false;
                 if(challVs_int2Array[i][dim_jd] == 1){
