@@ -260,7 +260,7 @@ public class P4PServer extends P4PParameters {
         final_CVs = new int[Num_cs_to_server_ZKP_iteration][];
         //// //// //// //// ////\\\
 
-        {
+
             int bIndex_R3 = 0;
             // challenge vector in P4PServer.java
             //  idj=i*dimension_Ser + j
@@ -268,14 +268,14 @@ public class P4PServer extends P4PParameters {
             int[] idj_arr = new int[dimension_Ser];
 
             //  (i*dimension_Ser + j)%8
-            int Offset_idjM8 = 0;
+            int idjM8 = 0;
             int[] offset_idjM8_arr = new int[dimension_Ser];
 
             // 1<<offset_idj_mod8
-            int LShift1_OffMod8 = 0;
-            int[] LShift1_OffMod8_arr = new int[dimension_Ser];
-            int LShift1_OffMod8A1 = 0;
-            int[] LShift1_OffMod8A1_arr = new int[dimension_Ser];
+            int LS1_M8 = 0;
+            int[] LS1_M8_arr = new int[dimension_Ser];
+            int LS1_M8A1 = 0;
+            int[] LS1_M8A1_arr = new int[dimension_Ser];
 
             // TEST firstCV_AND
             // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
@@ -295,7 +295,7 @@ public class P4PServer extends P4PParameters {
 
             boolean IS_secondCV_Equal_1s;
             ArrayList<Boolean> IS_2ndCV_Equal_1s = new ArrayList<Boolean>();
-        }
+
         byte[] randBytes_10 = new byte[dimension_Ser];
         for(int i = 0; i < Num_cs_to_server_ZKP_iteration; i++) {
             final_CVs[i] = new int[dimension_Ser];
@@ -307,16 +307,16 @@ public class P4PServer extends P4PParameters {
                 bIndex_R3 = (i*dimension_Ser + dim_jd)>>3;
                 idjRShift3s[dim_jd] = bIndex_R3;
 
-                ///// Offset_idjM8 //////
-                Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
-                offset_idjM8_arr[dim_jd] = Offset_idjM8;
+                ///// idjM8 //////
+                idjM8 = (i*dimension_Ser + dim_jd)%8;
+                offset_idjM8_arr[dim_jd] = idjM8;
 
                 // 1<<(i*m + j)%8;
-                LShift1_OffMod8 = 1<<Offset_idjM8; ////1*2^Offset
-                LShift1_OffMod8_arr[dim_jd]=LShift1_OffMod8;
+                LS1_M8 = 1<<idjM8; ////1*2^Offset
+                LS1_M8_arr[dim_jd]=LS1_M8;
                 // [1<<(i*m + j)%8]+1;
-                LShift1_OffMod8A1 = LShift1_OffMod8+1;  //1*2^(Offset+1)
-                LShift1_OffMod8A1_arr[dim_jd] =LShift1_OffMod8A1
+                LS1_M8A1 = LS1_M8+1;  //1*2^(Offset+1)
+                LS1_M8A1_arr[dim_jd] =LS1_M8A1;
 
 
                 byte added_randByte = randBytes[bIndex_R3];
@@ -324,7 +324,7 @@ public class P4PServer extends P4PParameters {
 
                 ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
                 // 1⃣️
-                firstCV_AND = (added_randByte & LShift1_OffMod8);
+                firstCV_AND = (added_randByte & LS1_M8);
                 firstCV_arr.add(firstCV_AND);
                 System.out.println("Learn Pattern of initialCV_AND_operator: "+ firstCV_AND);
                 // 1⃣️🌟
@@ -333,13 +333,13 @@ public class P4PServer extends P4PParameters {
 
 
                 // 2⃣️
-                secondCV = (randBytes[bIndex_R3] & LShift1_OffMod8) > 0 ? 1 : 0;
+                secondCV = (randBytes[bIndex_R3] & LS1_M8) > 0 ? 1 : 0;
                 final_CVs[i][dim_jd] = secondCV;
                 secondCV_arr.add(secondCV);
                 // 2⃣️🌟
                 IS_secondCV_Equal_1s = false;
                 if(final_CVs[i][dim_jd] == 1){
-                    thirdCV = (randBytes[mid+bIndex_R3] & LShift1_OffMod8A1);
+                    thirdCV = (randBytes[mid+bIndex_R3] & LS1_M8A1);
                     fourthCV = thirdCV > 0 ? 1 : -1;
                     final_CVs[i][dim_jd] = fourthCV;
                     IS_secondCV_Equal_1s = true;
