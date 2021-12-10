@@ -277,7 +277,7 @@ public class P4PSim extends P4PParameters {
 // 6. []vv=UV2 &  pv.setV(vv) & setChecksumCoefficientVectors()
                 long[] vv_peerVector = uv2.getV();
                 UserVector2 pv = new UserVector2(dimension, FieldSize_larger_than_bitLength_Sim, bitLength, g, h);
-                pv.setV(vv_peerVector);
+                pv.setPeerV(vv_peerVector);
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
 
