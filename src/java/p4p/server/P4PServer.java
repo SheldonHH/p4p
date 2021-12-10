@@ -295,7 +295,7 @@ public class P4PServer extends P4PParameters {
 
         int secondCV;
         ArrayList<Integer> secondCV_arr = new ArrayList<Integer>();
-        int thirdCV;
+        int thirdCV = Integer.MAX_VALUE;
         ArrayList<Integer> thirdCV_arr = new ArrayList<Integer>();
 
         boolean IS_secondCV_Equal_1s;
@@ -353,9 +353,10 @@ public class P4PServer extends P4PParameters {
                     thirdCV = (randBytes[mid+idj_3RShift] & (1<<(Off_idjMod8+1))) > 0 ? 1 : -1;
                     // flip half of the 1's
                     CVs_int2arr[i][dim_jd] = thirdCV;
-                    thirdCV_arr.add(thirdCV);
+
                     IS_secondCV_Equal_1s = true;
                 }
+                thirdCV_arr.add(thirdCV);
                 IS_secondChallV_arr_Equal_1.add(IS_secondCV_Equal_1s);
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
