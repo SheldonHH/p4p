@@ -76,7 +76,7 @@ public class P4PServer extends P4PParameters {
     protected long L_P4PServer = -1;
     protected int max_bits_2_norm_user_vector_l;   // The max number of bits of the 2 norm of user vector
     protected int Num_Checksum_to_Compute_Server_ZKP_Iteration_1 = 50;   //ZKP Iteration  // The number of chechsums to compute. Default 50
-    private int CVs_int2arr[][] = null; // The challenge vectors  
+    private int CVs_2darr[][] = null; // The challenge vectors  
     private long[] acc_vector_sum_Server = null;         // The accumulated vector sum
     private long[] peerSum = null;   // The peer's share of the vector sum
     
@@ -264,7 +264,7 @@ public class P4PServer extends P4PParameters {
 
 
         //// //// //// //// //// //// ///// challenger //// //// //// //// //// //// //// //// //// ////
-        CVs_int2arr = new int[Num_Checksum_to_Compute_Server_ZKP_Iteration_1][];
+        CVs_2darr = new int[Num_Checksum_to_Compute_Server_ZKP_Iteration_1][];
         //// //// //// //// ////\\\
 
 
@@ -303,7 +303,7 @@ public class P4PServer extends P4PParameters {
 
         byte[] randBytes_10 = new byte[dimension_Ser];
         for(int i = 0; i < Num_Checksum_to_Compute_Server_ZKP_Iteration_1; i++) {
-            CVs_int2arr[i] = new int[dimension_Ser];
+            CVs_2darr[i] = new int[dimension_Ser];
             for(int dim_jd = 0; dim_jd < dimension_Ser; dim_jd++) {
                 //int byteIndex = (int)2*(i*m + dim_jd)/8;
                 //int offset = 2*(i*m + dim_jd)%8;
@@ -342,17 +342,17 @@ public class P4PServer extends P4PParameters {
                 IS_firstCV_Greater_0 = firstCV_AND > 0;
                 IS_firstCV_Greater_0s.add(IS_firstCV_Greater_0);
 
-                CVs_int2arr[i][dim_jd] = (randBytes[idj_3RShift] & (1<<Off_idjMod8)) > 0 ? 1 : 0;
+                CVs_2darr[i][dim_jd] = (randBytes[idj_3RShift] & (1<<Off_idjMod8)) > 0 ? 1 : 0;
 
                 // 2⃣️
-                secondCV = CVs_int2arr[i][dim_jd];
+                secondCV = CVs_2darr[i][dim_jd];
                 secondCV_arr.add(secondCV);
                 // 2⃣️ 🌟
                 IS_secondCV_Equal_1s = false;
-                if(CVs_int2arr[i][dim_jd] == 1){
+                if(CVs_2darr[i][dim_jd] == 1){
                     thirdCV = (randBytes[mid+idj_3RShift] & (1<<(Off_idjMod8+1))) > 0 ? 1 : -1;
                     // flip half of the 1's
-                    CVs_int2arr[i][dim_jd] = thirdCV;
+                    CVs_2darr[i][dim_jd] = thirdCV;
 
                     IS_secondCV_Equal_1s = true;
                 }
@@ -363,13 +363,13 @@ public class P4PServer extends P4PParameters {
 
             }
         }
-        System.out.println("c Challenge Vecter: "+ Arrays.deepToString(CVs_int2arr));
+        System.out.println("c Challenge Vecter: "+ Arrays.deepToString(CVs_2darr));
     }
     
     /**
      */
     public int[][] getChallengeVectors() {
-        return CVs_int2arr;
+        return CVs_2darr;
     }
 
     /**
@@ -406,7 +406,7 @@ public class P4PServer extends P4PParameters {
             
             // Verify its proof in UserVector2:
             uv.setU(u_server_for_U2);
-            uv.setChecksumCoefficientVectors(CVs_int2arr);
+            uv.setChecksumCoefficientVectors(CVs_2darr);
 
             BigInteger[] Y_U2 = user.getY();
             uv.setY(Y_U2);
