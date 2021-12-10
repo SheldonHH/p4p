@@ -135,7 +135,7 @@ public class P4PServer extends P4PParameters {
         
         /**
          */
-        public void setY(BigInteger[] Y_commitments_to_peer_share_of_checksum) {
+        public void setYUI(BigInteger[] Y_commitments_to_peer_share_of_checksum) {
             this.Y_commitments_to_peer_share_of_checksum_Ser = Y_commitments_to_peer_share_of_checksum;
         }
         
@@ -237,12 +237,12 @@ public class P4PServer extends P4PParameters {
      * @return <code>true</code> if the user is sucessfuly updated. 
      *         <code>false</code> if the user is not found in the record.
      */
-    public boolean setY(int user_idx, BigInteger[] Y_commitments_to_peer_share_of_checksum) {
+    public boolean setY_server(int user_idx, BigInteger[] Y_commitments_to_peer_share_of_checksum) {
         UserInfo userInfo = usersMap.get(user_idx);
         if(userInfo == null)
             return false;
         
-        userInfo.setY(Y_commitments_to_peer_share_of_checksum);
+        userInfo.setYUI(Y_commitments_to_peer_share_of_checksum);
         return true;
     }
     
