@@ -122,7 +122,7 @@ public class UserVector extends P4PParameters {
      * Set the checksum coefficient vectors (the ck's). This is to prepare for the
      * L2 norm bound ZKP.
      *
-     * @param    server_getChallengeVectors_from_Sim    the checksum coefficient vectors
+     * @param    server_getChallengeVectors_sim    the checksum coefficient vectors
      */
     public void setChecksumCoefficientVectors(int[][] server_getChallengeVectors_sim) {
         for (int i = 0; i < server_getChallengeVectors_sim.length; i++) {
