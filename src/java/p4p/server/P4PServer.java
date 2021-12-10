@@ -357,6 +357,7 @@ public class P4PServer extends P4PParameters {
                     IS_secondCV_Equal_1s = true;
                 }
                 thirdCV_arr.add(thirdCV);
+                thirdCV = Integer.MAX_VALUE;
                 IS_secondChallV_arr_Equal_1.add(IS_secondCV_Equal_1s);
                 System.out.println("End dim_id of Num_Checksum_to_Compute_Server_ZKP_Iteration_1: " + dim_jd);
 
