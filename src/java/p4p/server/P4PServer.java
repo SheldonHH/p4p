@@ -254,7 +254,7 @@ public class P4PServer extends P4PParameters {
         byte[] randBytes = new byte[2*((int)Math.ceil(Num_Checksum_to_Compute_Server_ZKP_Iteration_1*dimension_Ser/8)+1)];
         int randByteslength = randBytes.length;  //== 4
 
-        int idjRShift3 = 0;
+        int idj_3RShift = 0;
         int[] idjRShift3_arr = new int[dimension_Ser];
 
 
@@ -276,21 +276,21 @@ public class P4PServer extends P4PParameters {
         int [] idj_array = new int[dimension_Ser];
 
         //  (i*dimension_Ser + j)%8
-        int Off_idj_Mod8 = 0;
+        int Off_idjMod8 = 0;
         int [] offset_idj_mod8_arr = new int[dimension_Ser];
 
         // 1<<offset_idj_mod8
-        int s1LShift_OMod8 = 0;
+        int LShift1_OMod8 = 0;
         int [] s1LShift_OMod8_Array = new int[dimension_Ser];
 
-        // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
-        int initialCV_AND_operator = 0;
-        ArrayList<Integer> firstCV_arr = new ArrayList<Integer>();
 
+        // TEST firstCV_AND
+        // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
+        int firstCV_AND = 0;
+        ArrayList<Integer> firstCV_arr = new ArrayList<Integer>();
         // prev_Greater_zero =  (this_randByte & (1<<offset_idj_mod8)) > 0
-        int firstCV;
-        boolean IS_initialCV_Greater_0;
-        ArrayList<Boolean> IS_initialCV_Greater_0s = new ArrayList<Boolean>();
+        boolean IS_firstCV_Greater_0;
+        ArrayList<Boolean> IS_firstCV_Greater_0s = new ArrayList<Boolean>();
 
 
         int secondCV;
@@ -309,46 +309,46 @@ public class P4PServer extends P4PParameters {
                 idj_array[dim_jd] = idj;
 
                 // 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺🇺🇺
-                idjRShift3 = (i*dimension_Ser + dim_jd)>>3;
-                idjRShift3_arr[dim_jd] = idjRShift3;
+                idj_3RShift = (i*dimension_Ser + dim_jd)>>3;
+                idjRShift3_arr[dim_jd] = idj_3RShift;
                 //  🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺 🇦🇺
 
 
                 ///// offset //////
-                Off_idj_Mod8 = (i*dimension_Ser + dim_jd)%8;
-                offset_idj_mod8_arr[dim_jd] = Off_idj_Mod8;
+                Off_idjMod8 = (i*dimension_Ser + dim_jd)%8;
+                offset_idj_mod8_arr[dim_jd] = Off_idjMod8;
 
 
 
-                s1LShift_OMod8 = 1<<Off_idj_Mod8; ////1*2^Offset
-                s1LShift_OMod8_Array[dim_jd]=s1LShift_OMod8;
+                LShift1_OMod8 = 1<<Off_idjMod8; ////1*2^Offset
+                s1LShift_OMod8_Array[dim_jd]=LShift1_OMod8;
                 ///// offset //////
 
                 // 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
-                byte this_randByte = randBytes[idjRShift3];
+                byte this_randByte = randBytes[idj_3RShift];
                 duplicate_randBytes[dim_jd] = this_randByte;
-                // 🇿🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳 🇿🇳🇿 🇳🇿🇳
 
-                /// 🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
-//                initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
-                initialCV_AND_operator = (this_randByte & s1LShift_OMod8);
-                ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧
-                firstCV_arr.add(initialCV_AND_operator);
-                System.out.println("Learn Pattern of initialCV_AND_operator: "+ initialCV_AND_operator);
+                ///  🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇬🇧🇧
+                ///  initial_challenge_AND_operator = (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8));
+                firstCV_AND = (this_randByte & LShift1_OMod8);
 
-                firstCV = (this_randByte & (1<<Off_idj_Mod8));
-                IS_initialCV_Greater_0 = firstCV > 0;
-                IS_initialCV_Greater_0s.add(IS_initialCV_Greater_0);
                 
-                
-                challVs_int2Array[i][dim_jd] = (randBytes[idjRShift3] & (1<<Off_idj_Mod8)) > 0 ? 1 : 0;
+                // 1⃣️
+                firstCV_arr.add(firstCV_AND);
+                System.out.println("Learn Pattern of initialCV_AND_operator: "+ firstCV_AND);
+                IS_firstCV_Greater_0 = firstCV_AND > 0;
+                IS_firstCV_Greater_0s.add(IS_firstCV_Greater_0);
+
+                challVs_int2Array[i][dim_jd] = (randBytes[idj_3RShift] & (1<<Off_idjMod8)) > 0 ? 1 : 0;
+
+                // 2⃣️
                 secondCV = challVs_int2Array[i][dim_jd];
                 secondCV_arr.add(secondCV);
 
                 IS_2ndCV_Equal_1 = false;
                 if(challVs_int2Array[i][dim_jd] == 1){
                     // flip half of the 1's
-                    challVs_int2Array[i][dim_jd] = (randBytes[mid+idjRShift3] & (1<<(Off_idj_Mod8+1))) > 0 ? 1 : -1;
+                    challVs_int2Array[i][dim_jd] = (randBytes[mid+idj_3RShift] & (1<<(Off_idjMod8+1))) > 0 ? 1 : -1;
                     IS_2ndCV_Equal_1 = true;
                 }
                 IS_secondChallV_arr_Equal_1.add(IS_2ndCV_Equal_1);
