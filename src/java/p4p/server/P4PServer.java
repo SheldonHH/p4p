@@ -274,7 +274,8 @@ public class P4PServer extends P4PParameters {
             // 1<<offset_idj_mod8
             int LShift1_OMod8 = 0;
             int[] LShift1_OMod8_arr = new int[dimension_Ser];
-
+            int LShift1_OMod8_ADD_1 = 0;
+            int[] LShift1_OMod8_ADD_1_arr = new int[dimension_Ser];
 
             // TEST firstCV_AND
             // (randBytes[byteIndex_idj_SRShift3] & (1<<offset_idj_mod8))
@@ -306,13 +307,15 @@ public class P4PServer extends P4PParameters {
                 bIndex_R3 = (i*dimension_Ser + dim_jd)>>3;
                 idjRShift3s[dim_jd] = bIndex_R3;
 
-                ///// offset //////
+                ///// Offset_idjM8 //////
                 Offset_idjM8 = (i*dimension_Ser + dim_jd)%8;
                 offset_idjM8_arr[dim_jd] = Offset_idjM8;
 
                 
                 LShift1_OMod8 = 1<<Offset_idjM8; ////1*2^Offset
                 LShift1_OMod8_arr[dim_jd]=LShift1_OMod8;
+                LShift1_OMod8_ADD_1 = LShift1_OMod8+1;  //1*2^(Offset+1)
+                LShift1_OMod8_ADD_1_arr[dim_jd] =LShift1_OMod8_ADD_1
 
 
                 byte added_randByte = randBytes[bIndex_R3];
@@ -327,14 +330,15 @@ public class P4PServer extends P4PParameters {
                 IS_firstCV_Greater_0 = firstCV_AND > 0;
                 IS_firstCV_Greater_0s.add(IS_firstCV_Greater_0);
 
+
                 // 2⃣️
-                secondCV = (randBytes[bIndex_R3] & (1<<Offset_idjM8)) > 0 ? 1 : 0;
+                secondCV = (randBytes[bIndex_R3] & LShift1_OMod8) > 0 ? 1 : 0;
                 final_CVs[i][dim_jd] = secondCV;
                 secondCV_arr.add(secondCV);
                 // 2⃣️🌟
                 IS_secondCV_Equal_1s = false;
                 if(final_CVs[i][dim_jd] == 1){
-                    thirdCV = (randBytes[mid+bIndex_R3] & (1<<(Offset_idjM8+1)));
+                    thirdCV = (randBytes[mid+bIndex_R3] & LShift1_OMod8_ADD_1);
                     fourthCV = thirdCV > 0 ? 1 : -1;
                     final_CVs[i][dim_jd] = fourthCV;
                     IS_secondCV_Equal_1s = true;
