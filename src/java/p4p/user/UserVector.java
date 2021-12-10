@@ -72,7 +72,7 @@ public class UserVector extends P4PParameters {
     protected long[] data_UV = null;   // The user data
     protected int dimension = -1;          // The dimension of user vector
 
-    protected long F = -1;
+    protected long F_UV = -1;
     // The order of the (small) finite field over which all the 
     // computations are carried out. It should be a prime of 
     // appropriate length (e.g. the length of a long).
@@ -84,14 +84,14 @@ public class UserVector extends P4PParameters {
 
     /**
      */
-    public UserVector(long[] data_UV_P, long F, int log_2_m_UV_P) {
-        if (F < 0 || !new BigInteger(new Long(F).toString()).isProbablePrime(200))
+    public UserVector(long[] data_UV_P, long F_UV_P, int log_2_m_UV_P) {
+        if (F_UV_P < 0 || !new BigInteger(new Long(F_UV_P).toString()).isProbablePrime(200))
             throw new RuntimeException("Field order must be positive prime.");
 
         this.data_UV = data_UV_P;
         this.dimension = data_UV_P.length
         ;
-        this.F = F;
+        this.F_UV = F_UV_P;
         this.l_UV = log_2_m_UV_P;
         this.L_UV = ((long) 1) << l_UV - 1;
 
@@ -99,7 +99,7 @@ public class UserVector extends P4PParameters {
         // Convert the numbers into the finite field:
         if (data_UV_P != null) {
             for (int i_dim_UV = 0; i_dim_UV < dimension; i_dim_UV++) {
-                 singaporeModF = Util.mod(data_UV_P[i_dim_UV], F);
+                 singaporeModF = Util.mod(data_UV_P[i_dim_UV], F_UV_P);
                  this.data_UV[i_dim_UV] = singaporeModF;
             }
             // The range should be [-F/2, F/2)
@@ -112,7 +112,7 @@ public class UserVector extends P4PParameters {
             throw new RuntimeException("Field order must be positive prime.");
 
         this.dimension = m;
-        this.F = FieldSize_larger_than_bitLength_UV1_P;
+        this.F_UV = FieldSize_larger_than_bitLength_UV1_P;
         this.l_UV = log_2_m_UV_P;
         this.L_UV = ((long) 1) << log_2_m_UV_P - 1;
     }

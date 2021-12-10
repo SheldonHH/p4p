@@ -90,7 +90,7 @@ public class UserVector2 extends UserVector {
      * Constructs a (share of) user vector.
      *
      * @param data  the user vector
-     * @param F_UV     the size of the field where all user computations are
+     * @param F_UV_p     the size of the field where all user computations are
      *              performed
      * @param l     the max allowed number of bits of the L2 norm of user
      *              vector
@@ -98,9 +98,9 @@ public class UserVector2 extends UserVector {
      * @param h     the sceond generator used in commitment
      *
      */
-    public UserVector2(long[] data, long F_UV, int l, NativeBigInteger g,
+    public UserVector2(long[] data, long F_UV_p, int l, NativeBigInteger g,
                        NativeBigInteger h) {
-        super(data, F_UV, l);
+        super(data, F_UV_p, l);
         this.g_UV2 = g;
         this.h_UV2 = h;
         //sc = new SquareCommitment(g, h);
@@ -137,7 +137,7 @@ public class UserVector2 extends UserVector {
             peerVector_UV2 = new long[dimension];
         }
     // 1. serverUVector
-        serverUserVector_UV2 = Util.randVector(dimension, F, 0);
+        serverUserVector_UV2 = Util.randVector(dimension, F_UV, 0);
 
         boolean data_equal_mod_uv2;
         boolean [] data_equal_mod_array_uv2 = new boolean[dimension];
@@ -147,13 +147,13 @@ public class UserVector2 extends UserVector {
     // 2. peerUVector = mod(dataUV[]-serverVector, F
     //
    //  if(data_UV[i] == Util.mod(serverV[i] + peerV[i], F))
-            peerVector_UV2[generate_shares_ui] = Util.mod(data_UV[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F);
+            peerVector_UV2[generate_shares_ui] = Util.mod(data_UV[generate_shares_ui] - serverUserVector_UV2[generate_shares_ui], F_UV);
 
-            if(data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F)){
+            if(data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F_UV)){
                 data_equal_mod_uv2 = true;
                 data_equal_mod_array_uv2[generate_shares_ui] = data_equal_mod_uv2;
             }
-            assert (data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F));
+            assert (data_UV[generate_shares_ui] == Util.mod(serverUserVector_UV2[generate_shares_ui] + peerVector_UV2[generate_shares_ui], F_UV));
             System.out.println("after assert in GenerateShares UV2");
         } // for 10 dimension, assert(data==mod)
     }
@@ -299,7 +299,7 @@ public class UserVector2 extends UserVector {
         private L2NormBoundProof2 serverProof = null;
         private L2NormBoundProof2 peerProof = null;
 
-        ThreeWayCommitment tc = new ThreeWayCommitment(g_UV2, h_UV2, F);
+        ThreeWayCommitment tc = new ThreeWayCommitment(g_UV2, h_UV2, F_UV);
         // Used to prepare the ZKP. Can be computed offline.
 
         /**
@@ -350,8 +350,8 @@ public class UserVector2 extends UserVector {
             Commitment cm = new Commitment(g_UV2, h_UV2);
             SquareCommitment sc = new SquareCommitment(g_UV2, h_UV2);
             for(int i = 0; i < checkCoVector.length; i++) {
-                serverProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector_UV2), F);
-                peerProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F);
+                serverProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], serverUserVector_UV2), F_UV);
+                peerProof.checksums[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F_UV);
 
                 /**
                  * Note that although all the normal compuations are done in
@@ -365,11 +365,11 @@ public class UserVector2 extends UserVector {
 
                 // The peer should be done. The following are for the server:
                 long s = Util.mod(serverProof.checksums[i]
-                                  + peerProof.checksums[i], F);
+                                  + peerProof.checksums[i], F_UV);
                 long b = s - (serverProof.checksums[i]+peerProof.checksums[i]);
-                if(!(b == 0 || b == -F || b == F))
+                if(!(b == 0 || b == -F_UV || b == F_UV))
                     throw new RuntimeException("Modular reduction corrector "
-                                               + "wrong. F = " + F + ", b = "
+                                               + "wrong. F_UV = " + F_UV + ", b = "
                                                + b);
                 serverProof.mdCorrector[i] = tc.commit(b);
                 serverProof.tcProofs[i] =
@@ -622,12 +622,12 @@ public class UserVector2 extends UserVector {
      * proof will construct <code>Y</code>. The peer can then call
      * {@link #getY()} to obtain <code>Y</code> and pass it to the server.
      */
-    private BigInteger[] Y = null;
+    private BigInteger[] Y_peer_UV2 = null;
     // The peer share of the checksums. Put it here for tes
     public boolean verify2(Proof proof) {
         L2NormBoundProof2 l2Proof = (L2NormBoundProof2)proof;
         if(l2Proof.isForServer())
-            return serverVerify(l2Proof, Y);
+            return serverVerify(l2Proof, Y_peer_UV2);
         else
             return peerVerify(l2Proof);
     }
@@ -637,27 +637,27 @@ public class UserVector2 extends UserVector {
      * verified by the peer and passed to the server.
      */
     public void setY(BigInteger[] Y_U2) {
-        this.Y = Y_U2;
+        this.Y_peer_UV2 = Y_U2;
     }
 
 
     public BigInteger[] getY() {
-        return Y;
+        return Y_peer_UV2;
     }
 
     protected boolean peerVerify(L2NormBoundProof2 l2Proof) {
-        long[] y = l2Proof.getChecksums();
-        System.out.println("peerVerify: [y.length] "+ String.valueOf(y.length));
+        long[] y_checksums_l2Proof = l2Proof.getChecksums();
+        System.out.println("peerVerify: [y.length] "+ String.valueOf(y_checksums_l2Proof.length));
         // This is only getting the peer's share of the checksums.
         BigInteger[] r = l2Proof.getChecksumRandomness();
-        Y  = new BigInteger[y.length];   // The commitments to the checksums
+        Y_peer_UV2  = new BigInteger[y_checksums_l2Proof.length];   // The commitments to the checksums
 
         // Peer just computes the commitments to the checksums
         Commitment cm = new Commitment(g_UV2, h_UV2);
-        for(int i = 0; i < y.length; i++) {
-            y[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F);
-            Y[i] =
-                cm.commit(new BigInteger(new Long(y[i]).toString()),
+        for(int i = 0; i < y_checksums_l2Proof.length; i++) {
+            y_checksums_l2Proof[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F);
+            Y_peer_UV2[i] =
+                cm.commit(new BigInteger(new Long(y_checksums_l2Proof[i]).toString()),
                           // The checksum
                           r[i]);       // The randomness
         }
@@ -666,9 +666,9 @@ public class UserVector2 extends UserVector {
     }
 
 
-    public boolean serverVerify(L2NormBoundProof2 l2Proof, BigInteger[] Y) {
-        System.out.println("serverVerify: "+ Arrays.toString(Y));
-        if(Y == null)
+    public boolean serverVerify(L2NormBoundProof2 l2Proof, BigInteger[] Y_UV2_serverV_P) {
+        System.out.println("serverVerify: "+ Arrays.toString(Y_UV2_serverV_P));
+        if(Y_UV2_serverV_P == null)
             throw new RuntimeException("Must perform peer verification first!");
 
         BitCommitment.BitCommitmentProof[] bcProofs =
@@ -680,12 +680,12 @@ public class UserVector2 extends UserVector {
 
         long[] x = l2Proof.getChecksums();
         // This is only getting the server's share of the checksums.
-        BigInteger[] r = l2Proof.getChecksumRandomness();
-        BigInteger[] X = new BigInteger[x.length];
+        BigInteger[] r_checksum_randomness_l2Proof = l2Proof.getChecksumRandomness();
+        BigInteger[] X_checksums = new BigInteger[x.length];
         // The commitments to the checksums
-        BigInteger[] S = new BigInteger[x.length];
+        BigInteger[] S_checksums = new BigInteger[x.length];
         // The commitments to s
-        BigInteger[] B = l2Proof.getMdCorrector();
+        BigInteger[] B_MdCorrector_l2Proof = l2Proof.getMdCorrector();
         // The Bs
 
         // Check the checksums and their commitments:
@@ -702,7 +702,7 @@ public class UserVector2 extends UserVector {
             }
 
             // Now check if the modular correctors, the Bs, are computed correctly
-            if(!B[i].equals(tcProofs[i].getCommitment()[0])) {
+            if(!B_MdCorrector_l2Proof[i].equals(tcProofs[i].getCommitment()[0])) {
                 System.out.println("B[" + i + "]"
                                    + " not computed correctly!");
                 return false;
@@ -715,11 +715,11 @@ public class UserVector2 extends UserVector {
                 return false;
             }
 
-            X[i] =
+            X_checksums[i] =
                 cm.commit(new BigInteger(new Long(x[i]).toString()).mod(q),
                           // The checksum
-                          r[i]);            // The randomness
-            S[i] = X[i].multiply(B[i]).mod(p).multiply(Y[i]).mod(p);
+                        r_checksum_randomness_l2Proof[i]);            // The randomness
+            S_checksums[i] = X_checksums[i].multiply(B_MdCorrector_l2Proof[i]).mod(p).multiply(Y[i]).mod(p);
         }
 
         // Next check that the sum of squares does not have excessive bits:
@@ -736,7 +736,7 @@ public class UserVector2 extends UserVector {
         for(int i = 0; i < scProofs.length; i++) {
             // First check that the square commitment encodes the correct
             // number i.e. the A in scProofs is the commitment to s.
-            if(!scProofs[i].getCommitment()[0].equals(S[i])) {
+            if(!scProofs[i].getCommitment()[0].equals(S_checksums[i])) {
                 System.out.println("S[" + i + "] computed incroorectly.");
                 return false;
             }
@@ -939,10 +939,10 @@ public class UserVector2 extends UserVector {
             }else {
                 delta = 2.0;
             }
-            double l2 = (double)L*delta;
+            double l2_L_delta = (double)L*delta;
             double sqrt_l2 = 0.;
             // Generate data in randVector //
-            data = Util.randVector(m, F_UV, l2);
+            data = Util.randVector(m, F_UV, l2_L_delta);
             // Generate Data in randVector //
 
 
