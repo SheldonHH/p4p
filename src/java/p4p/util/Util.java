@@ -838,13 +838,13 @@ public class Util extends P4PParameters {
         if(l2_norm_5dot49_Util_randVector <=0){
             bigF_randV = new BigInteger(Long.toString(ZF_orderGroup_utilRandV));
         }
-        double myL2_square_util = 0.;
+        double myL2_SQUARE_util = 0.;
         int L_10000_util = 10000;
         int[] l2_positive_counter_for_10_dimension = new int[2];
         for(int dimension_id = 0; dimension_id < dimension; dimension_id++) {
             if(l2_norm_5dot49_Util_randVector > 0) {
                 data_Util_randVector[dimension_id] = rand.nextInt(2*L_10000_util+1)-L_10000_util;
-                myL2_square_util += (double)((double)data_Util_randVector[dimension_id]*(double)data_Util_randVector[dimension_id]);
+                myL2_SQUARE_util += (double)((double)data_Util_randVector[dimension_id]*(double)data_Util_randVector[dimension_id]);
                 l2_positive_counter_for_10_dimension[0]++;
             }
             else {
@@ -859,7 +859,7 @@ public class Util extends P4PParameters {
         System.out.println("data_Util_randVector: "+ Arrays.toString(data_Util_randVector));
 
         if(l2_norm_5dot49_Util_randVector > 0) {
-            double myL2_SQRT = Math.sqrt(myL2_square_util);
+            double myL2_SQRT = Math.sqrt(myL2_SQUARE_util);
             double scale_Util_randV = l2_norm_5dot49_Util_randVector/myL2_SQRT;
             for(int i = 0; i < dimension; i++) {
                 long data_half_M_scale = 0;
