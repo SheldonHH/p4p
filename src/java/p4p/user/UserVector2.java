@@ -655,7 +655,7 @@ public class UserVector2 extends UserVector {
         // Peer just computes the commitments to the checksums
         Commitment cm = new Commitment(g_UV2, h_UV2);
         for(int i = 0; i < y_checksums_l2Proof.length; i++) {
-            y_checksums_l2Proof[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F);
+            y_checksums_l2Proof[i] = Util.mod(Util.innerProduct(checkCoVector[i], peerVector_UV2), F_UV);
             Y_peer_UV2[i] =
                 cm.commit(new BigInteger(new Long(y_checksums_l2Proof[i]).toString()),
                           // The checksum
@@ -719,7 +719,7 @@ public class UserVector2 extends UserVector {
                 cm.commit(new BigInteger(new Long(x[i]).toString()).mod(q),
                           // The checksum
                         r_checksum_randomness_l2Proof[i]);            // The randomness
-            S_checksums[i] = X_checksums[i].multiply(B_MdCorrector_l2Proof[i]).mod(p).multiply(Y[i]).mod(p);
+            S_checksums[i] = X_checksums[i].multiply(B_MdCorrector_l2Proof[i]).mod(p).multiply(Y_UV2_serverV_P[i]).mod(p);
         }
 
         // Next check that the sum of squares does not have excessive bits:
@@ -904,7 +904,7 @@ public class UserVector2 extends UserVector {
         F = BigInteger.probablePrime(62, rand).longValue();
 
         System.out.println("l = " + l + ", L = " + L);
-        System.out.println("F = " + F_UV);
+        System.out.println("F = " + F);
         System.out.println("zkpIterations = " + zkpIterations);
 
         // Generate the data and the checksum coefficient vector:
@@ -942,7 +942,7 @@ public class UserVector2 extends UserVector {
             double l2_L_delta = (double)L*delta;
             double sqrt_l2 = 0.;
             // Generate data in randVector //
-            data = Util.randVector(m, F_UV, l2_L_delta);
+            data = Util.randVector(m, F, l2_L_delta);
             // Generate Data in randVector //
 
 
@@ -982,7 +982,7 @@ public class UserVector2 extends UserVector {
             Util.innerProduct(c[0], data);
             innerProductTime += (System.currentTimeMillis()-t0);
 
-            UserVector2 uv = new UserVector2(data, F_UV, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
+            UserVector2 uv = new UserVector2(data, F, l, two_generators_for_g_h[0], two_generators_for_g_h[1]);
             data = uv.getUserData();
             uv.generateShares();
             uv.setChecksumCoefficientVectors(c);
@@ -993,7 +993,7 @@ public class UserVector2 extends UserVector {
                 (L2NormBoundProof2)uv.getL2NormBoundProof2(true);
             proverWatch.pause();
 
-            shouldPass = l2 < L;
+            shouldPass = l2_L_delta < L;
             verifierWatch.start();
             uv.verify2(peerProof);   // Must verify peer proof first
             boolean didPass = uv.verify2(serverProof);
@@ -1003,14 +1003,14 @@ public class UserVector2 extends UserVector {
                 nfails++;
                 System.out.println("Test No. " + i + " failed. shouldPass = "
                                    + shouldPass + ", result = " + didPass
-                                   + ". l2 = " + l2
+                                   + ". l2_L_delta = " + l2_L_delta
                                    + ". sqrt_l2 = " + sqrt_l2);
             }
             else
                 System.out.println("Test No. " + i
                                    + " passed. shouldPass = didPass = "
                                    + shouldPass
-                                   + ". l2 = " + l2
+                                   + ". l2_L_delta = " + l2_L_delta
                                    + ". sqrt_l2 = " + sqrt_l2);
         }
         verifierWatch.stop();
