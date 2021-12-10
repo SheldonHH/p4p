@@ -369,10 +369,10 @@ public class P4PServer extends P4PParameters {
 
     /**
      * Sets the peer's share of the vector sum
-     * @param vv    the sum of the peer's share of the user vector
+     * @param vv_peersum_p    the sum of the peer's share of the user vector
      */
-    public void setPeerSum(long[] vv) {
-        peerSum = vv;
+    public void setPeerSum(long[] vv_peersum_p) {
+        peerSum = vv_peersum_p;
         System.out.println("peerSum: " + Arrays.toString(peerSum));
     }
 
