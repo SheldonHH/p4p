@@ -457,6 +457,7 @@ public class UserVector2 extends UserVector {
             serverProof.commitment = new BigInteger[1];
             serverProof.commitment[0] = squareSumCommitment;
 
+//             if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l)
             int numBits =
                     Math.max(squareSum.bitLength(),
                             Integer.toBinaryString(c.length).length()+2*l);
@@ -694,10 +695,13 @@ public class UserVector2 extends UserVector {
 
         // Next check that the sum of squares does not have excessive bits:
         if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l) {
+            int BL = bcProofs.length;
+            int CLA2l = Integer.toBinaryString(c.length).length()+2*l;
             System.out.println("Sum of squares has too many bits: "
                     + bcProofs.length
                     + ", the limit is "
                     + (Integer.toBinaryString(c.length).length()+2*l));
+
             return false;
         }
 
