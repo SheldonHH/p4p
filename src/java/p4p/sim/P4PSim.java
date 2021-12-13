@@ -231,7 +231,7 @@ public class P4PSim extends P4PParameters {
 
 // 🌟 prover start 🌟
                 proverWatch.start();
-// peerProof, serverProof
+// peerProof, serverProof construct() 🐰 SquareSum.add()
                 UserVector2.L2NormBoundProof2 peerProof =
                         (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(false);
                 UserVector2.L2NormBoundProof2 serverProof =

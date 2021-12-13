@@ -276,6 +276,8 @@ public class UserVector2 extends UserVector {
         private boolean forServer = false;
         private L2NormBoundProof2 serverProof = null;
         private L2NormBoundProof2 peerProof = null;
+        private int ssBL = 0;
+
 
         ThreeWayCommitment tc = new ThreeWayCommitment(g, h, F);
         // Used to prepare the ZKP. Can be computed offline.
@@ -315,6 +317,7 @@ public class UserVector2 extends UserVector {
                     new ThreeWayCommitment.ThreeWayCommitmentProof[c.length];
 
             serverProof.mdCorrector = new BigInteger[c.length];
+            // 🐰
             BigInteger squareSum = BigInteger.ZERO;
             // Sum of the squares
             BigInteger squareSumCommitment = BigInteger.ONE;
@@ -407,6 +410,7 @@ public class UserVector2 extends UserVector {
 
                 //squareSum = squareSum.add(cs.multiply(cs).mod(q)).mod(q);
                 squareSum = squareSum.add(cs.multiply(cs));
+                ssBL = squareSum.bitLength();
                 squareSumCommitment =
                         squareSumCommitment.multiply(sc.getB()).mod(p);
                 // Now get the randomness used to commit to the square:
@@ -432,6 +436,7 @@ public class UserVector2 extends UserVector {
              */
             //squareSum = squareSum.add(squareSum).mod(q);             // 2x
             squareSum = squareSum.add(squareSum);             // 2x
+            ssBL = squareSum.bitLength();
             sRandomness = sRandomness.add(sRandomness).mod(q);
             squareSumCommitment =
                     squareSumCommitment.multiply(squareSumCommitment).mod(p);   // 2x
@@ -694,7 +699,7 @@ public class UserVector2 extends UserVector {
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        int BL = bcProofs.length;
+        int BL = bcProofs.length; // numBits,   squareSum =
         int CLA2l = Integer.toBinaryString(c.length).length()+2*l; //86
         DEBUG("BL: " + BL + "CLA2L: "+CLA2l);
         if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l){

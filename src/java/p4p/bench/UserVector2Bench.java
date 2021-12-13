@@ -190,7 +190,7 @@ public class UserVector2Bench extends UserVector {
             commitment = new BigInteger[1];
             commitment[0] = squareSumCommitment;
 
-
+            // 🌟 crux of the test 🌟 //
             int numBits = Math.max(squareSum.bitLength(), Integer.toBinaryString(c.length).length()+2*l);
             // Even for small squares we must do all the commitments otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits");
