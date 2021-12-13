@@ -466,6 +466,8 @@ public class UserVector2 extends UserVector {
             int numBits =
                     Math.max(squareSum.bitLength(),
                             Integer.toBinaryString(c.length).length()+2*l);
+            ssBL = squareSum.bitLength(); // if 84
+            // then numBits = 86, hence pass
             // Even for small squares we must do all the commitments
             // otherwise leak info.
             DEBUG("squareSum has " + numBits + " bits. The limit is "
@@ -583,7 +585,7 @@ public class UserVector2 extends UserVector {
     public Proof getL2NormBoundProof2(boolean server) {
         if(proof == null) {
             proof = new L2NormBoundProof2(server);
-            proof.construct();
+            proof.construct(); // for c.length
         }
         return server ? proof.getServerProof() : proof.getPeerProof();
     }
