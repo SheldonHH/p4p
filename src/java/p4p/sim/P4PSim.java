@@ -226,7 +226,7 @@ public class P4PSim extends P4PParameters {
 // 2⃣️. Shares: u, v
                 uv.generateShares();
 
-// 2.1 Set checkCoVector through server challenge_vector for each user
+// 2.1 Set checkCoVector through server challenge_vector for each user 🐢
                 uv.setChecksumCoefficientVectors(server.getChallengeVectors());
 
 // 🌟 prover setup
@@ -249,7 +249,7 @@ public class P4PSim extends P4PParameters {
                 UserVector2 pv = new UserVector2(m, F, l, g, h);
                 pv.setV(vv);
 
-// 3.2 set CheCoVectors through server.ChallVector for Each User
+// 3.2 set CheCoVectors through server.ChallVector for Each User 🐢
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
 // 🌟// 🌟 verify2
@@ -289,7 +289,7 @@ public class P4PSim extends P4PParameters {
 // server.compute()
             server.setPeerSum(v);
             verifierWatch.start();
-// 🌟 serverVerify
+// 🌟 serverVerify 🐢
             server.compute();
             verifierWatch.pause();
 // 7⃣️VectorSum()
