@@ -227,16 +227,15 @@ public class P4PSim extends P4PParameters {
 // 2.1 Set checkCoVector through server challenge_vector for each user
                 uv.setChecksumCoefficientVectors(server.getChallengeVectors());
 
-// 🌟
+// 🌟 prover setup
                 proverWatch.start();
-
 // peerProof, serverProof
                 UserVector2.L2NormBoundProof2 peerProof =
                         (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(false);
                 UserVector2.L2NormBoundProof2 serverProof =
                         (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(true);
                 proverWatch.pause();
-
+// 🌟
                 // The server:
                 server.setUserVector(i, uv.getU());
                 server.setProof(i, serverProof);
@@ -250,7 +249,7 @@ public class P4PSim extends P4PParameters {
 // 3.2 set ChecksumCoefficientVectors through server Challenge_Vector for Each User
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
-
+// 🌟// 🌟 verify2
 // 3.2 setChecksumCoefficientVectors through server Challenge_Vector for Each User
                 boolean peerPassed = pv.verify2(peerProof);
                 verifierWatch.pause();
@@ -258,9 +257,7 @@ public class P4PSim extends P4PParameters {
 
 // 4⃣️ !peerPassed ,  disqualifyUser(i),
 // server.setY(): The commitments to the peer's share of the checksums, and forward to server
-// verify the proof
-// peerVerification returns true
-
+// verify the proof,  // peerVerification returns true
                 if(!peerPassed)
                     server.disqualifyUser(i);
                 else
@@ -276,7 +273,7 @@ public class P4PSim extends P4PParameters {
                  */
 
 
- // l2vsL
+ // 5⃣️ l2 < L = shouldPass
                 shouldPass = l2 < L;   // Correct shouldPass using actual data.
                 if(shouldPass) {
                     nQulaifiedUsers++;
@@ -285,15 +282,19 @@ public class P4PSim extends P4PParameters {
                 }
             }
 
-            // Now the server is ready to verify
+// 6⃣️ server prepare to verify
+// server.setPeerSum()
+// server.compute()
             server.setPeerSum(v);
             verifierWatch.start();
+// 🌟 serverVerify
             server.compute();
             verifierWatch.pause();
-            // Check if the result is right
+// 7⃣️VectorSum()
             long[] result = server.getVectorSum();
 
             for(int ii = 0; ii < m; ii++) {
+// 7.1 res[ii] != Util.mod(s[
                 if(result[ii] != Util.mod(s[ii], F)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
