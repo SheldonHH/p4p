@@ -229,7 +229,7 @@ public class P4PSim extends P4PParameters {
 // 2.1 Set checkCoVector through server challenge_vector for each user 🐢
                 uv.setChecksumCoefficientVectors(server.getChallengeVectors());
 
-// 🌟 prover setup
+// 🌟 prover start 🌟
                 proverWatch.start();
 // peerProof, serverProof
                 UserVector2.L2NormBoundProof2 peerProof =
@@ -237,7 +237,8 @@ public class P4PSim extends P4PParameters {
                 UserVector2.L2NormBoundProof2 serverProof =
                         (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(true);
                 proverWatch.pause();
-// 🌟
+// 🌟 prover pause 🌟
+
 // 2.2 server.setUV(U),
                 server.setUserVector(i, uv.getU());
 // 2.3 server.setProof
@@ -252,9 +253,9 @@ public class P4PSim extends P4PParameters {
 // 3.2 set CheCoVectors through server.ChallVector for Each User 🐢
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
-// 🌟// 🌟 verify2
+
 // 3.2 setChecksumCoefficientVectors through server Challenge_Vector for Each User
-                boolean peerPassed = pv.verify2(peerProof);
+                boolean peerPassed = pv.verify2(peerProof); // 🌟 verify2 🌟
                 verifierWatch.pause();
 
 
@@ -289,10 +290,9 @@ public class P4PSim extends P4PParameters {
 // server.compute()
             server.setPeerSum(v);
             verifierWatch.start();
-// 🌟 serverVerify 🐢
-            server.compute();
+            server.compute();          // 🌟 serverVerify 🐢🌟
             verifierWatch.pause();
-// 7⃣️VectorSum()
+// 7⃣️ VectorSum()
             long[] result = server.getVectorSum();
 
             for(int ii = 0; ii < m; ii++) {
