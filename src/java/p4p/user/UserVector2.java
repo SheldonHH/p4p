@@ -694,9 +694,10 @@ public class UserVector2 extends UserVector {
         }
 
         // Next check that the sum of squares does not have excessive bits:
-        if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l) {
-            int BL = bcProofs.length;
-            int CLA2l = Integer.toBinaryString(c.length).length()+2*l;
+        int BL = bcProofs.length;
+        int CLA2l = Integer.toBinaryString(c.length).length()+2*l; //86
+        DEBUG("BL: " + BL + "CLA2L: "+CLA2l);
+        if(bcProofs.length > Integer.toBinaryString(c.length).length()+2*l){
             System.out.println("Sum of squares has too many bits: "
                     + bcProofs.length
                     + ", the limit is "
