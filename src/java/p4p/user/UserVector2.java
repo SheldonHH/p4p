@@ -345,7 +345,7 @@ public class UserVector2 extends UserVector {
                 serverProof.checksumRandomness[i] = Util.randomBigInteger(q);
 
                 // The peer should be done. The following are for the server:
-                long s = Util.mod(serverProof.checksums[i]
+                long s = Util.mod(serverProof.checksums[i] // 117159289321
                         + peerProof.checksums[i], F);
                 long b = s - (serverProof.checksums[i]+peerProof.checksums[i]);
                 if(!(b == 0 || b == -F || b == F))
