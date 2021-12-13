@@ -145,9 +145,9 @@ public class UserVector2Bench extends UserVector {
                 sc.commit(cs);
                 scProofs[i] = (SquareCommitment.SquareCommitmentProof) sc.getProof();
 
-                if (debug) {
+                if(debug) {
                     // lets check here:
-                    if (!sc.verify(scProofs[i])) {
+                    if(!sc.verify(scProofs[i])) {
                         throw new RuntimeException("Square commitment proof or verification is not working properly. i = " + 1);
                     }
                 }
@@ -158,7 +158,7 @@ public class UserVector2Bench extends UserVector {
                 sRandomness = sRandomness.add(sc.getSb()).mod(q);
             }
 
-            if (debug) {
+            if(debug) {
                 // Lets verify if we compute the commitment to the sum of squares correcly:
                 System.out.print("Checking commitment to sum of squares ...");
                 Commitment cm = new Commitment(g, h);
