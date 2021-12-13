@@ -74,16 +74,15 @@ public class P4PSim extends P4PParameters {
         int nLoops = 1;
         boolean doBench = false;
         boolean worstcase = false;
+        int zkpIterations = 50;
+
         for (int i = 0; i < args.length; ) {
             String arg = args[i++];
             /**
              * Test the worst case cost. i.e. every vector should pass. This is
              * when the verifier spends longest time.
              */
-            System.out.println("m:" + m);
             // Definie the number of iterations that the bound ZKP must have:
-            int zkpIterations = 50;
-
 
             if (arg.length() > 0 && arg.charAt(0) == '-') {
                 if (arg.equals("-k")) {
