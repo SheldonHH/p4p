@@ -918,7 +918,7 @@ public class UserVector2 extends UserVector {
             double l2 = (double)L*delta;
             double ll2 = 0.;
 
-            data = Util.randVector(m, F, l2);
+            data = Util.randVector(100, F, l2);
             for(int j = 0; j < m; j++) {
                 ll2 += (double)data[j]*(double)data[j];
             }
