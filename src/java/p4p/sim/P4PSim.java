@@ -69,7 +69,7 @@ public class P4PSim extends P4PParameters {
      * Start a simulation.
      */
     public static void main(String[] args) {
-        int nLoops = 10;
+        int nLoops = 1;
         boolean doBench = false;
         boolean worstcase = false;
         /**
@@ -203,6 +203,7 @@ public class P4PSim extends P4PParameters {
             for(int i = 0; i < m; i++) {
                 s[i] = 0;   v[i] = 0;
             }
+// for each user
             for(int i = 0; i < n; i++) {
                 long start = System.currentTimeMillis();
                 long innerProductTime = 0;
@@ -216,12 +217,13 @@ public class P4PSim extends P4PParameters {
                 else delta = 2.0;
                 double l2 = (double)L*delta;
 
-// 1⃣️. Generate Data & UserVector2
+// 1⃣️. Generate Data & 🌛UserVector2
                 data = Util.randVector(m, F, l2);
                 UserVector2 uv = new UserVector2(data, F, l, g, h);
+// UserVector2(data, F, l, g, h)
 
 
-// 2⃣️. Simulating the user:
+// 2⃣️. Shares: u, v
                 uv.generateShares();
 
 // 2.1 Set checkCoVector through server challenge_vector for each user
@@ -236,17 +238,18 @@ public class P4PSim extends P4PParameters {
                         (UserVector2.L2NormBoundProof2)uv.getL2NormBoundProof2(true);
                 proverWatch.pause();
 // 🌟
-                // The server:
+// 2.2 server.setUV(U),
                 server.setUserVector(i, uv.getU());
+// 2.3 server.setProof
                 server.setProof(i, serverProof);
 
 //  3⃣️. The peer:
                 long[] vv = uv.getV();
-//  3⃣.1 The peer: setV()
+//  3⃣.1 The peer: setV(); // 🌛 UserVector2(m, F, l, g, h)
                 UserVector2 pv = new UserVector2(m, F, l, g, h);
                 pv.setV(vv);
 
-// 3.2 set ChecksumCoefficientVectors through server Challenge_Vector for Each User
+// 3.2 set CheCoVectors through server.ChallVector for Each User
                 pv.setChecksumCoefficientVectors(server.getChallengeVectors());
                 verifierWatch.start();
 // 🌟// 🌟 verify2
@@ -255,8 +258,8 @@ public class P4PSim extends P4PParameters {
                 verifierWatch.pause();
 
 
-// 4⃣️ !peerPassed ,  disqualifyUser(i),
-// server.setY(): The commitments to the peer's share of the checksums, and forward to server
+// 4⃣️ !peerPassed  disqualifyUser(i),
+// server.setY():  commitments to the peer's share of the checksums, and forward to server
 // verify the proof,  // peerVerification returns true
                 if(!peerPassed)
                     server.disqualifyUser(i);
@@ -271,7 +274,6 @@ public class P4PSim extends P4PParameters {
                  * happens. The peer's verification actually always returns
                  * true.
                  */
-
 
  // 5⃣️ l2 < L = shouldPass
                 shouldPass = l2 < L;   // Correct shouldPass using actual data.
@@ -294,7 +296,7 @@ public class P4PSim extends P4PParameters {
             long[] result = server.getVectorSum();
 
             for(int ii = 0; ii < m; ii++) {
-// 7.1 res[ii] != Util.mod(s[
+// 7.1 res[ii] != Util.mod(s[ii], F)
                 if(result[ii] != Util.mod(s[ii], F)) {
                     System.out.println("\tElement " + ii
                             + " don't agree. Computed: "
