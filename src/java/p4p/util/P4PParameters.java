@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2007 Regents of the University of California.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
@@ -47,45 +47,45 @@ import net.i2p.util.NativeBigInteger;
 
 
 public class P4PParameters {
-    
+
     // Some stock data so we don't have to regenerate each time:
-    // They are only for security_parameters = 1024
+    // They are only for k = 1024
     private static final int STOCK_KEYLENGTH = 1024;
-    private static final NativeBigInteger stockGenerator = 
-        new NativeBigInteger("8945233336956698362120177067658291"
-                             + "28255625208609698309729458795223"
-                             + "49396662770007144857569313631459"
-                             + "20064360628000030948027798897077"
-                             + "55461205478680557442064556237153"
-                             + "30649683667030965996044852791989"
-                             + "41778705800268487243367278278177"
-                             + "57680922766893249532793153472346"
-                             + "79451792389616055285368469984611"
-                             + "514432943342316234");
+    private static final NativeBigInteger stockGenerator =
+            new NativeBigInteger("8945233336956698362120177067658291"
+                    + "28255625208609698309729458795223"
+                    + "49396662770007144857569313631459"
+                    + "20064360628000030948027798897077"
+                    + "55461205478680557442064556237153"
+                    + "30649683667030965996044852791989"
+                    + "41778705800268487243367278278177"
+                    + "57680922766893249532793153472346"
+                    + "79451792389616055285368469984611"
+                    + "514432943342316234");
 
-        
-    private static final BigInteger stockP = 
-        new BigInteger("14204141203743585258566708349066642260709474"
-                       + "89706010686425903591779003193311472507702673"
-                       + "03975169399075173941371951568437196865177081"
-                       + "24766661530875946683423656535798466913209746"
-                       + "91940897642403748131430917204600254122858278"
-                       + "97680703356400654227036427049904277395433196"
-                       + "219915047607909704021494961357173648661147427");
-    
 
-    private static final BigInteger stockQ = 
-        new BigInteger("71020706018717926292833541745333211303547374"
-                       + "485300534321295179588950159665573625385133"
-                       + "651987584699537586970685975784218598432588"
-                       + "540623833307654379733417118282678992334566"
-                       + "048734597044882120187406571545860230012706"
-                       + "142913948840351678200327113518213524952138"
-                       + "697716598109957523803954852010747480678586"
-                       + "824330573713");
+    private static final BigInteger stockP =
+            new BigInteger("14204141203743585258566708349066642260709474"
+                    + "89706010686425903591779003193311472507702673"
+                    + "03975169399075173941371951568437196865177081"
+                    + "24766661530875946683423656535798466913209746"
+                    + "91940897642403748131430917204600254122858278"
+                    + "97680703356400654227036427049904277395433196"
+                    + "219915047607909704021494961357173648661147427");
+
+
+    private static final BigInteger stockQ =
+            new BigInteger("71020706018717926292833541745333211303547374"
+                    + "485300534321295179588950159665573625385133"
+                    + "651987584699537586970685975784218598432588"
+                    + "540623833307654379733417118282678992334566"
+                    + "048734597044882120187406571545860230012706"
+                    + "142913948840351678200327113518213524952138"
+                    + "697716598109957523803954852010747480678586"
+                    + "824330573713");
 
     private static SecureRandom rand = null;
-    
+
     // Warming up:
     static {
         try {
@@ -96,132 +96,123 @@ public class P4PParameters {
             e.printStackTrace();
             rand = new SecureRandom();
         }
-        
+
         rand.nextBoolean();
     }
-    
-    /** 
+
+    /**
      * The modulus. Should be at least 1024 bit.
      */
-    protected static BigInteger p;    
-    
+    protected static BigInteger p;
+
     /**
-     * A large prime such that q | p -1. Typically p = 2q + 1 
+     * A large prime such that q | p -1. Typically p = 2q + 1
      */
     protected static BigInteger q;
-    
+
     /**
      * A generator in G_q, the subgroup of order q of Z^*_p.
      * For security reasons we should always work in G_q. This
-     * member is private and is used for generating other 
-     * generators the system may use. 
+     * member is private and is used for generating other
+     * generators the system may use.
      */
     private static NativeBigInteger generator;
     private static NativeBigInteger[] generators;
     private static int MAX_GENERATORS = 100;
-    
+
     /**
-     * The security parameter. We must guarantee |p| >= security_parameters
+     * The security parameter. We must guarantee |p| >= k
      */
     protected static int securityParameter;
     private static boolean initialized = false;
-    
+
     /**
      * Initialize the system parameters with the given security parameter.
      */
-    
+
     // FIXME: there should also be a method so that the parameters
     // can be read from config file. This way we only distribute the
     // public keys to the users.
-    
-    public static void initialize(int security_parameters, boolean force) {
+
+    public static void initialize(int k, boolean force) {
         if(initialized && !force) {
             System.out.println("System parameters already initialized.");
             dump();
             return;
         }
-        
-        assert(security_parameters>0);
-        securityParameter = security_parameters;
-        
+
+        assert(k>0);
+        securityParameter = k;
+
         System.out.println("securityParameter = " + securityParameter);
         System.out.print("Setting up system paramenters. This may take a while,"
-                         + " depending on the security parameter used ...");
-        int isProbablePrime_counter= 0;
-        if(force || security_parameters != STOCK_KEYLENGTH) {
+                + " depending on the security parameter used ...");
+
+        if(force || k != STOCK_KEYLENGTH) {
             while(true) {
                 System.out.print(".");
                 q = BigInteger.probablePrime(securityParameter - 1, rand);
                 p = (q.add(q)).add(BigInteger.ONE);     // 2*q + 1
-                isProbablePrime_counter++;
-                if(p.isProbablePrime(100)){
+
+                if(p.isProbablePrime(100))
                     break;
-                }
             }
         }
-        else { 
+        else {
             System.out.println("\nUsing stock p and q.");
             p = stockP;
             q = stockQ;
         }
 
-                //	p = new NativeBigInteger(pp);
+        //	p = new NativeBigInteger(pp);
         //	q = new NativeBigInteger(qq);
-        
-        System.out.println("\np = " + p + "\nq = " + q);	
-        
-        // Now lets find a generator of G_Q: cbxndsjmq
-        System.out.print("Finding th`bhgyhng x  h22   ni)_≤≠ ikalenerator .");
-        if(force || security_parameters != STOCK_KEYLENGTH) {
-            int cnt_mod_1000 = 0;   
+
+        System.out.println("\np = " + p + "\nq = " + q);
+
+        // Now lets find a generator of G_Q:
+        System.out.print("Finding the generator .");
+        if(force || k != STOCK_KEYLENGTH) {
+            int cnt = 0;
             while(true) {
-                cnt_mod_1000++;
-                if(cnt_mod_1000%1000 ==0){
-                    System.out.print("cnt_mod_1000%1000 ==0");
-                }
+                cnt++;
+                if(cnt%1000 ==0)  System.out.print(".");
                 generator = new NativeBigInteger(Util.randomBigInteger(q));
-                if(!BigInteger.ONE.equals(generator) && 
-                   BigInteger.ONE.equals(generator.modPow(q, p))) {
+                if(!BigInteger.ONE.equals(generator) &&
+                        BigInteger.ONE.equals(generator.modPow(q, p))) {
                     System.out.println("generator = " + generator);
                     break;
                 }
             }
-            
+
             System.out.println("done");
         }
         else {
             System.out.println("\nUsing stock generator.");
             generator = stockGenerator;
         }
-        
-        
+
+
         // Generate a lot of generators for use with vector commitment:
         // FIXME: many applications may not need the following.
         generators = new  NativeBigInteger[MAX_GENERATORS];
-        int counter_r = 0;
         for(int i = 0; i < MAX_GENERATORS; i++) {
             BigInteger r = Util.randomBigInteger(q);
-
-            while(r.equals(BigInteger.ZERO)){
+            while(r.equals(BigInteger.ZERO))
                 r = Util.randomBigInteger(q);
-
-            }
-
             // r can't be 0
-            
+
             generators[i] = new NativeBigInteger(generator.modPow(r, p));
-            counter_r++;
         }
-        
+
         System.out.println("Length of p: " + p.bitLength());
         System.out.println("Length of q: " + q.bitLength());
-        
-        if(p.bitLength() < security_parameters)
+
+        if(p.bitLength() < k)
             throw new RuntimeException("p is too small!");
-        int p_bitlength = p.bitLength();
+
         initialized = true;
     }
-    
+
 
     /**
      * Print out the system parameters.
@@ -233,13 +224,13 @@ public class P4PParameters {
         System.out.println("Length of p: " + p.bitLength());
         System.out.println("Length of q: " + q.bitLength());
     }
-    
+
     /**
      * Note: NativeBigInteger seems to be unable to handle negative 
      * exponents properly. We should avoid using modPow(e1.negate(), p)
      * before we fix the implementation.
      */
-    
+
 
     /**
      * Get the first N stock generators in G_q. This maybe useful for vector 
@@ -248,9 +239,9 @@ public class P4PParameters {
     public static NativeBigInteger[] getGenerators(int N) {
         if(!initialized)
             throw new RuntimeException("System parameters haven't been "
-                                       + "setup yet!");
+                    + "setup yet!");
         NativeBigInteger[] v = new  NativeBigInteger[N];
-        
+
         for(int i = 0; i < N; i++) {
             v[i] = generators[i];
         }
@@ -263,16 +254,16 @@ public class P4PParameters {
     public static NativeBigInteger[] getFreshGenerators(int N) {
         if(!initialized)
             throw new RuntimeException("System parameters haven't been "
-                                       + "setup yet!");
-        
+                    + "setup yet!");
+
         NativeBigInteger[] v = new  NativeBigInteger[N];
-        
+
         for(int i = 0; i < N; i++) {
             BigInteger r = Util.randomBigInteger(q);
             while(r.equals(BigInteger.ZERO))
                 r = Util.randomBigInteger(q);
             // r can't be 0
-            
+
             v[i] = new NativeBigInteger(generator.modPow(r, p));
         }
         return v;
@@ -284,7 +275,7 @@ public class P4PParameters {
     public static NativeBigInteger getGenerator() {
         if(!initialized)
             throw new RuntimeException("System parameters haven't been "
-                                       + "setup yet!");        
+                    + "setup yet!");
         return generator;
     }
 
@@ -294,8 +285,8 @@ public class P4PParameters {
     public static NativeBigInteger getFreshGenerator() {
         if(!initialized)
             throw new RuntimeException("System parameters haven't been "
-                                       + "setup yet!");
-	
+                    + "setup yet!");
+
         BigInteger r = Util.randomBigInteger(q);
         while(r.equals(BigInteger.ZERO))
             r = Util.randomBigInteger(q);
@@ -308,20 +299,20 @@ public class P4PParameters {
     public void sanityCheck() {
         if(!initialized)
             throw new RuntimeException("System parameters haven't been "
-                                       + "setup yet!");
-        
-        if(!p.isProbablePrime(100)) 
+                    + "setup yet!");
+
+        if(!p.isProbablePrime(100))
             throw new RuntimeException("p is not prime!");
-        if(!q.isProbablePrime(100)) 
+        if(!q.isProbablePrime(100))
             throw new RuntimeException("q is not prime!");
-        
+
         if(!generator.modPow(q, p).equals(BigInteger.ONE))
             throw new RuntimeException("generator does not have the "
-                                       + " correct order!");
+                    + " correct order!");
     }
 
 
-    /** 
+    /**
      * Debug helper
      */
     static protected boolean debug = false;
@@ -329,7 +320,7 @@ public class P4PParameters {
         if(debug)
             System.out.println(msg);
     }
-    
+
     public static void DEBUG_(String msg) {
         if(debug)
             System.out.print(msg);
