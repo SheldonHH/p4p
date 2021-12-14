@@ -221,7 +221,7 @@ public class UserVector2 extends UserVector {
      *     <p>
      *     <ol>
      *     <li> Z = Z1*Z2* ... *ZN</li>
-     *     <li> Z = prod{Aj*2^{j-1}} where Aj contans a bit</li>
+     *     <li> Z = prod{Aj*2^{j-1}} where Aj contains a bit</li>
      *     </ol>
      * </li>
      * </ol>
@@ -233,6 +233,11 @@ public class UserVector2 extends UserVector {
      * <li> x1, x2, ... xN and y1, ... yN: stored in long[] checksums. Acess via
      *      UserVector2.L2NormBoundProof2.getChecksums(). x's are sent to the
      *      server and the y's are sent to the privacy peer.</li>
+     *      x to server, y to peer
+     *
+     *
+     *      verifier compute Xi, r store in checkSumRandomness
+     *      Xi, Yi not transmitted.
      * <li> X1, X2, ... XN and Y1, ..., YN: these are not transmitted. Since the
      *      user will have to open the commitments anyway, the commitments
      *      themselves are not sent. Instead, the user sends r1, r2, ... rN, the
@@ -240,14 +245,24 @@ public class UserVector2 extends UserVector {
      *      The verifier just computes X1, X2, ... (or Y1, Y2, ...), by himself.
      *      The r's are stored in BigInteger[] checksumRandomness and can be
      *      accessed via getChecksumRandomness.</li>
+     *
+     *
+     *      Bi store in MdCorrector send to server
      * <li> B1, B2, ..., BN:  stored in <code>BigInteger</code> array
      *      <code>mdCorrector</code> and accessed via {@link #getMdCorrector()}.
      *      They are sent to the server only.</li>
+     *
+     *
+     *      SCP contains both commitment to num and its square to Sk and Zk stored
+     *
+     *
      * <li> SquareCommitment.SquareCommitmentProof[] scProofs contains the proofs
      *      that Zk = Sk^2, k = 1, 2, ..., N. Note that SquareCommitmentProof
      *      contains both the commitment to the number and its square so both Sk
      *      and Zk are stored. Sent to server only. The server needs to verify that
      *      Sk = Xk*Yk*Bk, in additional to the square statement.</li>
+     *
+     *      BCP contains bitProofs for Z send to server
      * <li> BitCommitment.BitCommitmentProof[] bcProofs contains the bit proofs
      *      for Z. They are only sent to the server.</li>
      * </ul>
@@ -773,245 +788,6 @@ public class UserVector2 extends UserVector {
         }
 
         return true;
-    }
-
-
-    /**
-     * Test the UserVector L2 norm bound ZKP.
-     */
-    public static void main(String[] args) {
-        int k = 512;
-        int m = 10;
-        int nLoops = 10;
-        int l = 40;
-        boolean doBench = false;
-        boolean worstcase = false;
-        // test the worst case cost. i.e. every vector should pass. this is
-        // when the verifier spends longest time.
-
-        // Definie the number of iterations that the bound ZKP must have:
-        int zkpIterations = 50;  // This is the N in the paper
-
-        for (int i = 0; i < args.length; ) {
-            String arg = args[i++];
-            if(arg.length() > 0 && arg.charAt(0) == '-') {
-                if (arg.equals("-k")) {
-                    try {
-                        k = Integer.parseInt(args[i++]);
-                    }
-                    catch (NumberFormatException e) {
-                        k = 512;
-                    }
-                }
-                else if(arg.equals("-m")) {
-                    try {
-                        m = Integer.parseInt(args[i++]);
-                    }
-                    catch (NumberFormatException e) {
-                        m = 10;
-                    }
-                }
-                else if(arg.equals("-N")) {
-                    try {
-                        zkpIterations = Integer.parseInt(args[i++]);
-                    }
-                    catch (NumberFormatException e) {
-                        zkpIterations = 50;
-                    }
-                }
-
-                else if(arg.equals("-o")) {
-                    try {
-                        nLoops = Integer.parseInt(args[i++]);
-                    }
-                    catch (NumberFormatException e) {
-                        nLoops = 10;
-                    }
-                }
-
-                else if(arg.equals("-l")) {
-                    try {
-                        l = Integer.parseInt(args[i++]);
-                        if(l > 52) {
-                            System.out.println("The system does not support l > 52. This will make "
-                                    + "the field order too high so that it is not a small"
-                                    + " field any more.");
-                            System.exit(0);
-                        }
-                    }
-                    catch (NumberFormatException e) {
-                        l = 40;
-                    }
-                }
-
-                else if(arg.equals("-d")) {
-                    debug = true;
-                }
-                else if(arg.equals("-w")) {
-                    worstcase = true;
-                    // test the worst case cost. i.e. every vector should pass.
-                    // this is when the verifier spends longest time.
-                }
-                else if(arg.equals("-bench")) {
-                    doBench = true;
-                }
-            }
-        }
-
-        System.out.println("k = " + k);
-        System.out.println("m = " + m);
-        System.out.println("nLoops = " + nLoops);
-
-        // Setup the parameters:
-        P4PParameters.initialize(k, false);
-        SecureRandom rand = null;
-        try {
-            rand = SecureRandom.getInstance("SHA1PRNG");
-        }
-        catch(java.security.NoSuchAlgorithmException e) {
-            System.err.println("NoSuchAlgorithmException!");
-            e.printStackTrace();
-            rand = new SecureRandom();
-        }
-
-        rand.nextBoolean();
-
-        // Lets make l = log_2 (m)
-        long L = ((long)2)<<l - 1;
-        long F = BigInteger.probablePrime(l+10, rand).longValue();
-        // Make the field size to be 10 bits larger than l
-
-        // Or just make F 62 bits? Note that we can't use 64 bit since there is no
-        // unsigned long in java.
-        F = BigInteger.probablePrime(62, rand).longValue();
-
-        System.out.println("l = " + l + ", L = " + L);
-        System.out.println("F = " + F);
-        System.out.println("zkpIterations = " + zkpIterations);
-
-        // Generate the data and the checksum coefficient vector:
-        long[] data = new long[m];
-        int[][] c = new int[zkpIterations][];
-        NativeBigInteger[] bi = P4PParameters.getGenerators(2);
-
-        for(int j = 0; j < zkpIterations; j++)
-            c[j] = new int[m];
-
-        int nfails = 0;
-
-        StopWatch proverWatch = new StopWatch();
-        StopWatch verifierWatch = new StopWatch();
-        long innerProductTime = 0;
-        long randChallengeTime = 0;
-        boolean shouldPass = false;
-
-        System.out.println("Testing UserVector L2 bound ZKP for " + nLoops + " loops .");
-        long start = System.currentTimeMillis();
-        double delta = 1.5;
-
-        for(int i = 0; i < nLoops; i++) {
-            if(worstcase) shouldPass = true;     // Test the worst case
-            else shouldPass = rand.nextBoolean();
-
-            if(shouldPass) delta = 0.5;
-            else delta = 2.0;
-            double l2 = (double)L*delta;
-            double ll2 = 0.;
-
-            data = Util.randVector(100, F, l2);
-            for(int j = 0; j < m; j++) {
-                ll2 += (double)data[j]*(double)data[j];
-            }
-            ll2 = Math.sqrt(ll2);
-
-
-            //                 for(int j = 0; j < zkpIterations; j++) {
-            //                     c[j] = new int[m];
-            //                     for(int kk = 0; kk < m; kk++) {
-            //                         c[j][kk] = rand.nextBoolean() ? 1 : 0;
-            //                         if(c[j][kk] == 1) // flip half of the 1's
-            //                             c[j][kk] = rand.nextBoolean() ? 1 : -1;
-            //                     }
-            //                 }
-
-            // The following is more efficient in generating the random challenges
-            byte[] randBytes = new byte[(int)Math.ceil(2*zkpIterations*m/8)];
-            long t0 = System.currentTimeMillis();
-            rand.nextBytes(randBytes);
-            for(int j = 0; j < zkpIterations; j++) {
-                for(int kk = 0; kk < m; kk++) {
-                    int byteIndex = (int)2*(j*m + kk)/8;
-                    int offset = 2*(j*m + kk)%8;
-                    c[j][kk] = (randBytes[byteIndex] & (1<<offset)) > 0 ? 1 : 0;
-                    if(c[j][kk] == 1) // flip half of the 1's
-                        c[j][kk] = (randBytes[byteIndex]
-                                & (1<<(offset+1))) > 0 ? 1 : -1;
-                }
-            }
-            randChallengeTime += (System.currentTimeMillis() - t0);
-
-            // Lets test how much time an inner product takes
-            t0 = System.currentTimeMillis();
-            Util.innerProduct(c[0], data);
-            innerProductTime += (System.currentTimeMillis()-t0);
-
-            UserVector2 uv = new UserVector2(data, F, l, bi[0], bi[1]);
-            data = uv.getUserData();
-            uv.generateShares();
-            uv.setChecksumCoefficientVectors(c);
-            proverWatch.start();
-            L2NormBoundProof2 peerProof =
-                    (L2NormBoundProof2)uv.getL2NormBoundProof2(false);
-            L2NormBoundProof2 serverProof =
-                    (L2NormBoundProof2)uv.getL2NormBoundProof2(true);
-            proverWatch.pause();
-
-            shouldPass = l2 < L;
-            verifierWatch.start();
-            uv.verify2(peerProof);   // Must verify peer proof first
-            boolean didPass = uv.verify2(serverProof);
-            verifierWatch.pause();
-
-            if(shouldPass != didPass) {
-                nfails++;
-                System.out.println("Test No. " + i + " failed. shouldPass = "
-                        + shouldPass + ", result = " + didPass
-                        + ". l2 = " + l2
-                        + ". ll2 = " + ll2);
-            }
-            else
-                System.out.println("Test No. " + i
-                        + " passed. shouldPass = didPass = "
-                        + shouldPass
-                        + ". l2 = " + l2
-                        + ". ll2 = " + ll2);
-        }
-        verifierWatch.stop();
-        proverWatch.stop();
-        long end = System.currentTimeMillis();
-
-        System.out.println("UserVector L2 norm ZKP: " + nLoops
-                + " loops. Failed " + nfails + " times. ms per loop:");
-        System.out.println("\n   Prover time          Verifier time             Total");
-        System.out.println("============================================================");
-        System.out.println("    " + (double)proverWatch.getElapsedTime()/(double)nLoops
-                + "                 "
-                + (double)verifierWatch.getElapsedTime()/(double)nLoops
-                + "                 "
-                + (double)(proverWatch.getElapsedTime()+verifierWatch.getElapsedTime())/(double)nLoops);
-        System.out.println("============================================================");
-        System.out.println("Total time: " + (end-start) + " ms. Average: "
-                + (double)(end-start)/(double)nLoops + " ms per loop"
-                + ". Failure rate: " + (double)nfails/(double)nLoops);
-
-        System.out.println("Time for doing 1 experiement (ms): "
-                + (double)(end-start)/(double)nLoops);
-        System.out.println("Time for doing 1 inner product (ms): "
-                + (double)innerProductTime/(double)nLoops);
-        System.out.println("Time for generating N challenge vectors (ms): "
-                + (double)randChallengeTime/(double)nLoops);
-
-
     }
 }
 

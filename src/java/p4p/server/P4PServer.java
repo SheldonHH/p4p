@@ -278,14 +278,6 @@ public class P4PServer extends P4PParameters {
         return c;
     }
 
-    /**
-     * Sets the peer's share of the vector sum
-     * @param vv    the sum of the peer's share of the user vector
-     */
-    public void setPeerSum(long[] vv) {
-        peerSum = vv;
-    }
-
 
     /**
      * The server have received data and their proofs from enough users.

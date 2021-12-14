@@ -40,6 +40,7 @@ import java.util.Vector;
 
 import net.i2p.util.NativeBigInteger;
 
+import p4p.peer.P4PPeer;
 import p4p.util.Util;
 import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
@@ -184,6 +185,7 @@ public class P4PSim extends P4PParameters {
                 h = bi[1];
 
                 P4PServer server = new P4PServer(m, F, l, zkpIterations, g, h);
+                P4PPeer peer = new P4PPeer(m, F, l, zkpIterations, g, h);
                 long[] s = new long[m];
                 long[] v = new long[m];
 
@@ -287,7 +289,7 @@ public class P4PSim extends P4PParameters {
 // 6⃣️ server prepare to verify
 // server.setPeerSum()
 // server.compute()
-                    server.setPeerSum(v);
+                    peer.setPeerSum(v);
                     verifierWatch.start();
                     server.compute();          // 🌟 serverVerify 🐢🌟
                     verifierWatch.pause();
