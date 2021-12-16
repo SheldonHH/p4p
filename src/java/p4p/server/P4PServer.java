@@ -78,7 +78,7 @@ public class P4PServer extends P4PParameters {
     protected long L = -1;
     protected int l;   // The max number of bits of the 2 norm of user vector
     protected int N = 50;     // The number of chechsums to compute. Default 50
-    private int c[][] = null; // The challenge vectors
+    public int c[][] = null; // The challenge vectors ✈️I.IV send to user
     private long[] s = null;         // The accumulated vector sum
     private long[] peerSum = null;   // The peer's share of the vector sum
 

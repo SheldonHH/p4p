@@ -120,6 +120,7 @@ public class UserVector extends P4PParameters {
      *
      * @param	c	the checksum coefficient vectors
      */
+    // I.IV ✈️ Server send Ck to user
     public void setChecksumCoefficientVectors(int[][] c) {
         for(int i = 0; i < c.length; i++) {
             if(c[i].length != m)

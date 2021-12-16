@@ -179,7 +179,7 @@ public class P4PSim extends P4PParameters {
                 System.out.println(data);
 
 
-                int[][] c = new int[zkpIterations][];
+//                int[][] c = new int[zkpIterations][];
                 NativeBigInteger[] bi = P4PParameters.getGenerators(2);
                 g = bi[0];
                 h = bi[1];

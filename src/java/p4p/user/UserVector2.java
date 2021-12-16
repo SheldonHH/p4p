@@ -315,6 +315,7 @@ public class UserVector2 extends UserVector {
          * that this method constructs two proofs together. One for the server,
          * the other for the privacy peer.
          */
+//II.I🐯
         public void construct() {
             if(c == null || u == null)
                 throw new RuntimeException("Checksum vector not set or shares"
@@ -330,9 +331,9 @@ public class UserVector2 extends UserVector {
                     new SquareCommitment.SquareCommitmentProof[c.length];
             serverProof.tcProofs =
                     new ThreeWayCommitment.ThreeWayCommitmentProof[c.length];
-
+//II.I🐯 B
             serverProof.mdCorrector = new BigInteger[c.length];
-            // 🐰
+// 🐰
             BigInteger squareSum = BigInteger.ZERO;
             // Sum of the squares
             BigInteger squareSumCommitment = BigInteger.ONE;
@@ -367,6 +368,7 @@ public class UserVector2 extends UserVector {
                     throw new RuntimeException("Modular reduction corrector "
                             + "wrong. F = " + F + ", b = "
                             + b);
+//II.I🐯 B=tc.commitments
                 serverProof.mdCorrector[i] = tc.commit(b);
                 serverProof.tcProofs[i] =
                         (ThreeWayCommitment.ThreeWayCommitmentProof)tc.getProof();
@@ -387,6 +389,7 @@ public class UserVector2 extends UserVector {
                                 .add(tc.getRandomness()).mod(q);
 
                 //BigInteger cs = new BigInteger(new Long(Math.abs(s)).toString());
+//II.I 🐯 S
                 BigInteger cs = new BigInteger(new Long(s).toString());
                 sc.commit(cs, rr);
                 serverProof.scProofs[i]
@@ -405,13 +408,13 @@ public class UserVector2 extends UserVector {
                         throw new RuntimeException("Square commitment uses "
                                 + "the wrong randomness. "
                                 + "i = " + 1);
-
+//II.I 🐯 Y
                     BigInteger Y =
                             cm.commit(new BigInteger(new
                                             Long(peerProof.checksums[i])
                                             .toString()).mod(q),
                                     peerProof.checksumRandomness[i].mod(q));
-
+//II.I 🐯 X
                     BigInteger X =
                             cm.commit(new BigInteger(new
                                             Long(serverProof.checksums[i])
@@ -424,6 +427,7 @@ public class UserVector2 extends UserVector {
                 }
 
                 //squareSum = squareSum.add(cs.multiply(cs).mod(q)).mod(q);
+//II.I 🐯 Z
                 squareSum = squareSum.add(cs.multiply(cs));
                 ssBL = squareSum.bitLength();
                 squareSumCommitment =
