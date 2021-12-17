@@ -4,5 +4,4 @@ git clone https://github.com/sheldonhh/p4p.git
 git clone https://github.com/fedproject/grpc-go.git
 git clone https://github.com/fedproject/grpc-java.git
 
-RUN apt-get install default-jre
-RUN apt-get install default-jdk
+RUN apt-get install default-jre && install default-jdk
