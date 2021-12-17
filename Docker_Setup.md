@@ -15,7 +15,7 @@ Source: https://zhuanlan.zhihu.com/p/361934730
 1. 通过一个其他的端口进入容器，这里使用6789端口
 
 ```bash
-sudo docker run -it -p 6789:22 testimage
+sudo docker run -it -d -p 5920:22 p4p:v1
 ```
 
 2. 下载openssh
@@ -75,11 +75,11 @@ sudo iptables -I INPUT -p tcp --dport 6789 -j ACCEPT
 brew install openssh
 ```
 
-\2. vscode中下载Remote-SSH插件
+2. vscode中下载Remote-SSH插件
 
 ![img](https://pic4.zhimg.com/80/v2-fdfe4989f3f90199089f9b5b9967e40f_720w.jpg)
 
-\3. 使用插件连接远程服务器里的容器
+3. 使用插件连接远程服务器里的容器
 
 ![img](https://pic3.zhimg.com/80/v2-8c24b535b938337c7ad6e1744cbe92d2_720w.jpg)
 
