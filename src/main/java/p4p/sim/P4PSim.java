@@ -36,7 +36,6 @@ import java.security.SecureRandom;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
-import java.util.Vector;
 
 import net.i2p.util.NativeBigInteger;
 
@@ -44,10 +43,6 @@ import p4p.peer.P4PPeer;
 import p4p.util.Util;
 import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
-import p4p.crypto.SquareCommitment;
-import p4p.crypto.Proof;
-import p4p.crypto.BitCommitment;
-import p4p.crypto.Commitment;
 import p4p.user.UserVector2;
 import p4p.server.P4PServer;
 

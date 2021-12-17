@@ -33,20 +33,12 @@ package p4p.bench;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Vector;
 
 
 import net.i2p.util.NativeBigInteger;
 
 import p4p.util.Util;
-import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
-import p4p.crypto.SquareCommitment;
-import p4p.crypto.Proof;
-import p4p.crypto.BitCommitment;
-import p4p.crypto.Commitment;
-
-import p4p.user.UserVector;
 
 /**
  * 

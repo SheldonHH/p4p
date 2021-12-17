@@ -33,7 +33,6 @@ package p4p.bench;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Vector;
 
 
 import net.i2p.util.NativeBigInteger;

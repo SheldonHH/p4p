@@ -32,8 +32,6 @@
 package p4p.crypto;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.security.MessageDigest;
 import java.security.GeneralSecurityException;
 
 import net.i2p.util.NativeBigInteger;

@@ -33,7 +33,6 @@ package p4p.crypto;
 
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 
 import net.i2p.util.NativeBigInteger;
 

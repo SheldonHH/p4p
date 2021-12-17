@@ -32,15 +32,12 @@
 package p4p.server;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Map;
 
 import net.i2p.util.NativeBigInteger;
 
 import p4p.util.Util;
-import p4p.util.StopWatch;
 import p4p.util.P4PParameters;
 import p4p.user.UserVector2;
 

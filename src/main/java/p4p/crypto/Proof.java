@@ -32,7 +32,6 @@
 package p4p.crypto;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 
 import p4p.util.P4PParameters;
 

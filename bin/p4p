@@ -124,7 +124,9 @@ LIB_PATH=$P4P_HOME/lib/
 P4P_OPTS=-Djava.library.path="$LIB_PATH":"$PATH"
 
 # run it
+echo $PATH
 echo $CLASSPATH
 echo "$JAVA" -server $JAVA_HEAP_MAX $P4P_OPTS -classpath "$CLASSPATH" $CLASS "$@"
 exec "$JAVA" -server $JAVA_HEAP_MAX $P4P_OPTS -classpath "$CLASSPATH" $CLASS "$@"
+java -server
 # Run the server VM for performance

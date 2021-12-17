@@ -36,8 +36,6 @@ import java.security.SecureRandom;
 import java.security.MessageDigest;
 import java.security.GeneralSecurityException;
 
-import net.i2p.util.NativeBigInteger;
-
 public class Util extends P4PParameters {
     public static SecureRandom rand = new SecureRandom();
 
