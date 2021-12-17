@@ -1,7 +1,5 @@
 # VSCode连接远程服务器里的docker容器
 Source: https://zhuanlan.zhihu.com/p/361934730
-[![doubleZ](https://pic3.zhimg.com/v2-3ac7f539881bd67cc7293f30accdba5a_xs.jpg?source=172ae18b)](https://www.zhihu.com/people/doubleZ0108)
-
 [doubleZ](https://www.zhihu.com/people/doubleZ0108)
 
 北京大学信息工程学院硕士在读
