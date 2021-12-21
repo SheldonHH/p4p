@@ -2,7 +2,7 @@
 https://bid.berkeley.edu/projects/p4p/
 
 ![Draw by Sheldon](https://github.com/SheldonHH/p4p/blob/restructure/docs_images/6.Protocol.png?raw=true)
-
+![4 Steps](https://github.com/SheldonHH/p4p/blob/restructure/docs_images/5StepspublishAPrime_UpdateA.png)
 ### Code originate from
 http://bid.berkeley.edu/projects/p4p/p4p/code/p4p.tar.gz
 
