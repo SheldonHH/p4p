@@ -10,7 +10,7 @@ o Interesting classes/packages:
 
   - p4p.crypto: includes a number of commitment schemes and their 
     zero-knowledge proofs.
-  - p4p.user.UserVector2: implements the ZKP that the user vector's L2-norm 
+  - UserVector2: implements the ZKP that the user vector's L2-norm
     is bounded by a constant L. Used to restrict the influence a malicious 
     user could have on the computation.
   - p4p.sim: includes simulation samples for the P4P computation. 
@@ -34,15 +34,15 @@ run with
 
    ./bin/p4p classname
 
-For example, to run the p4p.user.UserVector2 testing code, which tests the 
+For example, to run the UserVector2 testing code, which tests the
 L2-norm ZKP, type
 
-   ./bin/p4p p4p.user.UserVector2
+   ./bin/p4p UserVector2
 
 Each class can be invoked with various options. Please see the source code 
 of the corresponding class for details. For example, the following command
 
-   ./bin/p4p p4p.user.UserVector2 -k 1024 -l 20
+   ./bin/p4p UserVector2 -k 1024 -l 20
 
 starts testing the L2-norm ZKP with security parameter 1024 and a 20-bit L.
 The system has some pre-generated parameters for the case of k = 1024 so 
