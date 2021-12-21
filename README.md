@@ -1,6 +1,8 @@
 ## P4P Credit to [Dr. Yitao Duan](https://scholar.google.com/citations?user=p0L7kOkAAAAJ&hl=en&oi=ao) and [Dr. John Canny](https://scholar.google.com/citations?user=LAv0HTEAAAAJ&hl=en&oi=ao) from UC Berkeley
 https://bid.berkeley.edu/projects/p4p/
 
+![Draw by Sheldon](https://github.com/SheldonHH/p4p/blob/restructure/docs_images/6.Protocol.png?raw=true)
+
 ### Code originate from
 http://bid.berkeley.edu/projects/p4p/p4p/code/p4p.tar.gz
 
